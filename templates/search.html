@@ -1,0 +1,37 @@
+<!-- wp:template-part {"slug":"header","tagName":"header"} /-->
+
+<!-- wp:group {"tagName":"main","className":"bg-dark-3 section","layout":{"type":"constrained"}} -->
+<main class="wp-block-group bg-dark-3 section">
+	<!-- wp:group {"align":"wide","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group alignwide">
+		<!-- wp:query-title {"type":"search"} /-->
+		<!-- wp:search {"label":"Search","showLabel":false,"buttonText":"Search","buttonUseIcon":false} /-->
+	</div>
+	<!-- /wp:group -->
+
+	<!-- wp:query {"queryId":2,"query":{"inherit":true},"align":"wide","layout":{"type":"default"}} -->
+	<div class="wp-block-query alignwide">
+		<!-- wp:post-template -->
+			<!-- wp:group {"className":"card","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group card">
+				<!-- wp:post-title {"isLink":true} /-->
+				<!-- wp:post-excerpt /-->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:post-template -->
+
+		<!-- wp:query-no-results -->
+			<!-- wp:group {"className":"card","layout":{"type":"constrained"}} -->
+			<div class="wp-block-group card">
+				<!-- wp:paragraph -->
+				<p>Sorry, nothing matched your search.</p>
+				<!-- /wp:paragraph -->
+			</div>
+			<!-- /wp:group -->
+		<!-- /wp:query-no-results -->
+	</div>
+	<!-- /wp:query -->
+</main>
+<!-- /wp:group -->
+
+<!-- wp:template-part {"slug":"footer","tagName":"footer"} /-->

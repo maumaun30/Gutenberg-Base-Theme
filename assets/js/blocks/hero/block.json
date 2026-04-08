@@ -1,0 +1,32 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/hero",
+  "title": "Hero",
+  "category": "design",
+  "icon": "cover-image",
+  "description": "Hero section block.",
+  "supports": {
+    "html": false
+  },
+  "editorScript": "file:./build/index.js",
+  "render": "file:./render.php",
+  "style": "file:./style.css",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Build better pages"
+    },
+    "content": {
+      "type": "string",
+      "default": "This is a dynamic hero Gutenberg block."
+    },
+    "buttonText": {
+      "type": "string",
+      "default": "Learn more"
+    },
+    "buttonUrl": {
+      "type": "string",
+      "default": "#"
+    }
+  }
+}
