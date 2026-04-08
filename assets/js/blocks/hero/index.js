@@ -6,5 +6,5 @@ import './style.css';
 registerBlockType(metadata.name, {
   ...metadata,
   edit: Edit,
-  save: () => null
+  save: () => null,
 });

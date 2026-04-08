@@ -3,23 +3,26 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build:css": "tailwindcss -i ./assets/css/main.css -o ./build/main.css --minify && tailwindcss -i ./assets/css/editor.css -o ./build/editor.css --minify",
-    "watch:css": "tailwindcss -i ./assets/css/main.css -o ./build/main.css --watch",
-    "build:hero": "wp-scripts build ./assets/js/blocks/hero/index.js --output-path=./assets/js/blocks/hero/build",
-    "build:cta": "wp-scripts build ./assets/js/blocks/cta/index.js --output-path=./assets/js/blocks/cta/build",
-    "start:hero": "wp-scripts start ./assets/js/blocks/hero/index.js --output-path=./assets/js/blocks/hero/build",
-    "start:cta": "wp-scripts start ./assets/js/blocks/cta/index.js --output-path=./assets/js/blocks/cta/build",
-    "build": "npm run build:css && npm run build:hero && npm run build:cta"
+    "create-block": "node scripts/create-block.js",
+    "build:blocks": "node scripts/build-blocks.js",
+    "dev:blocks": "node scripts/dev-blocks.js",
+    "build:css:main": "tailwindcss -i ./assets/css/main.css -o ./assets/css/main.min.css --minify",
+    "build:css:critical": "tailwindcss -i ./assets/css/critical.css -o ./assets/css/critical.min.css --minify",
+    "build:css": "npm run build:css:main && npm run build:css:critical",
+    "dev:css:main": "tailwindcss -i ./assets/css/main.css -o ./assets/css/main.min.css --watch",
+    "dev:css:critical": "tailwindcss -i ./assets/css/critical.css -o ./assets/css/critical.min.css --watch",
+    "dev:css": "concurrently \"npm run dev:css:main\" \"npm run dev:css:critical\"",
+    "build": "npm run build:blocks && npm run build:css",
+    "dev": "concurrently \"npm run dev:blocks\" \"npm run dev:css\""
   },
   "devDependencies": {
-    "@wordpress/block-editor": "^14.21.0",
-    "@wordpress/blocks": "^14.15.0",
-    "@wordpress/components": "^29.12.0",
-    "@wordpress/element": "^6.43.0",
-    "@wordpress/i18n": "^5.26.0",
-    "@wordpress/scripts": "^30.27.0",
-    "autoprefixer": "^10.4.27",
-    "postcss": "^8.5.9",
+    "@wordpress/block-editor": "^14.0.0",
+    "@wordpress/blocks": "^14.0.0",
+    "@wordpress/components": "^29.0.0",
+    "@wordpress/element": "^6.0.0",
+    "@wordpress/i18n": "^5.0.0",
+    "@wordpress/scripts": "^30.0.0",
+    "concurrently": "^9.1.2",
     "tailwindcss": "^3.4.17"
   }
 }
