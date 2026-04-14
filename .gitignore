@@ -2,6 +2,7 @@ node_modules/
 
 assets/js/**/build/
 assets/css/main.min.css
+assets/css/critical.min.css
 
 *.log
 .DS_Store
