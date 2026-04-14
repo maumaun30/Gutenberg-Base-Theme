@@ -1,0 +1,30 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/why-choose-us",
+  "title": "Why Choose Us",
+  "category": "design",
+  "icon": "star-filled",
+  "description": "Feature cards section with SVG icons, repeatable items.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "sectionTitle": {
+      "type": "string",
+      "default": "Why Choose Us"
+    },
+    "sectionSubtitle": {
+      "type": "string",
+      "default": "The advantages that set us apart"
+    },
+    "features": {
+      "type": "array",
+      "default": [
+        { "svgId": 0, "svgUrl": "", "title": "Lightning Fast", "description": "Experience unparalleled speed with our optimized infrastructure built for performance." },
+        { "svgId": 0, "svgUrl": "", "title": "Secure & Private", "description": "Enterprise-grade security ensuring your data remains protected at all times." },
+        { "svgId": 0, "svgUrl": "", "title": "Precision Focused", "description": "Tailored solutions designed specifically for your business objectives." },
+        { "svgId": 0, "svgUrl": "", "title": "Global Reach", "description": "Scale seamlessly across regions with our worldwide network infrastructure." }
+      ]
+    }
+  }
+}

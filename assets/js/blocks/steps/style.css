@@ -1,0 +1,128 @@
+.wp-block-mytheme-steps.mytheme-steps {
+  background-color: var(--bg-dark-2, #111);
+  padding: var(--section-py, 80px) 0;
+}
+
+.mytheme-steps__container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Heading ─────────────────────────────────────────────────────── */
+.mytheme-steps__heading {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.mytheme-steps__title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  color: #fff;
+  letter-spacing: 0.02em;
+  margin: 0 0 16px;
+}
+
+.mytheme-steps__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* ── Grid ────────────────────────────────────────────────────────── */
+.mytheme-steps__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+}
+
+@media (min-width: 768px) {
+  .mytheme-steps__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* ── Card ────────────────────────────────────────────────────────── */
+.mytheme-steps__card {
+  position: relative;
+  padding: 32px;
+  border-radius: 16px;
+  background-color: var(--bg-dark-4, #1e1e1e);
+  border: 1px solid var(--border, #2a2a2a);
+  box-shadow: var(--shadow-md, 0 4px 24px rgba(0,0,0,0.4));
+  transition: transform 0.5s ease;
+  overflow: hidden;
+}
+
+.mytheme-steps__card:hover {
+  transform: scale(1.05);
+}
+
+/* Connecting line between cards (desktop only) */
+.mytheme-steps__connector {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mytheme-steps__connector {
+    display: block;
+    position: absolute;
+    top: 64px;
+    left: 100%;
+    width: 32px;
+    height: 2px;
+    background: linear-gradient(to right, var(--color-primary, #f5b335), transparent);
+    z-index: 1;
+  }
+}
+
+/* ── Number badge ────────────────────────────────────────────────── */
+.mytheme-steps__number {
+  display: inline-block;
+  margin-bottom: 24px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background-color: var(--bg-dark-1, #0a0a0b);
+  color: var(--color-primary, #f5b335);
+  border: 2px solid var(--color-primary, #f5b335);
+  box-shadow: 0 0 20px rgba(245, 179, 53, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.mytheme-steps__card:hover .mytheme-steps__number {
+  transform: scale(1.1);
+}
+
+/* ── Card text ───────────────────────────────────────────────────── */
+.mytheme-steps__card-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1.375rem;
+  color: #fff;
+  margin: 0 0 16px;
+}
+
+.mytheme-steps__card-desc {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Hover glow ──────────────────────────────────────────────────── */
+.mytheme-steps__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: radial-gradient(circle at center, rgba(245, 179, 53, 0.1), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.mytheme-steps__card:hover .mytheme-steps__glow {
+  opacity: 1;
+}

@@ -1,0 +1,30 @@
+.wp-block-mytheme-carousel.mytheme-carousel {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.wp-block-mytheme-carousel .swiper-wrapper {
+  height: 100%;
+}
+
+/* Dot indicators */
+.wp-block-mytheme-carousel .swiper-pagination {
+  bottom: 48px;
+  z-index: 10;
+}
+
+.wp-block-mytheme-carousel .swiper-pagination-bullet {
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 1;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+.wp-block-mytheme-carousel .swiper-pagination-bullet-active {
+  width: 48px;
+  background: var(--color-primary, #fff);
+}

@@ -1,0 +1,41 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/steps",
+  "title": "Steps",
+  "category": "design",
+  "icon": "list-view",
+  "description": "A numbered steps section with repeatable step cards.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "sectionTitle": {
+      "type": "string",
+      "default": "Get Started in 3 Simple Steps"
+    },
+    "sectionSubtitle": {
+      "type": "string",
+      "default": "Begin your journey to excellence in minutes"
+    },
+    "steps": {
+      "type": "array",
+      "default": [
+        {
+          "number": "01",
+          "title": "Sign Up",
+          "description": "Create your account in seconds and gain instant access to our premium platform."
+        },
+        {
+          "number": "02",
+          "title": "Configure",
+          "description": "Customize your experience with our intuitive setup wizard tailored to your needs."
+        },
+        {
+          "number": "03",
+          "title": "Launch",
+          "description": "Go live and start experiencing the power of our cutting-edge solutions."
+        }
+      ]
+    }
+  }
+}

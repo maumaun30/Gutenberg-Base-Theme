@@ -1,0 +1,145 @@
+.wp-block-mytheme-why-choose-us.mytheme-why-choose-us {
+  background-color: var(--bg-dark-3, #0f0f0f);
+  padding: var(--section-py, 80px) 0;
+}
+
+.mytheme-wcu__container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Heading ─────────────────────────────────────────────────────── */
+.mytheme-wcu__heading {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.mytheme-wcu__title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  color: #fff;
+  letter-spacing: 0.02em;
+  margin: 0 0 16px;
+}
+
+.mytheme-wcu__subtitle {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+/* ── Grid ────────────────────────────────────────────────────────── */
+.mytheme-wcu__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+}
+
+@media (min-width: 640px) {
+  .mytheme-wcu__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .mytheme-wcu__grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ── Card ────────────────────────────────────────────────────────── */
+.mytheme-wcu__card {
+  position: relative;
+  padding: 32px;
+  border-radius: 16px;
+  background-color: var(--bg-gray-4, #1a1a1a);
+  border: 1px solid var(--border, #2a2a2a);
+  box-shadow: var(--shadow-md, 0 4px 24px rgba(0,0,0,0.4));
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.mytheme-wcu__card:hover {
+  transform: translateY(-8px);
+}
+
+/* ── Icon box ────────────────────────────────────────────────────── */
+.mytheme-wcu__icon-box {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-dark-2, #111);
+  border: 2px solid var(--color-primary, #f5b335);
+  box-shadow: 0 0 20px rgba(245, 179, 53, 0.2);
+  transition: transform 0.3s ease, rotate 0.3s ease;
+}
+
+.mytheme-wcu__card:hover .mytheme-wcu__icon-box {
+  transform: scale(1.1) rotate(6deg);
+}
+
+/* SVG icon — use currentColor for easy theming */
+.mytheme-feature-svg {
+  width: 32px;
+  height: 32px;
+  display: block;
+  object-fit: contain;
+  /* For inline SVGs, currentColor inherits from parent */
+  color: var(--color-primary, #f5b335);
+  fill: currentColor;
+}
+
+/* ── Card text ───────────────────────────────────────────────────── */
+.mytheme-wcu__card-title {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  font-size: 1.25rem;
+  color: #fff;
+  margin: 0 0 12px;
+}
+
+.mytheme-wcu__card-desc {
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Bottom accent line ──────────────────────────────────────────── */
+.mytheme-wcu__accent-line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 0 0 16px 16px;
+  background-color: var(--color-primary, #f5b335);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.mytheme-wcu__card:hover .mytheme-wcu__accent-line {
+  transform: scaleX(1);
+}
+
+/* ── Hover glow ──────────────────────────────────────────────────── */
+.mytheme-wcu__glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(245, 179, 53, 0.3);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.mytheme-wcu__card:hover .mytheme-wcu__glow {
+  opacity: 1;
+}
