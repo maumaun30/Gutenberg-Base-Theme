@@ -7,11 +7,11 @@
    ============================================================ */
 :root {
   /* Brand */
-  --color-primary:        #f5b335;
-  --color-primary-hover:  #e0a020;
-  --color-primary-light:  #fdd37a;
-  --color-secondary:      #ea580c;
-  --color-secondary-hover:#c94c0a;
+  --color-primary:        #f71dc2;
+  --color-primary-hover:  #fb11c1;
+  --color-primary-light:  #fb64d6;
+  --color-secondary:      #d63d4a;
+  --color-secondary-hover:#e01a2a;
 
   /* Background scale */
   --bg-dark-1:  #0a0a0b;
