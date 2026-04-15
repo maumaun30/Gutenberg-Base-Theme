@@ -147,3 +147,208 @@ function mytheme_enqueue_carousel_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_carousel_assets' );
  
+/**
+ * Luxe Theme — Nav Walker & Menu Registration
+ * Add this to your functions.php
+ *
+ * @package Luxe
+ */
+ 
+// ─── Register Nav Locations ──────────────────────────────────────────────────
+ 
+add_action( 'after_setup_theme', function () {
+    register_nav_menus([
+        'primary'   => __( 'Primary Menu',   'luxe' ),
+        'secondary' => __( 'Secondary Menu', 'luxe' ),
+    ]);
+});
+ 
+ 
+// ─── Desktop Nav Walker ──────────────────────────────────────────────────────
+ 
+class Luxe_Nav_Walker extends Walker_Nav_Menu {
+ 
+    public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+        $classes = implode( ' ', (array) $item->classes );
+        $is_current = in_array( 'current-menu-item', (array) $item->classes );
+ 
+        $color = $is_current ? 'color: white;' : 'color: rgba(255,255,255,0.8);';
+ 
+        $output .= sprintf(
+            '<a href="%s" class="font-medium transition-colors hover:text-white" style="%s">%s</a>',
+            esc_url( $item->url ),
+            esc_attr( $color ),
+            esc_html( $item->title )
+        );
+    }
+}
+ 
+ 
+// ─── Mobile Nav Walker ───────────────────────────────────────────────────────
+ 
+class Luxe_Mobile_Nav_Walker extends Walker_Nav_Menu {
+ 
+    public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+        $is_current = in_array( 'current-menu-item', (array) $item->classes );
+        $color = $is_current ? 'color: white;' : 'color: rgba(255,255,255,0.8);';
+ 
+        $output .= sprintf(
+            '<a href="%s" class="font-medium transition-colors hover:text-white" style="%s">%s</a>',
+            esc_url( $item->url ),
+            esc_attr( $color ),
+            esc_html( $item->title )
+        );
+    }
+}
+ 
+ 
+// ─── Fallback Nav (if no menu assigned) ─────────────────────────────────────
+ 
+function luxe_fallback_nav() {
+    $links = [
+        home_url('/')          => __( 'Home',     'luxe' ),
+        home_url('/services')  => __( 'Services', 'luxe' ),
+        home_url('/about')     => __( 'About',    'luxe' ),
+        home_url('/contact')   => __( 'Contact',  'luxe' ),
+    ];
+ 
+    foreach ( $links as $url => $label ) {
+        printf(
+            '<a href="%s" class="font-medium transition-colors text-white/80 hover:text-white">%s</a>',
+            esc_url( $url ),
+            esc_html( $label )
+        );
+    }
+}
+ 
+function luxe_mobile_fallback_nav() {
+    luxe_fallback_nav();
+}
+
+/**
+ * Luxe Theme — Footer Nav Walker, Menu Registration & Social Customizer
+ * Add this to your functions.php (append to existing Luxe functions)
+ *
+ * @package Luxe
+ */
+ 
+// ─── Register Footer Nav Locations ──────────────────────────────────────────
+// (Merge with the existing register_nav_menus call if you already have one)
+ 
+add_action( 'after_setup_theme', function () {
+    register_nav_menus([
+        // Header (already registered)
+        'primary'      => __( 'Primary Menu',   'luxe' ),
+        'secondary'    => __( 'Secondary Menu', 'luxe' ),
+        // Footer
+        'footer-links' => __( 'Footer: Quick Links',    'luxe' ),
+        'footer-help'  => __( 'Footer: Help & Support', 'luxe' ),
+        'footer-legal' => __( 'Footer: Legal',          'luxe' ),
+    ]);
+}, 0 );
+ 
+ 
+// ─── Footer Nav Walker ───────────────────────────────────────────────────────
+ 
+class Luxe_Footer_Walker extends Walker_Nav_Menu {
+ 
+    public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+        $output .= sprintf(
+            '<li><a href="%s" class="text-white/60 hover:text-white transition-colors">%s</a></li>',
+            esc_url( $item->url ),
+            esc_html( $item->title )
+        );
+    }
+}
+ 
+ 
+// ─── Fallback links (shown if no menu is assigned) ───────────────────────────
+ 
+function luxe_footer_links_fallback() {
+    $items = [
+        home_url('/')          => __( 'Home',     'luxe' ),
+        home_url('/about')     => __( 'About Us', 'luxe' ),
+        home_url('/services')  => __( 'Services', 'luxe' ),
+        home_url('/pricing')   => __( 'Pricing',  'luxe' ),
+        home_url('/contact')   => __( 'Contact',  'luxe' ),
+    ];
+    luxe_render_footer_fallback( $items );
+}
+ 
+function luxe_footer_help_fallback() {
+    $items = [
+        home_url('/support')       => __( 'Support Center', 'luxe' ),
+        home_url('/docs')          => __( 'Documentation',  'luxe' ),
+        home_url('/faq')           => __( 'FAQ',            'luxe' ),
+        home_url('/community')     => __( 'Community',      'luxe' ),
+        home_url('/status')        => __( 'Status',         'luxe' ),
+    ];
+    luxe_render_footer_fallback( $items );
+}
+ 
+function luxe_footer_legal_fallback() {
+    $items = [
+        home_url('/privacy')  => __( 'Privacy Policy',   'luxe' ),
+        home_url('/terms')    => __( 'Terms of Service', 'luxe' ),
+        home_url('/cookies')  => __( 'Cookie Policy',    'luxe' ),
+        home_url('/licenses') => __( 'Licenses',         'luxe' ),
+        home_url('/security') => __( 'Security',         'luxe' ),
+    ];
+    luxe_render_footer_fallback( $items );
+}
+ 
+function luxe_render_footer_fallback( array $items ) {
+    foreach ( $items as $url => $label ) {
+        printf(
+            '<li><a href="%s" class="text-white/60 hover:text-white transition-colors">%s</a></li>',
+            esc_url( $url ),
+            esc_html( $label )
+        );
+    }
+}
+ 
+ 
+// ─── Social Links via Customizer ─────────────────────────────────────────────
+ 
+add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize ) {
+ 
+    $wp_customize->add_section( 'luxe_social', [
+        'title'    => __( 'Social Links', 'luxe' ),
+        'priority' => 120,
+    ]);
+ 
+    $socials = [
+        'twitter'   => __( 'Twitter / X URL',  'luxe' ),
+        'linkedin'  => __( 'LinkedIn URL',      'luxe' ),
+        'github'    => __( 'GitHub URL',        'luxe' ),
+        'instagram' => __( 'Instagram URL',     'luxe' ),
+    ];
+ 
+    foreach ( $socials as $key => $label ) {
+        $wp_customize->add_setting( 'luxe_social_' . $key, [
+            'default'           => '',
+            'sanitize_callback' => 'esc_url_raw',
+        ]);
+ 
+        $wp_customize->add_control( 'luxe_social_' . $key, [
+            'label'   => $label,
+            'section' => 'luxe_social',
+            'type'    => 'url',
+        ]);
+    }
+});
+ 
+ 
+// ─── Social Icon Hover (CSS) — enqueue in wp_head ────────────────────────────
+// Since Tailwind can't do arbitrary CSS variable swaps on hover without JIT,
+// we add a tiny <style> block for the social icon hover effect.
+ 
+add_action( 'wp_head', function () { ?>
+<style>
+  .luxe-social-icon:hover {
+    background-color: var(--color-primary) !important;
+    color: var(--bg-dark-1) !important;
+    border-color: var(--color-primary) !important;
+  }
+</style>
+<?php });

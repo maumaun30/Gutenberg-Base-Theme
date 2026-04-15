@@ -1,0 +1,58 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/cta",
+  "title": "CTA",
+  "category": "design",
+  "icon": "megaphone",
+  "description": "Two-column CTA section with image, heading, bullet list, and two buttons.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "imageId": {
+      "type": "number",
+      "default": 0
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "title": {
+      "type": "string",
+      "default": "Ready to Transform Your Business?"
+    },
+    "body": {
+      "type": "string",
+      "default": "Join thousands of forward-thinking companies who have already discovered the power of our platform. Experience premium service, cutting-edge technology, and unmatched results."
+    },
+    "bulletPoints": {
+      "type": "array",
+      "default": [
+        "Full access to all premium features",
+        "24/7 dedicated support team",
+        "Advanced analytics and insights",
+        "Seamless integration with your tools"
+      ]
+    },
+    "primaryButtonText": {
+      "type": "string",
+      "default": "Start Free Trial"
+    },
+    "primaryButtonUrl": {
+      "type": "string",
+      "default": "#"
+    },
+    "secondaryButtonText": {
+      "type": "string",
+      "default": "Schedule Demo"
+    },
+    "secondaryButtonUrl": {
+      "type": "string",
+      "default": "#"
+    }
+  }
+}
