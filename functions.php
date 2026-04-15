@@ -352,3 +352,71 @@ add_action( 'wp_head', function () { ?>
   }
 </style>
 <?php });
+
+// ── CPT: game ──────────────────────────────────────────────
+function mytheme_register_game_cpt() {
+    register_post_type( 'game', [
+        'labels' => [
+            'name'               => 'Games',
+            'singular_name'      => 'Game',
+            'add_new_item'       => 'Add New Game',
+            'edit_item'          => 'Edit Game',
+            'new_item'           => 'New Game',
+            'view_item'          => 'View Game',
+            'search_items'       => 'Search Games',
+            'not_found'          => 'No games found',
+            'not_found_in_trash' => 'No games found in trash',
+        ],
+        'public'       => true,
+        'show_in_rest' => true,
+        'supports'     => [ 'title', 'thumbnail', 'custom-fields' ],
+        'menu_icon'    => 'dashicons-games',
+        'has_archive'  => false,
+        'rewrite'      => [ 'slug' => 'games' ],
+    ] );
+}
+add_action( 'init', 'mytheme_register_game_cpt' );
+
+// ── Taxonomy: game_category ────────────────────────────────
+function mytheme_register_game_category_taxonomy() {
+    register_taxonomy( 'game_category', 'game', [
+        'labels' => [
+            'name'              => 'Game Categories',
+            'singular_name'     => 'Game Category',
+            'search_items'      => 'Search Categories',
+            'all_items'         => 'All Categories',
+            'edit_item'         => 'Edit Category',
+            'update_item'       => 'Update Category',
+            'add_new_item'      => 'Add New Category',
+            'new_item_name'     => 'New Category Name',
+            'menu_name'         => 'Categories',
+        ],
+        'hierarchical' => true,
+        'show_in_rest' => true,
+        'rewrite'      => [ 'slug' => 'game-category' ],
+    ] );
+}
+add_action( 'init', 'mytheme_register_game_category_taxonomy' );
+
+// ── Meta fields: price + button URL ───────────────────────
+function mytheme_register_game_meta() {
+    register_post_meta( 'game', 'game_price', [
+        'show_in_rest'  => true,
+        'single'        => true,
+        'type'          => 'string',
+        'auth_callback' => fn() => current_user_can( 'edit_posts' ),
+    ] );
+    register_post_meta( 'game', 'game_button_url', [
+        'show_in_rest'  => true,
+        'single'        => true,
+        'type'          => 'string',
+        'auth_callback' => fn() => current_user_can( 'edit_posts' ),
+    ] );
+    register_post_meta( 'game', 'game_button_label', [
+        'show_in_rest'  => true,
+        'single'        => true,
+        'type'          => 'string',
+        'auth_callback' => fn() => current_user_can( 'edit_posts' ),
+    ] );
+}
+add_action( 'init', 'mytheme_register_game_meta' );
