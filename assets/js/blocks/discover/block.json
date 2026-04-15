@@ -1,0 +1,42 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/discover",
+  "title": "Discover",
+  "category": "design",
+  "icon": "block-default",
+  "description": "Discover section with heading, body paragraphs, and stats.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "Discover Endless Possibilities"
+    },
+    "paragraphs": {
+      "type": "array",
+      "default": [
+        "Our platform is built on a foundation of innovation and excellence, designed to empower businesses of all sizes to reach their full potential.",
+        "Whether you're a startup looking to make your mark or an established enterprise seeking to innovate, we provide the tools, resources, and support you need to succeed.",
+        "Experience the difference that truly premium service makes. Our dedicated team is committed to your success, providing personalized solutions and round-the-clock support."
+      ],
+      "items": { "type": "string" }
+    },
+    "stats": {
+      "type": "array",
+      "default": [
+        { "value": "10K+", "label": "Active Users" },
+        { "value": "99.9%", "label": "Uptime" },
+        { "value": "150+", "label": "Countries" },
+        { "value": "24/7", "label": "Support" }
+      ],
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": { "type": "string" },
+          "label": { "type": "string" }
+        }
+      }
+    }
+  }
+}

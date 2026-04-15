@@ -1,0 +1,38 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/games-listing",
+  "title": "Games Listing",
+  "category": "design",
+  "icon": "block-default",
+  "description": "Displays games from the Game CPT grouped by game_category taxonomy.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "sectionLabel": {
+      "type": "string",
+      "default": "Game Library"
+    },
+    "heading": {
+      "type": "string",
+      "default": "Explore Our Games"
+    },
+    "subheading": {
+      "type": "string",
+      "default": "Discover thousands of games across all genres."
+    },
+    "postsPerCategory": {
+      "type": "number",
+      "default": 4
+    },
+    "showViewAll": {
+      "type": "boolean",
+      "default": true
+    },
+    "selectedCategories": {
+      "type": "array",
+      "default": [],
+      "items": { "type": "number" }
+    }
+  }
+}
