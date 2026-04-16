@@ -1,0 +1,40 @@
+name: Deploy Theme to Staging
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: staging
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install & Build
+        # This creates the assets/js/**/build/ and .css files inside the runner
+        run: |
+          npm install
+          npm run build
+
+      - name: Sync to CloudPanel
+        uses: Burnett01/rsync-deployments@7.0.1
+        with:
+          switches: -avzr --delete
+          path: .
+          remote_path: /home/${{ vars.SSH_USER }}/htdocs/${{ vars.SSH_HOST }}/wp-content/themes/gutenberg-base-theme
+          remote_host: ${{ vars.SSH_HOST }}
+          remote_user: ${{ vars.SSH_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # IMPORTANT: We do NOT exclude the build folders here
+          # so that the freshly built assets are uploaded.
+          args: --exclude '.git*' --exclude 'node_modules' --exclude 'src'
