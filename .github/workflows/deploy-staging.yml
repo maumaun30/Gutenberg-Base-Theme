@@ -21,7 +21,6 @@ jobs:
           cache: "npm"
 
       - name: Install & Build
-        # This creates the assets/js/**/build/ and .css files inside the runner
         run: |
           npm install
           npm run build
@@ -35,6 +34,4 @@ jobs:
           remote_host: ${{ vars.SSH_HOST }}
           remote_user: ${{ vars.SSH_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          # IMPORTANT: We do NOT exclude the build folders here
-          # so that the freshly built assets are uploaded.
           args: --exclude '.git*' --exclude 'node_modules' --exclude 'src'
