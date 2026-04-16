@@ -17,7 +17,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "npm"
 
       - name: Install & Build
@@ -30,8 +30,8 @@ jobs:
         with:
           switches: -avzr --delete
           path: .
-          remote_path: /home/${{ vars.SSH_USER }}/htdocs/${{ vars.SSH_DOMAIN }}/wp-content/themes/Gutenberg-Base-Theme
-          remote_host: ${{ vars.SSH_HOST }}
-          remote_user: ${{ vars.SSH_USER }}
+          remote_path: /home/${{ secrets.SSH_USER }}/htdocs/${{ secrets.SSH_DOMAIN }}/wp-content/themes/Gutenberg-Base-Theme
+          remote_host: ${{ secrets.SSH_HOST }}
+          remote_user: ${{ secrets.SSH_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
           args: --exclude '.git*' --exclude 'node_modules' --exclude 'src'
