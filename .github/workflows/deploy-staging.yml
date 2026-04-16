@@ -31,7 +31,7 @@ jobs:
         with:
           switches: -avzr --delete
           path: .
-          remote_path: /home/${{ vars.SSH_USER }}/htdocs/${{ vars.SSH_HOST }}/wp-content/themes/gutenberg-base-theme
+          remote_path: /home/${{ vars.SSH_USER }}/htdocs/${{ vars.SSH_DOMAIN }}/wp-content/themes/Gutenberg-Base-Theme
           remote_host: ${{ vars.SSH_HOST }}
           remote_user: ${{ vars.SSH_USER }}
           remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
