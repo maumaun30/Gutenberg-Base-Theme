@@ -111,7 +111,29 @@ if ( is_wp_error( $categories ) || empty( $categories ) ) {
                       loading="lazy"
                     />
                   <?php else : ?>
-                    <div class="game-card__image-placeholder">No image</div>
+                    <div class="game-card__image-placeholder">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
+                        fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+
+                        <!-- card (back) -->
+                        <rect x="10" y="3" width="10" height="12" rx="2"/>
+
+                        <!-- card symbol -->
+                        <path d="M15 7c-1 .8-1.6 1.3-1.6 2 0 .6.5 1 1 1 .5 0 .8-.2 1.1-.6.3.4.6.6 1.1.6.5 0 1-.4 1-1 0-.7-.6-1.2-1.6-2l-.5-.4-.5.4z"/>
+                        <line x1="15" y1="10" x2="15" y2="12"/>
+
+                        <!-- dice (front) -->
+                        <rect x="3" y="8" width="12" height="12" rx="2"/>
+
+                        <!-- dice dots -->
+                        <circle cx="6.5" cy="11.5" r="0.7"/>
+                        <circle cx="11.5" cy="11.5" r="0.7"/>
+                        <circle cx="6.5" cy="16.5" r="0.7"/>
+                        <circle cx="11.5" cy="16.5" r="0.7"/>
+                        <circle cx="9" cy="14" r="0.7"/>
+                      </svg>
+                    </div>
                   <?php endif; ?>
                   <div class="game-card__overlay" aria-hidden="true"></div>
                   <?php if ( $price ) : ?>
