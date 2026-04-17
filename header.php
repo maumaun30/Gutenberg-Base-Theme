@@ -67,7 +67,7 @@
              style="background-color: var(--color-primary); color: var(--bg-dark-1); box-shadow: var(--shadow-glow);"
              onmouseenter="this.style.backgroundColor='var(--color-primary-hover)'"
              onmouseleave="this.style.backgroundColor='var(--color-primary)'">
-            <?php esc_html_e('Join Now', 'luxe'); ?>
+            <?php esc_html_e('Play Now', 'luxe'); ?>
           </a>
         </div>
  
@@ -112,7 +112,7 @@
         <a href="<?php echo esc_url( home_url('/join-now/') ); ?>"
            class="flex-1 px-5 py-2 rounded-lg font-medium text-center"
            style="background-color: var(--color-primary); color: var(--bg-dark-1);">
-          <?php esc_html_e('Join Now', 'luxe'); ?>
+          <?php esc_html_e('Play Now', 'luxe'); ?>
         </a>
       </div>
  

@@ -59,7 +59,7 @@ $game_count     = get_query_var( 'game_count' );
 
     <h1>
       <?php if ( $parent_term_id === 0 ) : ?>
-        Explore More<br><span><?php echo esc_html( $term_name ); ?> Games</span>
+        Play <span><?php echo esc_html( $term_name ); ?> Games</span><br>on FUNaloMax
       <?php else :
         $pt = get_term( $parent_term_id, 'game_category' ); ?>
         <?php echo esc_html( $pt->name ); ?><br>
