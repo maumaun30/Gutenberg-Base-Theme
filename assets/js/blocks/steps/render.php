@@ -46,6 +46,9 @@ $total            = count( $steps );
         </div>
       <?php endforeach; ?>
     </div>
+    <div class="steps-description" style="text-align: center;padding-top: 40px;">
+      <p>Signing up is deliberately designed to be quick and hassle-free so that you can get into the action right away.</p>
+    </div>
 
   </div>
 </section>
