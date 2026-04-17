@@ -92,7 +92,7 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
 
       <nav class="fnlmx-footer__nav-col">
         <h4 class="fnlmx-footer__nav-heading">
-          <?php esc_html_e( 'Help & Support', 'luxe' ); ?>
+          <?php esc_html_e( 'Play Now', 'luxe' ); ?>
         </h4>
         <ul class="fnlmx-footer__nav-list">
           <?php wp_nav_menu([
