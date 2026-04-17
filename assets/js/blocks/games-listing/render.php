@@ -80,13 +80,22 @@ if ( is_wp_error( $categories ) || empty( $categories ) ) {
 
           <div class="games-listing__cat-header">
             <div class="games-listing__cat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="2" y="7" width="20" height="14" rx="2"/>
-                <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                <line x1="12" y1="12" x2="12" y2="16"/>
-                <line x1="10" y1="14" x2="14" y2="14"/>
-              </svg>
-            </div>
+              <?php
+                $icon = get_field('fnlmx_game_ctg_icon', 'game_category_' . $cat->term_id);
+
+                  if ( $icon ) :
+                ?>
+                  <img src="<?php echo esc_url($icon); ?>" alt="" loading="lazy">
+                <?php else : ?>
+                  <!-- fallback SVG -->
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="7" width="20" height="14" rx="2"/>
+                    <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    <line x1="12" y1="12" x2="12" y2="16"/>
+                    <line x1="10" y1="14" x2="14" y2="14"/>
+                  </svg>
+              <?php endif; ?>
+</div>
             <div>
               <h3 class="games-listing__cat-name"><?php echo esc_html( $cat->name ); ?></h3>
               <div class="games-listing__cat-divider"></div>

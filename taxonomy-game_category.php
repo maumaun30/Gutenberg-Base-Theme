@@ -86,31 +86,6 @@ if ($has_children) {
 }
 ?>
 <style>
-  /* ------------------------------------------------------------------ */
-  /*  CSS VARIABLES  — safe to remove if main.css already sets these     */
-  /* ------------------------------------------------------------------ */
-  :root {
-    --color-primary: #f71dc2;
-    --color-primary-hover: #fb11c1;
-    --color-primary-light: #fb64d6;
-    --color-secondary: #d63d4a;
-    --bg-dark-1: #0a0a0b;
-    --bg-dark-2: #111114;
-    --bg-dark-3: #18181c;
-    --bg-dark-4: #1f1f25;
-    --bg-gray-4: #42424f;
-    --border: rgba(255, 255, 255, .08);
-    --border-strong: rgba(255, 255, 255, .15);
-    --shadow-md: 0 4px 20px rgba(0, 0, 0, .5);
-    --shadow-lg: 0 8px 40px rgba(0, 0, 0, .65);
-    --shadow-glow: 0 0 24px rgba(247, 29, 194, .3);
-    --text-h1: clamp(2rem, 4vw, 3.75rem);
-    --text-h3: clamp(1.5rem, 2.5vw, 2.25rem);
-    --text-h4: clamp(1.25rem, 2vw, 1.875rem);
-    --text-lead: 1.125rem;
-    --section-py: clamp(2.5rem, 6vw, 6rem);
-  }
-
   /* ---- Page --------------------------------------------------------- */
   .gc-page {
     background: var(--bg-dark-3);
@@ -229,7 +204,7 @@ if ($has_children) {
     font-size: var(--text-lead);
     color: rgba(255, 255, 255, .7);
     line-height: 1.7;
-    max-width: 42rem;
+    /*max-width: 42rem;*/
     margin: 0 auto 2.5rem;
   }
 
@@ -361,6 +336,11 @@ if ($has_children) {
   .gc-section {
     background: var(--bg-dark-2);
     padding: var(--section-py) 0;
+  }
+
+  .gc-section-contents {
+    background: var(--bg-dark-2);
+    padding: 0 0 40px;
   }
 
   .gc-container {
@@ -655,6 +635,36 @@ if ($has_children) {
       transform: translateY(0);
     }
   }
+
+  /* Description card */
+.sg-desc-card {
+  background:var(--bg-dark-4); border:1px solid var(--border);
+  border-radius:1.25rem;; padding:2rem;
+}
+.sg-desc-card h2 {
+  font-family:'Bebas Neue',sans-serif; font-size:var(--text-h3);
+  color:#fff; letter-spacing:.05em; margin:0 0 1.25rem;
+  padding-bottom:.875rem; border-bottom:1px solid var(--border);
+}
+.sg-desc-card .sg-content {
+  font-family:'Lexend',sans-serif; font-size:.95rem; line-height:1.8;
+  color:rgba(255,255,255,.75);
+}
+.sg-desc-card .sg-content p  { margin-bottom:1rem; }
+.sg-desc-card .sg-content p:last-child { margin-bottom:0; }
+.sg-desc-card .sg-content h3 {
+  font-family:'Bebas Neue',sans-serif; font-size:1.25rem;
+  color:var(--color-primary); letter-spacing:.05em; margin:1.5rem 0 .5rem;
+}
+.sg-desc-card .sg-content ul { list-style:none; padding:0; }
+.sg-desc-card .sg-content ul li {
+  padding:.35rem 0 .35rem 1.5rem; position:relative;
+}
+.sg-desc-card .sg-content ul li::before {
+  content:''; position:absolute; left:0; top:.8rem;
+  width:.45rem; height:.45rem; border-radius:50%;
+  background:var(--color-primary);
+}
 </style>
 
 <div class="gc-page">
@@ -677,7 +687,7 @@ if ($has_children) {
     <!-- ════════════════ STICKY FILTER PILLS ═══════════════════════════ -->
     <div class="gc-filters" id="gc-filter-bar">
       <div class="gc-filters__inner">
-        <p class="gc-filters__lbl">Browse <?php echo esc_html($term_name); ?> Sub-categories</p>
+        <p class="gc-filters__lbl">Explore More <?php echo esc_html($term_name); ?> Games</p>
         <div class="gc-filters__row" id="gc-pill-row">
 
           <button class="gc-pill is-active" data-filter="all">
@@ -901,6 +911,23 @@ if ($has_children) {
   <?php endif; ?>
 
 </div><!-- /.gc-page -->
+
+<!-- ════════════════ GAME CATEGORY CONTENTS ══════════ -->
+    <?php
+// Get ACF field for current taxonomy term
+$term_contents = get_field('fnlmx_game_ctg_contents', 'game_category_' . $term_id);
+
+if ( $term_contents ) : ?>
+  <section class="gc-section-contents">
+    <div class="gc-container">
+      <div class="gc-term-contents">
+        <div class="sg-desc-card sg-fadein">
+          <?php echo wp_kses_post( $term_contents ); ?>
+        </div>
+      </div>
+    </div>
+  </section>
+<?php endif; ?>
 
 
 <!-- ════════════════════════ SCRIPTS ═══════════════════════════════ -->
