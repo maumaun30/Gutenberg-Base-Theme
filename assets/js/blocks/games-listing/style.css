@@ -62,11 +62,19 @@
 }
 
 .games-listing__subheading {
-  max-width: 42rem;
+  max-width: 52rem;
   margin: 0 auto !important;
   font-size: var(--text-lead);
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.7;
+}
+
+.games-listing__cat-description {
+  margin: 0 auto !important;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.7;
+  text-align: center;
+  padding: 25px;
 }
 
 /* ── Categories ── */
@@ -81,7 +89,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 2rem;
+  /*margin-bottom: 2rem;*/
 }
 
 .games-listing__cat-icon {

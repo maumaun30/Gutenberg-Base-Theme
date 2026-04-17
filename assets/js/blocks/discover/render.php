@@ -34,6 +34,9 @@ $stats      = $attributes['stats'] ?? [];
           </div>
         <?php endforeach; ?>
       </div>
+      <div style="text-align: center;padding-top: 20px;">
+        <p>No matter if you’re on your break or in the middle of commuting, you can find live experiences that suit your schedule and mood.</p>
+      </div>
     <?php endif; ?>
 
   </div>

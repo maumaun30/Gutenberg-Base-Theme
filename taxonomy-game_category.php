@@ -929,6 +929,23 @@ if ( $term_contents ) : ?>
   </section>
 <?php endif; ?>
 
+<!-- ════════════════ GAME CATEGORY QUICK GUIDE ══════════ -->
+    <?php
+// Get ACF field for current taxonomy term
+$term_contents = get_field('fnlmx_game_ctg_guide', 'game_category_' . $term_id);
+
+if ( $term_contents ) : ?>
+  <section class="gc-section-contents">
+    <div class="gc-container">
+      <div class="gc-term-contents">
+        <div class="sg-desc-card sg-fadein">
+          <?php echo wp_kses_post( $term_contents ); ?>
+        </div>
+      </div>
+    </div>
+  </section>
+<?php endif; ?>
+
 
 <!-- ════════════════════════ SCRIPTS ═══════════════════════════════ -->
 <script>

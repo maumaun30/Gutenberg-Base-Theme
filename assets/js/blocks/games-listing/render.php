@@ -102,6 +102,16 @@ if ( is_wp_error( $categories ) || empty( $categories ) ) {
             </div>
           </div>
 
+          <?php
+            $cat_desc = get_field('fnlmx_game_category_home_description', 'game_category_' . $cat->term_id);
+            ?>
+
+            <?php if ( $cat_desc ) : ?>
+              <div class="games-listing__cat-description">
+                <?php echo wp_kses_post( $cat_desc ); ?>
+              </div>
+            <?php endif; ?>
+
           <div class="games-listing__grid">
             <?php while ( $games->have_posts() ) : $games->the_post();
               $price        = get_post_meta( get_the_ID(), 'game_price', true );
@@ -174,6 +184,9 @@ if ( is_wp_error( $categories ) || empty( $categories ) ) {
         </div>
 
       <?php endforeach; ?>
+      <div style="text-align: center;padding-top: 20px;">
+        <p>You can always expect online casino games that offer engaging themes, smooth gameplay, and rewarding features on FUNaloMAX.</p>
+      </div>
     </div>
 
   </div>

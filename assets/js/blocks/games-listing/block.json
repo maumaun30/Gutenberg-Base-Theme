@@ -15,11 +15,11 @@
     },
     "heading": {
       "type": "string",
-      "default": "Explore Our Games"
+      "default": "Find All Your Favorite Games on One Platform"
     },
     "subheading": {
       "type": "string",
-      "default": "Discover thousands of games across all genres."
+      "default": "FUNaloMAX brings together a wide range of games from trusted online casino game developers around the world. From nostalgic classics to modern casino titles, everything is in one place. A few taps is all it takes to find your favorite games and discover new ones."
     },
     "postsPerCategory": {
       "type": "number",

@@ -9,7 +9,7 @@
 <?php wp_body_open(); ?>
  
  
-<nav class="fixed top-0 left-0 right-0 z-50 border-b"
+<nav class="border-b"
      style="background-color: var(--bg-dark-2); border-color: var(--border);">
  
   <div class="max-w-7xl mx-auto px-6 py-4">
@@ -121,5 +121,5 @@
   </div>
 </nav>
  
-<!-- Spacer -->
-<div class="h-[73px]"></div>
+<!-- Spacer
+<div class="h-[73px]"></div> -->
