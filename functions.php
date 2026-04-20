@@ -261,53 +261,6 @@ class Luxe_Footer_Walker extends Walker_Nav_Menu {
     }
 }
  
- 
-// ─── Fallback links (shown if no menu is assigned) ───────────────────────────
- 
-function luxe_footer_links_fallback() {
-    $items = [
-        home_url('/')          => __( 'Home',     'luxe' ),
-        home_url('/about')     => __( 'About Us', 'luxe' ),
-        home_url('/services')  => __( 'Services', 'luxe' ),
-        home_url('/pricing')   => __( 'Pricing',  'luxe' ),
-        home_url('/contact')   => __( 'Contact',  'luxe' ),
-    ];
-    luxe_render_footer_fallback( $items );
-}
- 
-function luxe_footer_help_fallback() {
-    $items = [
-        home_url('/support')       => __( 'Support Center', 'luxe' ),
-        home_url('/docs')          => __( 'Documentation',  'luxe' ),
-        home_url('/faq')           => __( 'FAQ',            'luxe' ),
-        home_url('/community')     => __( 'Community',      'luxe' ),
-        home_url('/status')        => __( 'Status',         'luxe' ),
-    ];
-    luxe_render_footer_fallback( $items );
-}
- 
-function luxe_footer_legal_fallback() {
-    $items = [
-        home_url('/privacy')  => __( 'Privacy Policy',   'luxe' ),
-        home_url('/terms')    => __( 'Terms of Service', 'luxe' ),
-        home_url('/cookies')  => __( 'Cookie Policy',    'luxe' ),
-        home_url('/licenses') => __( 'Licenses',         'luxe' ),
-        home_url('/security') => __( 'Security',         'luxe' ),
-    ];
-    luxe_render_footer_fallback( $items );
-}
- 
-function luxe_render_footer_fallback( array $items ) {
-    foreach ( $items as $url => $label ) {
-        printf(
-            '<li><a href="%s" class="text-white/60 hover:text-white transition-colors">%s</a></li>',
-            esc_url( $url ),
-            esc_html( $label )
-        );
-    }
-}
- 
- 
 // ─── Social Links via Customizer ─────────────────────────────────────────────
  
 add_action( 'customize_register', function ( WP_Customize_Manager $wp_customize ) {
