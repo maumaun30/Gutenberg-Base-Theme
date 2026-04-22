@@ -54,7 +54,7 @@
 .fnlmx-footer {
   background-color: var(--bg-dark-1);
   color: #fff;
-  font-family: 'Lexend', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 /* ---- Shared container ----------------------------------------- */
@@ -99,7 +99,7 @@
 }
 .fnlmx-footer__site-name {
   display: inline-block;
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.75rem;
   letter-spacing: .06em;
   color: #fff;
@@ -134,7 +134,7 @@
 
 /* Nav columns */
 .fnlmx-footer__nav-heading {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: .7rem;
   font-weight: 700;
   text-transform: uppercase;
