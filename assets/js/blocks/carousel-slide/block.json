@@ -31,8 +31,8 @@
       "default": "Add your subtitle or tagline here."
     },
     "primaryButtonText": {
-      "type": "string",
-      "default": "Get Started"
+    "type": "string",
+    "default": ""
     },
     "primaryButtonUrl": {
       "type": "string",
@@ -40,7 +40,7 @@
     },
     "secondaryButtonText": {
       "type": "string",
-      "default": "Learn More"
+      "default": ""
     },
     "secondaryButtonUrl": {
       "type": "string",

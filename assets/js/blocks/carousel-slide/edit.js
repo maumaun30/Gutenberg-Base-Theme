@@ -150,14 +150,22 @@ export default function Edit({ attributes, setAttributes }) {
               placeholder="Enter subtitle…"
               allowedFormats={['core/bold', 'core/italic']}
             />
-            <div className="carousel-slide-editor__buttons">
-              <span className="carousel-slide-editor__btn carousel-slide-editor__btn--primary">
-                {primaryButtonText || 'Get Started'}
-              </span>
-              <span className="carousel-slide-editor__btn carousel-slide-editor__btn--secondary">
-                {secondaryButtonText || 'Learn More'}
-              </span>
-            </div>
+
+            {/* Only render buttons wrapper when at least one button has text */}
+            {(primaryButtonText || secondaryButtonText) && (
+              <div className="carousel-slide-editor__buttons">
+                {primaryButtonText && (
+                  <span className="carousel-slide-editor__btn carousel-slide-editor__btn--primary">
+                    {primaryButtonText}
+                  </span>
+                )}
+                {secondaryButtonText && (
+                  <span className="carousel-slide-editor__btn carousel-slide-editor__btn--secondary">
+                    {secondaryButtonText}
+                  </span>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
