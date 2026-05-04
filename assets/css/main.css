@@ -553,16 +553,14 @@ body.funalo-drawer-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2rem;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: .75rem;
+  /*padding: 1rem 2rem;*/
   height: 72px;
   flex-shrink: 0;
+  border-right: 1px solid hsla(0, 0%, 100%, .12);
 }
 .fnlmx-footer__solaire img {
-  max-width: 200px;
-  max-height: 40px;
+  /*max-width: 200px;
+  max-height: 40px;*/
   width: auto;
   height: auto;
   display: block;
@@ -573,27 +571,22 @@ body.funalo-drawer-open {
 .fnlmx-footer__rg-group {
   display: flex;
   align-items: center;
-  gap: 0;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: .75rem;
+  gap: 20px;
   overflow: hidden;
   height: 72px;
 }
 
 /* Individual RG badge inside the group pill */
 .fnlmx-rg-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 1.5rem;
-  height: 72px;
-  flex-shrink: 0;
-  border-right: 1px solid rgba(255, 255, 255, .12);
+    /* border-right: 1px solid hsla(0,0%,100%,.12); */
+    flex-shrink: 0;
+    justify-content: center;
+    padding: 1rem 1.5rem;
+    background: rgba(147, 0, 10, 0.1);
+    border: 1px solid rgba(255, 180, 171, 0.2);
+    border-radius: .75rem;
 }
-.fnlmx-rg-badge:last-child {
-  border-right: none;
-}
+
 .fnlmx-rg-badge img {
   max-height: 44px;
   max-width: 160px;
