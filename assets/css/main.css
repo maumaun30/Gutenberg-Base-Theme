@@ -476,133 +476,150 @@ body.funalo-drawer-open {
 }
 
 /* ================================================================ */
-/*  FOOTER — Updated layout matching new design                     */
-/*  Replace the footer section in your main.css with this block     */
+/*  FOOTER — Full replacement for the footer section in main.css   */
 /* ================================================================ */
 
 /* ---- Footer shell --------------------------------------------- */
 .fnlmx-footer {
-  background-color: var(--bg-dark-2);
+  background-color: #0d0d18;
   color: #fff;
   font-family: 'Montserrat', sans-serif;
-  border-top: 1px solid var(--border);
 }
 
 /* ---- Shared container ----------------------------------------- */
 .fnlmx-footer__container {
   max-width: 80rem;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 3rem 2rem;
+}
+
+/* ---- Divider line --------------------------------------------- */
+.fnlmx-footer__divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 2.5rem 0;
 }
 
 /* ================================================================ */
-/*  MAIN FOOTER — 3-column: brand | nav group | trust              */
+/*  ROW 1 — Brand left | Solaire + RG right                        */
 /* ================================================================ */
-.fnlmx-footer__main {
-  padding: 4rem 0 3rem;
-  border-bottom: 1px solid var(--border);
+.fnlmx-footer__top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  flex-wrap: wrap;
 }
 
-.fnlmx-footer__main-inner {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.5rem;
+/* Brand column */
+.fnlmx-footer__brand {
+  flex: 0 0 auto;
+  max-width: 420px;
 }
-
-@media (min-width: 768px) {
-  .fnlmx-footer__main-inner {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 3rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .fnlmx-footer__main-inner {
-    grid-template-columns: 1.5fr 1fr 1.4fr;
-    gap: 3.5rem;
-    align-items: start;
-  }
-}
-
-/* ── Brand column ──────────────────────────────────────────────── */
-.fnlmx-footer__brand {}
 
 .fnlmx-footer__brand .custom-logo-link img,
 .fnlmx-footer__brand .custom-logo-link {
   display: block;
   max-width: 160px;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .fnlmx-footer__site-name {
   display: inline-block;
-  font-family: 'Montserrat', sans-serif;
   font-size: 1.75rem;
   letter-spacing: .06em;
   color: #fff;
   text-decoration: none;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .fnlmx-footer__desc {
   font-size: .875rem;
   line-height: 1.75;
-  color: rgba(255,255,255,.55);
-  margin-bottom: 1.5rem;
-  max-width: 28rem;
+  color: rgba(255, 255, 255, .55);
+  margin: 0;
 }
 
-/* Solaire image */
+/* Right side: Solaire + RG badges in a horizontal row */
+.fnlmx-footer__top-right {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  flex-wrap: wrap;
+}
+
+/* Solaire badge */
 .fnlmx-footer__solaire {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: .625rem 1.25rem;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .15);
   border-radius: .625rem;
-  margin-bottom: 1.25rem;
+  height: 56px;
 }
 .fnlmx-footer__solaire img {
-  max-width: 180px;
+  max-width: 160px;
+  max-height: 36px;
+  width: auto;
   height: auto;
   display: block;
-  filter: brightness(.9);
-  transition: filter .25s;
+  object-fit: contain;
 }
-.fnlmx-footer__solaire:hover img { filter: brightness(1.05); }
 
-/* Responsible Gaming inline badges (below Solaire in brand col) */
-.fnlmx-footer__rg-inline {
+/* RG badges */
+.fnlmx-rg-badge {
   display: flex;
-  flex-wrap: wrap;
-  gap: .625rem;
-  margin-top: .5rem;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem 1rem;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .15);
+  border-radius: .625rem;
+  height: 56px;
 }
-.fnlmx-footer__rg-inline .fnlmx-rg-badge {
-  padding: .375rem .75rem;
+.fnlmx-rg-badge img {
+  max-height: 36px;
+  max-width: 140px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
-/* ── Nav group (Support + Legal side by side) ──────────────────── */
-.fnlmx-footer__nav-group {
-  display: flex;
-  gap: 3rem;
-  flex-wrap: wrap;
+/* ================================================================ */
+/*  ROW 2 — Support | Legal | Payments+Social                      */
+/* ================================================================ */
+.fnlmx-footer__bottom-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
 }
 
-@media (min-width: 1024px) {
-  .fnlmx-footer__nav-group {
-    gap: 4rem;
+@media (min-width: 640px) {
+  .fnlmx-footer__bottom-row {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* Nav column */
+@media (min-width: 1024px) {
+  .fnlmx-footer__bottom-row {
+    /* Support | Legal take ~equal space; trust col takes more */
+    grid-template-columns: 1fr 1fr 1.6fr;
+    gap: 3rem;
+    align-items: start;
+  }
+}
+
+/* Nav column shared styles */
 .fnlmx-footer__nav-col {}
 
 .fnlmx-footer__nav-heading {
   font-family: 'Montserrat', sans-serif;
-  font-size: .7rem;
+  font-size: .95rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .14em;
+  letter-spacing: .08em;
   color: #fff;
   margin: 0 0 1.25rem;
 }
@@ -620,7 +637,8 @@ body.funalo-drawer-open {
 
 .fnlmx-footer__nav-list li a {
   font-size: .875rem;
-  color: rgba(255,255,255,.55);
+  font-weight: 400;
+  color: rgba(255, 255, 255, .55);
   text-decoration: none;
   transition: color .2s;
   display: inline-block;
@@ -630,27 +648,18 @@ body.funalo-drawer-open {
   color: #fff;
 }
 
-/* ── Trust column (Payments + Social stacked) ──────────────────── */
+/* Trust column — stacked vertically */
 .fnlmx-footer__trust-col {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-/* Individual trust block */
+/* Trust block */
 .fnlmx-trust-block {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-}
-
-.fnlmx-trust-block__label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: .7rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: .14em;
-  color: #fff;
+  gap: .875rem;
 }
 
 /* ── Payment badges ──────────────────────────────────────────── */
@@ -664,48 +673,22 @@ body.funalo-drawer-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: .4rem .75rem;
-  background: rgba(255,255,255,.05);
-  border: 1px solid var(--border-strong);
+  padding: .4rem .875rem;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .15);
   border-radius: .5rem;
+  height: 44px;
+  min-width: 68px;
   transition: border-color .22s, background .22s, transform .22s;
-  min-width: 72px;
-  height: 42px;
 }
 .fnlmx-payment-badge:hover {
-  border-color: rgba(255,255,255,.3);
-  background: rgba(255,255,255,.09);
+  border-color: rgba(255, 255, 255, .3);
+  background: rgba(255, 255, 255, .09);
   transform: translateY(-2px);
 }
 .fnlmx-payment-badge img {
-  max-height: 24px;
+  max-height: 26px;
   max-width: 80px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-  filter: grayscale(15%);
-  transition: filter .22s;
-}
-.fnlmx-payment-badge:hover img { filter: grayscale(0%); }
-
-/* ── Responsible Gaming badges ───────────────────────────────── */
-.fnlmx-rg-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: .5rem 1rem;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border);
-  border-radius: .5rem;
-  transition: border-color .22s, transform .22s;
-}
-.fnlmx-rg-badge:hover {
-  border-color: rgba(255,255,255,.2);
-  transform: translateY(-2px);
-}
-.fnlmx-rg-badge img {
-  max-height: 36px;
-  max-width: 140px;
   width: auto;
   display: block;
   object-fit: contain;
@@ -714,7 +697,7 @@ body.funalo-drawer-open {
 /* ── Social icons ────────────────────────────────────────────── */
 .fnlmx-social-list {
   display: flex;
-  gap: .625rem;
+  gap: .5rem;
   flex-wrap: wrap;
 }
 
@@ -725,8 +708,8 @@ body.funalo-drawer-open {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
-  background: rgba(255,255,255,.06);
-  border: 1px solid var(--border-strong);
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .15);
   transition: all .25s;
   overflow: hidden;
   flex-shrink: 0;
@@ -734,7 +717,7 @@ body.funalo-drawer-open {
 .fnlmx-social-icon:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  box-shadow: 0 0 16px rgba(247,29,194,.45);
+  box-shadow: 0 0 16px rgba(247, 29, 194, .45);
   transform: translateY(-3px) scale(1.08);
 }
 .fnlmx-social-icon img {
@@ -744,35 +727,38 @@ body.funalo-drawer-open {
   display: block;
   filter: brightness(0) invert(1);
   opacity: .75;
-  transition: opacity .22s, filter .22s;
+  transition: opacity .22s;
 }
 .fnlmx-social-icon:hover img {
-  filter: brightness(0) invert(1);
   opacity: 1;
 }
 
 /* ================================================================ */
-/*  BOTTOM BAR                                                      */
+/*  COPYRIGHT                                                       */
 /* ================================================================ */
-.fnlmx-footer__bottom {
-  background: var(--bg-dark-2);
-  padding: 1.5rem 0;
-}
-
-.fnlmx-footer__bottom-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.fnlmx-footer__copyright {
+  text-align: center;
 }
 
 .fnlmx-footer__copy {
   font-family: 'Montserrat', sans-serif;
   font-size: .8rem;
-  color: rgba(255,255,255,.35);
+  color: rgba(255, 255, 255, .35);
   margin: 0;
-  text-align: center;
-  letter-spacing: .03em;
-  line-height: 1.7;
+  line-height: 1.8;
+  letter-spacing: .02em;
+}
+
+/* ================================================================ */
+/*  RESPONSIVE TWEAKS                                               */
+/* ================================================================ */
+@media (max-width: 767px) {
+  .fnlmx-footer__top-row {
+    flex-direction: column;
+  }
+  .fnlmx-footer__top-right {
+    justify-content: flex-start;
+  }
 }
 
 /* ============================================================
