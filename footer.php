@@ -6,7 +6,7 @@
  *
  * ACF field keys used (all from options page):
  *   fnlmx_footer_description       — text
- *   fnlmx_solaire_footer           — image (array)
+ *   fnlmx_footer_solaire           — image (array)
  *   fnlmx_responsible_gaming       — repeater → fnlmx_responsible_gaming_image (image array)
  *   fnlmx_footer_payments          — repeater → fnlmx_payment_method_icon      (image array)
  *   fnlmx_footer_social            — repeater → fnlmx_social_media_icon         (image array)
@@ -21,7 +21,7 @@ function fnlmx_opt( $key ) {
 }
 
 $footer_desc     = fnlmx_opt( 'fnlmx_footer_description' );
-$solaire_img     = fnlmx_opt( 'fnlmx_solaire_footer' );
+$solaire_img     = fnlmx_opt( 'fnlmx_footer_solaire' );
 $rg_rows         = fnlmx_opt( 'fnlmx_responsible_gaming' );
 $payment_rows    = fnlmx_opt( 'fnlmx_footer_payments' );
 $social_rows     = fnlmx_opt( 'fnlmx_footer_social' );

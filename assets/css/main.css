@@ -540,48 +540,57 @@ body.funalo-drawer-open {
   margin: 0;
 }
 
-/* Right side: Solaire + RG badges in a horizontal row */
+/* Right side: Solaire + RG badges — single unified pill with dividers */
 .fnlmx-footer__top-right {
   display: flex;
   align-items: center;
-  gap: .75rem;
-  flex-wrap: wrap;
+  gap: 0;
+  flex-wrap: nowrap;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: .75rem;
+  overflow: hidden;
 }
 
-/* Solaire badge */
+/* Solaire badge — wider, right border as divider */
 .fnlmx-footer__solaire {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: .625rem 1.25rem;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .15);
-  border-radius: .625rem;
-  height: 56px;
+  padding: 1rem 2rem;
+  border-right: 1px solid rgba(255, 255, 255, .12);
+  height: 72px;
+  flex-shrink: 0;
+  background: none;
+  border-radius: 0;
 }
 .fnlmx-footer__solaire img {
-  max-width: 160px;
-  max-height: 36px;
+  max-width: 200px;
+  max-height: 40px;
   width: auto;
   height: auto;
   display: block;
   object-fit: contain;
 }
 
-/* RG badges */
+/* RG badges — sit inside same pill */
 .fnlmx-rg-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: .5rem 1rem;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .15);
-  border-radius: .625rem;
-  height: 56px;
+  padding: 1rem 1.75rem;
+  border-right: 1px solid rgba(255, 255, 255, .12);
+  height: 72px;
+  flex-shrink: 0;
+  background: none;
+  border-radius: 0;
+}
+.fnlmx-rg-badge:last-child {
+  border-right: none;
 }
 .fnlmx-rg-badge img {
-  max-height: 36px;
-  max-width: 140px;
+  max-height: 44px;
+  max-width: 160px;
   width: auto;
   display: block;
   object-fit: contain;
