@@ -22,11 +22,11 @@ function fnlmx_opt( $key ) {
 
 $footer_desc     = fnlmx_opt( 'fnlmx_footer_description' );
 $solaire_img     = fnlmx_opt( 'fnlmx_solaire_footer' );
-$rg_rows         = fnlmx_opt( 'fnlmx_responsible_gaming' );    // repeater
-$payment_rows    = fnlmx_opt( 'fnlmx_footer_payments' );       // repeater
-$social_rows     = fnlmx_opt( 'fnlmx_footer_social' );         // repeater
+$rg_rows         = fnlmx_opt( 'fnlmx_responsible_gaming' );
+$payment_rows    = fnlmx_opt( 'fnlmx_footer_payments' );
+$social_rows     = fnlmx_opt( 'fnlmx_footer_social' );
 
-/* Image url helper — handles both array (ACF) and plain string */
+/* Image url helper */
 function fnlmx_img_url( $img, $size = 'full' ) {
     if ( ! $img ) return '';
     if ( is_array( $img ) ) return $img['sizes'][ $size ] ?? $img['url'] ?? '';
@@ -39,15 +39,15 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
 ?>
 
 <footer class="fnlmx-footer">
+  <div class="fnlmx-footer__container">
 
-  <!-- ═══════════════════════ MAIN FOOTER ═══════════════════════ -->
-  <div class="fnlmx-footer__main">
-    <div class="fnlmx-footer__container fnlmx-footer__main-inner">
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ROW 1: Brand left  |  Solaire + RG badges right           -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="fnlmx-footer__top-row">
 
-      <!-- ── LEFT: Brand column ──────────────────────────────── -->
+      <!-- Brand: logo + description -->
       <div class="fnlmx-footer__brand">
-
-        <!-- Site logo -->
         <?php if ( has_custom_logo() ) :
           the_custom_logo();
         else : ?>
@@ -56,12 +56,14 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </a>
         <?php endif; ?>
 
-        <!-- ACF description -->
         <?php if ( $footer_desc ) : ?>
           <p class="fnlmx-footer__desc"><?php echo wp_kses_post( $footer_desc ); ?></p>
         <?php endif; ?>
+      </div>
 
-        <!-- Solaire partner image -->
+      <!-- Right side: Solaire + RG badges on same row -->
+      <div class="fnlmx-footer__top-right">
+
         <?php if ( $solaire_img ) :
           $sol_url = fnlmx_img_url( $solaire_img, 'medium' );
           $sol_alt = fnlmx_img_alt( $solaire_img, 'A Product of Solaire' );
@@ -73,70 +75,70 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </div>
         <?php endif; ?>
 
-        <!-- Responsible Gaming badges -->
-        <?php if ( ! empty( $rg_rows ) ) : ?>
-          <div class="fnlmx-footer__rg-inline">
-            <?php foreach ( $rg_rows as $row ) :
-              $img     = $row['fnlmx_responsible_gaming_image'] ?? null;
-              $img_url = fnlmx_img_url( $img, 'medium' );
-              $img_alt = fnlmx_img_alt( $img, 'Responsible Gaming' );
-              if ( ! $img_url ) continue;
-            ?>
-              <div class="fnlmx-rg-badge">
-                <img src="<?php echo esc_url( $img_url ); ?>"
-                     alt="<?php echo esc_attr( $img_alt ); ?>"
-                     loading="lazy">
-              </div>
-            <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
+        <?php if ( ! empty( $rg_rows ) ) :
+          foreach ( $rg_rows as $row ) :
+            $img     = $row['fnlmx_responsible_gaming_image'] ?? null;
+            $img_url = fnlmx_img_url( $img, 'medium' );
+            $img_alt = fnlmx_img_alt( $img, 'Responsible Gaming' );
+            if ( ! $img_url ) continue;
+        ?>
+            <div class="fnlmx-rg-badge">
+              <img src="<?php echo esc_url( $img_url ); ?>"
+                   alt="<?php echo esc_attr( $img_alt ); ?>"
+                   loading="lazy">
+            </div>
+        <?php endforeach; endif; ?>
 
       </div>
+    </div><!-- /top-row -->
 
-      <!-- ── MIDDLE: Nav columns ────────────────────────────── -->
-      <div class="fnlmx-footer__nav-group">
+    <div class="fnlmx-footer__divider"></div>
 
-        <nav class="fnlmx-footer__nav-col">
-          <h4 class="fnlmx-footer__nav-heading">
-            <?php esc_html_e( 'Support', 'luxe' ); ?>
-          </h4>
-          <ul class="fnlmx-footer__nav-list">
-            <?php wp_nav_menu([
-              'theme_location' => 'footer-links',
-              'container'      => false,
-              'items_wrap'     => '%3$s',
-              'walker'         => new Luxe_Footer_Walker(),
-              'fallback_cb'    => 'luxe_footer_links_fallback',
-            ]); ?>
-          </ul>
-        </nav>
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ROW 2: Support | Legal | Payments + Social                 -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="fnlmx-footer__bottom-row">
 
-        <nav class="fnlmx-footer__nav-col">
-          <h4 class="fnlmx-footer__nav-heading">
-            <?php esc_html_e( 'Legal', 'luxe' ); ?>
-          </h4>
-          <ul class="fnlmx-footer__nav-list">
-            <?php wp_nav_menu([
-              'theme_location' => 'footer-legal',
-              'container'      => false,
-              'items_wrap'     => '%3$s',
-              'walker'         => new Luxe_Footer_Walker(),
-              'fallback_cb'    => 'luxe_footer_legal_fallback',
-            ]); ?>
-          </ul>
-        </nav>
+      <!-- Support nav -->
+      <nav class="fnlmx-footer__nav-col">
+        <h4 class="fnlmx-footer__nav-heading">
+          <?php esc_html_e( 'Support', 'luxe' ); ?>
+        </h4>
+        <ul class="fnlmx-footer__nav-list">
+          <?php wp_nav_menu([
+            'theme_location' => 'footer-links',
+            'container'      => false,
+            'items_wrap'     => '%3$s',
+            'walker'         => new Luxe_Footer_Walker(),
+            'fallback_cb'    => 'luxe_footer_links_fallback',
+          ]); ?>
+        </ul>
+      </nav>
 
-      </div>
+      <!-- Legal nav -->
+      <nav class="fnlmx-footer__nav-col">
+        <h4 class="fnlmx-footer__nav-heading">
+          <?php esc_html_e( 'Legal', 'luxe' ); ?>
+        </h4>
+        <ul class="fnlmx-footer__nav-list">
+          <?php wp_nav_menu([
+            'theme_location' => 'footer-legal',
+            'container'      => false,
+            'items_wrap'     => '%3$s',
+            'walker'         => new Luxe_Footer_Walker(),
+            'fallback_cb'    => 'luxe_footer_legal_fallback',
+          ]); ?>
+        </ul>
+      </nav>
 
-      <!-- ── RIGHT: Payments + Social ──────────────────────── -->
+      <!-- Payments + Social stacked -->
       <div class="fnlmx-footer__trust-col">
 
-        <!-- Secure Payments -->
         <?php if ( ! empty( $payment_rows ) ) : ?>
           <div class="fnlmx-trust-block">
-            <span class="fnlmx-trust-block__label">
+            <h4 class="fnlmx-footer__nav-heading">
               <?php esc_html_e( 'Secure Payments', 'luxe' ); ?>
-            </span>
+            </h4>
             <div class="fnlmx-payment-list">
               <?php foreach ( $payment_rows as $row ) :
                 $icon     = $row['fnlmx_payment_method_icon'] ?? null;
@@ -154,12 +156,11 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </div>
         <?php endif; ?>
 
-        <!-- Online Support & Communities (Social) -->
         <?php if ( ! empty( $social_rows ) ) : ?>
           <div class="fnlmx-trust-block">
-            <span class="fnlmx-trust-block__label">
+            <h4 class="fnlmx-footer__nav-heading">
               <?php esc_html_e( 'Online Support & Communities', 'luxe' ); ?>
-            </span>
+            </h4>
             <div class="fnlmx-social-list">
               <?php foreach ( $social_rows as $row ) :
                 $icon      = $row['fnlmx_social_media_icon'] ?? null;
@@ -181,23 +182,23 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </div>
         <?php endif; ?>
 
-      </div>
+      </div><!-- /trust-col -->
 
-    </div>
-  </div><!-- /main footer -->
+    </div><!-- /bottom-row -->
 
-
-  <!-- ═══════════════════════ BOTTOM BAR ════════════════════════ -->
-  <div class="fnlmx-footer__bottom">
-    <div class="fnlmx-footer__container fnlmx-footer__bottom-inner">
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- COPYRIGHT                                                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <div class="fnlmx-footer__divider"></div>
+    <div class="fnlmx-footer__copyright">
       <p class="fnlmx-footer__copy">
         Copyright &copy; <?php echo esc_html( date('Y') ); ?>
         <?php bloginfo('name'); ?><br>
         <?php esc_html_e( 'All Rights Reserved.', 'luxe' ); ?>
       </p>
     </div>
-  </div>
 
+  </div><!-- /container -->
 </footer>
 
 <?php wp_footer(); ?>
