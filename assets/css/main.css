@@ -61,7 +61,7 @@
 /* ── Base Nav Shell ── */
 .funalo-nav {
   background-color: var(--nav-bg);
-  border-bottom: 1px solid var(--nav-border);
+  /*border-bottom: 1px solid var(--nav-border);*/
   position: relative;
   z-index: 100;
 }
@@ -472,155 +472,139 @@ body.funalo-drawer-open {
 .fnlmx-footer__container {
   max-width: 80rem;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem;
 }
 
 /* ================================================================ */
-/*  TOP ROW — Logo + desc (left) | Solaire + RG badges (right)     */
+/*  FOOTER — Updated layout matching new design                     */
+/*  Replace the footer section in your main.css with this block     */
 /* ================================================================ */
-.fnlmx-footer__top {
-  padding: 3rem 0 2.5rem;
+
+/* ---- Footer shell --------------------------------------------- */
+.fnlmx-footer {
+  background-color: var(--bg-dark-2);
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  border-top: 1px solid var(--border);
+}
+
+/* ---- Shared container ----------------------------------------- */
+.fnlmx-footer__container {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ================================================================ */
+/*  MAIN FOOTER — 3-column: brand | nav group | trust              */
+/* ================================================================ */
+.fnlmx-footer__main {
+  padding: 4rem 0 3rem;
   border-bottom: 1px solid var(--border);
 }
 
-.fnlmx-footer__top-inner {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 2rem;
-  flex-wrap: wrap;
+.fnlmx-footer__main-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
 }
 
-/* Brand: logo + description */
-.fnlmx-footer__brand {
-  flex: 1 1 240px;
-  max-width: 360px;
+@media (min-width: 768px) {
+  .fnlmx-footer__main-inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+  }
 }
 
-.fnlmx-footer__brand .custom-logo-link,
-.fnlmx-footer__brand .custom-logo-link img {
+@media (min-width: 1024px) {
+  .fnlmx-footer__main-inner {
+    grid-template-columns: 1.5fr 1fr 1.4fr;
+    gap: 3.5rem;
+    align-items: start;
+  }
+}
+
+/* ── Brand column ──────────────────────────────────────────────── */
+.fnlmx-footer__brand {}
+
+.fnlmx-footer__brand .custom-logo-link img,
+.fnlmx-footer__brand .custom-logo-link {
   display: block;
-  max-width: 140px;
-  height: auto;
-  margin-bottom: 1rem;
+  max-width: 160px;
+  margin-bottom: 1.25rem;
 }
 
 .fnlmx-footer__site-name {
   display: inline-block;
   font-family: 'Montserrat', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: .06em;
   color: #fff;
   text-decoration: none;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .fnlmx-footer__desc {
-  font-size: .8125rem;
+  font-size: .875rem;
   line-height: 1.75;
-  color: rgba(255,255,255,.5);
-  margin: 0;
+  color: rgba(255,255,255,.55);
+  margin-bottom: 1.5rem;
+  max-width: 28rem;
 }
 
-/* Right: Solaire + RG badges in a row */
-.fnlmx-footer__trust-badges {
-  display: flex;
-  align-items: center;
-  gap: .875rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  flex: 0 1 auto;
-  align-self: flex-start;
-  padding-top: .25rem;
-}
-
-/* Solaire badge */
+/* Solaire image */
 .fnlmx-footer__solaire {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: .5rem 1.125rem;
+  display: inline-block;
+  padding: .625rem 1.25rem;
   background: rgba(255,255,255,.04);
   border: 1px solid var(--border-strong);
   border-radius: .625rem;
-  height: 56px;
-  transition: border-color .22s;
-}
-.fnlmx-footer__solaire:hover {
-  border-color: rgba(255,255,255,.25);
+  margin-bottom: 1.25rem;
 }
 .fnlmx-footer__solaire img {
-  max-width: 150px;
-  max-height: 36px;
-  width: auto;
+  max-width: 180px;
   height: auto;
   display: block;
-  object-fit: contain;
   filter: brightness(.9);
   transition: filter .25s;
 }
-.fnlmx-footer__solaire:hover img { filter: brightness(1.1); }
+.fnlmx-footer__solaire:hover img { filter: brightness(1.05); }
 
-/* RG badges */
-.fnlmx-rg-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: .5rem 1.125rem;
-  background: rgba(255,255,255,.04);
-  border: 1px solid var(--border-strong);
-  border-radius: .625rem;
-  height: 56px;
-  transition: border-color .22s, transform .22s;
-}
-.fnlmx-rg-badge:hover {
-  border-color: rgba(255,255,255,.25);
-  transform: translateY(-2px);
-}
-.fnlmx-rg-badge img {
-  max-height: 36px;
-  max-width: 110px;
-  width: auto;
-  display: block;
-  object-fit: contain;
-}
-
-/* ================================================================ */
-/*  MIDDLE ROW — Nav cols (left) | Payments + Social (right)       */
-/* ================================================================ */
-.fnlmx-footer__middle {
-  padding: 2.5rem 0 3rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.fnlmx-footer__middle-inner {
+/* Responsible Gaming inline badges (below Solaire in brand col) */
+.fnlmx-footer__rg-inline {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 2rem;
   flex-wrap: wrap;
+  gap: .625rem;
+  margin-top: .5rem;
+}
+.fnlmx-footer__rg-inline .fnlmx-rg-badge {
+  padding: .375rem .75rem;
 }
 
-/* Nav columns group */
+/* ── Nav group (Support + Legal side by side) ──────────────────── */
 .fnlmx-footer__nav-group {
   display: flex;
-  gap: 4rem;
+  gap: 3rem;
   flex-wrap: wrap;
-  flex: 0 0 auto;
 }
 
-.fnlmx-footer__nav-col {
-  min-width: 120px;
+@media (min-width: 1024px) {
+  .fnlmx-footer__nav-group {
+    gap: 4rem;
+  }
 }
+
+/* Nav column */
+.fnlmx-footer__nav-col {}
 
 .fnlmx-footer__nav-heading {
   font-family: 'Montserrat', sans-serif;
-  font-size: .8125rem;
+  font-size: .7rem;
   font-weight: 700;
-  text-transform: capitalize;
-  letter-spacing: .01em;
+  text-transform: uppercase;
+  letter-spacing: .14em;
   color: #fff;
-  margin: 0 0 1rem;
+  margin: 0 0 1.25rem;
 }
 
 .fnlmx-footer__nav-list {
@@ -629,16 +613,16 @@ body.funalo-drawer-open {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: .625rem;
+  gap: .75rem;
 }
 
 .fnlmx-footer__nav-list li { margin: 0; }
 
 .fnlmx-footer__nav-list li a {
-  font-size: .8125rem;
-  color: rgba(255,255,255,.5);
+  font-size: .875rem;
+  color: rgba(255,255,255,.55);
   text-decoration: none;
-  transition: color .2s ease;
+  transition: color .2s;
   display: inline-block;
 }
 
@@ -646,32 +630,30 @@ body.funalo-drawer-open {
   color: #fff;
 }
 
-/* Right group: payments + social stacked */
-.fnlmx-footer__right-group {
+/* ── Trust column (Payments + Social stacked) ──────────────────── */
+.fnlmx-footer__trust-col {
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
-  flex: 0 1 auto;
-  align-items: flex-start;
+  gap: 2rem;
 }
 
-/* Trust block (label + items) */
+/* Individual trust block */
 .fnlmx-trust-block {
   display: flex;
   flex-direction: column;
-  gap: .875rem;
+  gap: 1rem;
 }
 
 .fnlmx-trust-block__label {
   font-family: 'Montserrat', sans-serif;
-  font-size: .75rem;
+  font-size: .7rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: .1em;
+  letter-spacing: .14em;
   color: #fff;
 }
 
-/* Payment badges */
+/* ── Payment badges ──────────────────────────────────────────── */
 .fnlmx-payment-list {
   display: flex;
   flex-wrap: wrap;
@@ -682,13 +664,13 @@ body.funalo-drawer-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: .375rem .875rem;
+  padding: .4rem .75rem;
   background: rgba(255,255,255,.05);
   border: 1px solid var(--border-strong);
   border-radius: .5rem;
-  height: 44px;
-  min-width: 72px;
   transition: border-color .22s, background .22s, transform .22s;
+  min-width: 72px;
+  height: 42px;
 }
 .fnlmx-payment-badge:hover {
   border-color: rgba(255,255,255,.3);
@@ -696,17 +678,40 @@ body.funalo-drawer-open {
   transform: translateY(-2px);
 }
 .fnlmx-payment-badge img {
-  max-height: 26px;
+  max-height: 24px;
   max-width: 80px;
   width: auto;
   display: block;
   object-fit: contain;
-  filter: grayscale(10%);
+  filter: grayscale(15%);
   transition: filter .22s;
 }
 .fnlmx-payment-badge:hover img { filter: grayscale(0%); }
 
-/* Social icons */
+/* ── Responsible Gaming badges ───────────────────────────────── */
+.fnlmx-rg-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .5rem 1rem;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border);
+  border-radius: .5rem;
+  transition: border-color .22s, transform .22s;
+}
+.fnlmx-rg-badge:hover {
+  border-color: rgba(255,255,255,.2);
+  transform: translateY(-2px);
+}
+.fnlmx-rg-badge img {
+  max-height: 36px;
+  max-width: 140px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* ── Social icons ────────────────────────────────────────────── */
 .fnlmx-social-list {
   display: flex;
   gap: .625rem;
@@ -717,8 +722,8 @@ body.funalo-drawer-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border-radius: 50%;
   background: rgba(255,255,255,.06);
   border: 1px solid var(--border-strong);
@@ -729,18 +734,20 @@ body.funalo-drawer-open {
 .fnlmx-social-icon:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 0 16px rgba(247,29,194,.45);
+  transform: translateY(-3px) scale(1.08);
 }
 .fnlmx-social-icon img {
-  width: 1.125rem;
-  height: 1.125rem;
+  width: 1.25rem;
+  height: 1.25rem;
   object-fit: contain;
   display: block;
   filter: brightness(0) invert(1);
   opacity: .75;
-  transition: opacity .22s;
+  transition: opacity .22s, filter .22s;
 }
 .fnlmx-social-icon:hover img {
+  filter: brightness(0) invert(1);
   opacity: 1;
 }
 
@@ -748,8 +755,8 @@ body.funalo-drawer-open {
 /*  BOTTOM BAR                                                      */
 /* ================================================================ */
 .fnlmx-footer__bottom {
-  background: var(--bg-dark-1);
-  padding: 1.25rem 0;
+  background: var(--bg-dark-2);
+  padding: 1.5rem 0;
 }
 
 .fnlmx-footer__bottom-inner {
@@ -760,31 +767,12 @@ body.funalo-drawer-open {
 
 .fnlmx-footer__copy {
   font-family: 'Montserrat', sans-serif;
-  font-size: .75rem;
+  font-size: .8rem;
   color: rgba(255,255,255,.35);
   margin: 0;
   text-align: center;
   letter-spacing: .03em;
-}
-
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .fnlmx-footer__top-inner,
-  .fnlmx-footer__middle-inner {
-    flex-direction: column;
-  }
-
-  .fnlmx-footer__trust-badges {
-    justify-content: flex-start;
-  }
-
-  .fnlmx-footer__nav-group {
-    gap: 2.5rem;
-  }
-
-  .fnlmx-footer__right-group {
-    width: 100%;
-  }
+  line-height: 1.7;
 }
 
 /* ============================================================
