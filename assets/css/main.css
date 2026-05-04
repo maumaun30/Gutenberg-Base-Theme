@@ -540,29 +540,25 @@ body.funalo-drawer-open {
   margin: 0;
 }
 
-/* Right side: Solaire + RG badges — single unified pill with dividers */
+/* Right side wrapper — flex row with gap between the two pills */
 .fnlmx-footer__top-right {
   display: flex;
   align-items: center;
-  gap: 0;
-  flex-wrap: nowrap;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: .75rem;
-  overflow: hidden;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-/* Solaire badge — wider, right border as divider */
+/* Solaire — standalone wide pill */
 .fnlmx-footer__solaire {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem 2rem;
-  border-right: 1px solid rgba(255, 255, 255, .12);
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: .75rem;
   height: 72px;
   flex-shrink: 0;
-  background: none;
-  border-radius: 0;
 }
 .fnlmx-footer__solaire img {
   max-width: 200px;
@@ -573,17 +569,27 @@ body.funalo-drawer-open {
   object-fit: contain;
 }
 
-/* RG badges — sit inside same pill */
+/* RG group — separate pill containing multiple badges side by side */
+.fnlmx-footer__rg-group {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: .75rem;
+  overflow: hidden;
+  height: 72px;
+}
+
+/* Individual RG badge inside the group pill */
 .fnlmx-rg-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 1.75rem;
-  border-right: 1px solid rgba(255, 255, 255, .12);
+  padding: 1rem 1.5rem;
   height: 72px;
   flex-shrink: 0;
-  background: none;
-  border-radius: 0;
+  border-right: 1px solid rgba(255, 255, 255, .12);
 }
 .fnlmx-rg-badge:last-child {
   border-right: none;

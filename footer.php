@@ -61,9 +61,10 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
         <?php endif; ?>
       </div>
 
-      <!-- Right side: Solaire + RG badges on same row -->
+      <!-- Right side: Solaire pill + RG badges pill (two separate containers) -->
       <div class="fnlmx-footer__top-right">
 
+        <!-- Solaire — standalone wide pill -->
         <?php if ( $solaire_img ) :
           $sol_url = fnlmx_img_url( $solaire_img, 'medium' );
           $sol_alt = fnlmx_img_alt( $solaire_img, 'A Product of Solaire' );
@@ -75,19 +76,23 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </div>
         <?php endif; ?>
 
-        <?php if ( ! empty( $rg_rows ) ) :
-          foreach ( $rg_rows as $row ) :
-            $img     = $row['fnlmx_responsible_gaming_image'] ?? null;
-            $img_url = fnlmx_img_url( $img, 'medium' );
-            $img_alt = fnlmx_img_alt( $img, 'Responsible Gaming' );
-            if ( ! $img_url ) continue;
-        ?>
-            <div class="fnlmx-rg-badge">
-              <img src="<?php echo esc_url( $img_url ); ?>"
-                   alt="<?php echo esc_attr( $img_alt ); ?>"
-                   loading="lazy">
-            </div>
-        <?php endforeach; endif; ?>
+        <!-- RG badges — grouped together in their own pill -->
+        <?php if ( ! empty( $rg_rows ) ) : ?>
+          <div class="fnlmx-footer__rg-group">
+            <?php foreach ( $rg_rows as $row ) :
+              $img     = $row['fnlmx_responsible_gaming_image'] ?? null;
+              $img_url = fnlmx_img_url( $img, 'medium' );
+              $img_alt = fnlmx_img_alt( $img, 'Responsible Gaming' );
+              if ( ! $img_url ) continue;
+            ?>
+              <div class="fnlmx-rg-badge">
+                <img src="<?php echo esc_url( $img_url ); ?>"
+                     alt="<?php echo esc_attr( $img_alt ); ?>"
+                     loading="lazy">
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
 
       </div>
     </div><!-- /top-row -->
