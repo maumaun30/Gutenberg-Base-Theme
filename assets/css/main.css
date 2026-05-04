@@ -49,10 +49,10 @@
 
   /* ── Nav ── */
   --nav-bg:             #0F0D1E;
-  --nav-border:         rgba(255, 45, 120, 0.18);
+  --nav-border:         rgba(247, 29, 194, 0.25);
   --nav-text:           #ffffff;
   --nav-text-muted:     rgba(255, 255, 255, 0.65);
-  --nav-active-underline: #FF2D78;
+  --nav-active-underline: var(--color-primary);
   --nav-height:         72px;
 }
 
@@ -61,7 +61,7 @@
 /* ── Base Nav Shell ── */
 .funalo-nav {
   background-color: var(--nav-bg);
-  border-bottom: 1px solid var(--nav-border);
+  /*border-bottom: 1px solid var(--nav-border);*/
   position: relative;
   z-index: 100;
 }
@@ -114,7 +114,7 @@
 }
 
 .funalo-nav__primary li a {
-  font-family: 'Barlow', 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.08em;
@@ -129,19 +129,23 @@
 .funalo-nav__primary li a::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -4px;
   left: 0;
   width: 0;
-  height: 2px;
+  height: 3px;
   background: var(--nav-active-underline);
   border-radius: 2px;
   transition: width 0.25s ease;
+  box-shadow: 0 0 8px var(--color-primary);
 }
 
-.funalo-nav__primary li a:hover,
+.funalo-nav__primary li a:hover {
+  color: var(--nav-text);
+}
+
 .funalo-nav__primary li.current-menu-item > a,
 .funalo-nav__primary li.current-page-ancestor > a {
-  color: var(--nav-text);
+  color: var(--color-primary);
 }
 
 .funalo-nav__primary li a:hover::after,
@@ -152,10 +156,16 @@
 
 /* Active item */
 .funalo-nav__primary li.current-menu-item > a {
-  color: #fff;
+  color: var(--color-primary);
+  font-weight: 800;
 }
 .funalo-nav__primary li.current-menu-item > a::after {
   width: 100%;
+}
+
+.funalo-nav__primary li.current-page-ancestor > a {
+  color: var(--color-primary);
+  font-weight: 800;
 }
 
 /* ── Dropdown ── */
@@ -211,7 +221,7 @@
 }
 
 .funalo-nav__secondary li a {
-  font-family: 'Barlow', 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 12px;
   letter-spacing: 0.06em;
@@ -230,7 +240,7 @@
   display: inline-block;
   padding: 11px 26px;
   border-radius: 6px;
-  font-family: 'Barlow', 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.08em;
@@ -383,7 +393,7 @@
 
 .funalo-nav__mobile ul li a {
   display: block;
-  font-family: 'Barlow', 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
   font-size: 15px;
   letter-spacing: 0.1em;
@@ -417,7 +427,7 @@
   text-align: center;
   padding: 16px;
   border-radius: 8px;
-  font-family: 'Barlow', 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-weight: 800;
   font-size: 15px;
   letter-spacing: 0.1em;
