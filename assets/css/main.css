@@ -7,7 +7,7 @@
    ============================================================ */
 :root {
   /* Brand */
-  --color-primary: #f71dc2;
+  --color-primary: #F71DC2;
   --color-primary-hover: #fb11c1;
   --color-primary-light: #fb64d6;
   --color-secondary: #d63d4a;
@@ -15,7 +15,7 @@
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
-  --bg-dark-2: #111114;
+  --bg-dark-2: /*#111114;*/#231F33;
   --bg-dark-3: #18181c; /* main page bg */
   --bg-dark-4: #1f1f25;
   --bg-dark-5: #26262e;
