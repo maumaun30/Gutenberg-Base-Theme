@@ -52,7 +52,7 @@
 
       <div class="funalo-nav__cta">
         <a href="<?php echo esc_url( home_url('/join-now/') ); ?>">
-          <?php esc_html_e('Play Now', 'luxe'); ?>
+          <?php esc_html_e('LOGIN/REGISTER', 'luxe'); ?>
         </a>
       </div>
 
@@ -117,7 +117,7 @@
   <!-- Drawer CTA -->
   <div class="funalo-drawer__cta">
     <a href="<?php echo esc_url( home_url('/join-now/') ); ?>">
-      <?php esc_html_e('Play Now', 'luxe'); ?>
+      <?php esc_html_e('LOGIN/REGISTER', 'luxe'); ?>
     </a>
   </div>
 
