@@ -208,7 +208,7 @@
 .funalo-nav__right {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
 }
 
 .funalo-nav__secondary {
@@ -235,7 +235,7 @@
   color: var(--nav-text);
 }
 
-/* ── Play Now CTA ── */
+/* ── Login/Register CTA ── */
 .funalo-nav__cta a {
   display: inline-block;
   padding: 11px 26px;
@@ -254,6 +254,136 @@
 
 .funalo-nav__cta a:hover {
   transform: translateY(-5px);
+}
+
+/* ── Search Icon Button ── */
+.funalo-nav__search-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.funalo-nav__search-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* ── Full-Screen Search Overlay ── */
+.funalo-search-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(10, 8, 22, 0.97);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.funalo-search-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.funalo-search-overlay__inner {
+  width: 100%;
+  max-width: 720px;
+  padding: 2rem;
+  position: relative;
+}
+
+.funalo-search-overlay__close {
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.funalo-search-overlay__close:hover {
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.funalo-search-overlay__label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 0 1.25rem;
+}
+
+/* WordPress search form overrides */
+.funalo-search-overlay .search-form,
+.funalo-search-overlay form[role="search"] {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.75rem;
+  transition: border-color 0.2s ease;
+}
+
+.funalo-search-overlay .search-form:focus-within,
+.funalo-search-overlay form[role="search"]:focus-within {
+  border-color: var(--color-primary);
+}
+
+.funalo-search-overlay .search-field,
+.funalo-search-overlay input[type="search"],
+.funalo-search-overlay input[name="s"] {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 600;
+  color: #fff;
+  padding: 0.25rem 0;
+  caret-color: var(--color-primary);
+}
+
+.funalo-search-overlay .search-field::placeholder,
+.funalo-search-overlay input[type="search"]::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+}
+
+.funalo-search-overlay .search-submit,
+.funalo-search-overlay button[type="submit"] {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.funalo-search-overlay .search-submit:hover,
+.funalo-search-overlay button[type="submit"]:hover {
+  color: var(--color-primary);
 }
 
 /* ── Hamburger ── */

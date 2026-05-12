@@ -52,9 +52,19 @@
 
       <div class="funalo-nav__cta">
         <a href="<?php echo esc_url( home_url('/join-now/') ); ?>">
-          <?php esc_html_e('LOGIN/REGISTER', 'luxe'); ?>
+          <?php esc_html_e('Login / Register', 'luxe'); ?>
         </a>
       </div>
+
+      <!-- Search Icon Button -->
+      <button class="funalo-nav__search-btn" id="funalo-search-btn" aria-label="Open search">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+             fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
 
     </div>
 
@@ -117,19 +127,41 @@
   <!-- Drawer CTA -->
   <div class="funalo-drawer__cta">
     <a href="<?php echo esc_url( home_url('/join-now/') ); ?>">
-      <?php esc_html_e('LOGIN/REGISTER', 'luxe'); ?>
+      <?php esc_html_e('Login / Register', 'luxe'); ?>
     </a>
   </div>
 
 </div>
 
+<!-- ── Full-Screen Search Overlay ── -->
+<div class="funalo-search-overlay" id="funalo-search-overlay" aria-hidden="true" role="dialog" aria-label="Search">
+  <div class="funalo-search-overlay__inner">
+
+    <button class="funalo-search-overlay__close" id="funalo-search-close" aria-label="Close search">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <div class="funalo-search-overlay__content">
+      <p class="funalo-search-overlay__label"><?php esc_html_e('What are you looking for?', 'luxe'); ?></p>
+      <?php get_search_form(); ?>
+    </div>
+
+  </div>
+</div>
+
 <script>
   document.addEventListener('DOMContentLoaded', function () {
+
+    /* ── Mobile Drawer ── */
     const hamburger = document.getElementById('funalo-hamburger');
     const drawer    = document.getElementById('funalo-mobile-menu');
     const backdrop  = document.getElementById('funalo-backdrop');
     const closeBtn  = document.getElementById('funalo-drawer-close');
-    if (!hamburger || !drawer) return;
 
     function openDrawer() {
       drawer.classList.add('is-open');
@@ -139,7 +171,6 @@
       drawer.setAttribute('aria-hidden', 'false');
       document.body.classList.add('funalo-drawer-open');
     }
-
     function closeDrawer() {
       drawer.classList.remove('is-open');
       if (backdrop) backdrop.classList.remove('is-open');
@@ -149,15 +180,41 @@
       document.body.classList.remove('funalo-drawer-open');
     }
 
-    hamburger.addEventListener('click', function () {
-      drawer.classList.contains('is-open') ? closeDrawer() : openDrawer();
-    });
+    if (hamburger && drawer) {
+      hamburger.addEventListener('click', function () {
+        drawer.classList.contains('is-open') ? closeDrawer() : openDrawer();
+      });
+      if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
+      if (backdrop) backdrop.addEventListener('click', closeDrawer);
+    }
 
-    if (closeBtn)  closeBtn.addEventListener('click', closeDrawer);
-    if (backdrop)  backdrop.addEventListener('click', closeDrawer);
+    /* ── Search Overlay ── */
+    const searchBtn     = document.getElementById('funalo-search-btn');
+    const searchOverlay = document.getElementById('funalo-search-overlay');
+    const searchClose   = document.getElementById('funalo-search-close');
+    const searchInput   = searchOverlay ? searchOverlay.querySelector('input[type="search"], input[name="s"]') : null;
 
+    function openSearch() {
+      searchOverlay.classList.add('is-open');
+      searchOverlay.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('funalo-drawer-open');
+      if (searchInput) setTimeout(() => searchInput.focus(), 200);
+    }
+    function closeSearch() {
+      searchOverlay.classList.remove('is-open');
+      searchOverlay.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('funalo-drawer-open');
+    }
+
+    if (searchBtn)   searchBtn.addEventListener('click', openSearch);
+    if (searchClose) searchClose.addEventListener('click', closeSearch);
+
+    /* ── Escape key closes either ── */
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && drawer.classList.contains('is-open')) closeDrawer();
+      if (e.key !== 'Escape') return;
+      if (drawer && drawer.classList.contains('is-open')) closeDrawer();
+      if (searchOverlay && searchOverlay.classList.contains('is-open')) closeSearch();
     });
+
   });
 </script>
