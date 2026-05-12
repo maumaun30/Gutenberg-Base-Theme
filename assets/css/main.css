@@ -63,9 +63,7 @@
 /* ── Base Nav Shell ── */
 .funalo-nav {
   background-color: var(--nav-bg);
-  /*border-bottom: 1px solid var(--nav-border);*/
-  position: relative;
-  z-index: 100;
+  height: 100px;
 }
 
 .funalo-nav__inner {
@@ -77,6 +75,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 32px;
+  height: 100px;
 }
 
 /* ── Logo ── */
