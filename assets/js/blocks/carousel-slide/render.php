@@ -2,6 +2,7 @@
 $image_url            = $attributes['imageUrl'] ?? '';
 $image_alt            = $attributes['imageAlt'] ?? '';
 $title                = $attributes['title'] ?? '';
+$title_highlight = $attributes['titleHighlight'] ?? '';
 $subtitle             = $attributes['subtitle'] ?? '';
 $primary_btn_text     = $attributes['primaryButtonText'] ?? '';
 $primary_btn_url      = $attributes['primaryButtonUrl'] ?? '#';
@@ -33,11 +34,23 @@ $overlay_light = round( $overlay_full * 0.6, 2 );
   <div class="mytheme-carousel-slide__content">
     <div class="mytheme-carousel-slide__inner">
 
-      <?php if ( $title ) : ?>
-        <h1 class="mytheme-carousel-slide__title">
-          <?php echo wp_kses_post( $title ); ?>
-        </h1>
-      <?php endif; ?>
+      <?php if ( $title || $title_highlight ) : ?>
+  <h1 class="mytheme-carousel-slide__title">
+
+    <?php if ( $title ) : ?>
+      <span>
+        <?php echo wp_kses_post( $title ); ?>
+      </span>
+    <?php endif; ?>
+
+    <?php if ( $title_highlight ) : ?>
+      <span class="highlight-text">
+        <?php echo wp_kses_post( $title_highlight ); ?>
+      </span>
+    <?php endif; ?>
+
+  </h1>
+<?php endif; ?>
 
       <?php if ( $subtitle ) : ?>
         <p class="mytheme-carousel-slide__subtitle">

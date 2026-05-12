@@ -26,6 +26,10 @@
       "type": "string",
       "default": "Your Slide Title"
     },
+    "titleHighlight": {
+      "type": "string",
+      "default": "Your Slide Title Highlight"
+    },
     "subtitle": {
       "type": "string",
       "default": "Add your subtitle or tagline here."

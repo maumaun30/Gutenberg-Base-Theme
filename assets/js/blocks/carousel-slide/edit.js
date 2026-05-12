@@ -19,6 +19,7 @@ export default function Edit({ attributes, setAttributes }) {
     imageId,
     imageAlt,
     title,
+    titleHighlight,
     subtitle,
     primaryButtonText,
     primaryButtonUrl,
@@ -134,14 +135,27 @@ export default function Edit({ attributes, setAttributes }) {
         {/* Content */}
         <div className="carousel-slide-editor__content">
           <div className="carousel-slide-editor__inner">
-            <RichText
-              tagName="h1"
-              className="carousel-slide-editor__title"
-              value={title}
-              onChange={(value) => setAttributes({ title: value })}
-              placeholder="Enter slide title…"
-              allowedFormats={[]}
-            />
+            <h1 className="carousel-slide-editor__title">
+  <RichText
+    tagName="span"
+    value={title}
+    onChange={(value) => setAttributes({ title: value })}
+    placeholder="Enter slide title…"
+    allowedFormats={[]}
+  />
+
+  {' '}
+
+  <span className="highlight-text">
+    <RichText
+      tagName="span"
+      value={titleHighlight}
+      onChange={(value) => setAttributes({ titleHighlight: value })}
+      placeholder="Enter highlighted text…"
+      allowedFormats={[]}
+    />
+  </span>
+</h1>
             <RichText
               tagName="p"
               className="carousel-slide-editor__subtitle"
