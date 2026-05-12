@@ -12,6 +12,8 @@
   --color-primary-light: #fb64d6;
   --color-secondary: #d63d4a;
   --color-secondary-hover: #e01a2a;
+  --color-funalomax-gradient: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%);
+  --color-nav-active: #FF36C9;
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
@@ -133,10 +135,9 @@
   left: 0;
   width: 0;
   height: 3px;
-  background: var(--nav-active-underline);
+  background: var(--color-nav-active);
   border-radius: 2px;
   transition: width 0.25s ease;
-  box-shadow: 0 0 8px var(--color-primary);
 }
 
 .funalo-nav__primary li a:hover {
@@ -145,7 +146,7 @@
 
 .funalo-nav__primary li.current-menu-item > a,
 .funalo-nav__primary li.current-page-ancestor > a {
-  color: var(--color-primary);
+  color: var(--color-nav-active);
 }
 
 .funalo-nav__primary li a:hover::after,
@@ -156,7 +157,7 @@
 
 /* Active item */
 .funalo-nav__primary li.current-menu-item > a {
-  color: var(--color-primary);
+  color: var(--color-nav-active);
   font-weight: 800;
 }
 .funalo-nav__primary li.current-menu-item > a::after {
@@ -164,7 +165,7 @@
 }
 
 .funalo-nav__primary li.current-page-ancestor > a {
-  color: var(--color-primary);
+  color: var(--color-nav-active);
   font-weight: 800;
 }
 
@@ -247,16 +248,13 @@
   text-transform: uppercase;
   text-decoration: none;
   color: #ffffff;
-  background-color: var(--color-primary);
+  background: var(--color-funalomax-gradient);
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 18px rgba(255, 45, 120, 0.45);
   white-space: nowrap;
 }
 
 .funalo-nav__cta a:hover {
-  background-color: var(--color-primary-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 0 28px rgba(255, 45, 120, 0.65);
+  transform: translateY(-5px);
 }
 
 /* ── Hamburger ── */
