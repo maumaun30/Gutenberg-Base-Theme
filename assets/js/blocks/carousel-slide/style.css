@@ -176,21 +176,28 @@
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
+.mytheme-carousel-slide__btn a {
+  color: unset !important;
+}
+
 .mytheme-carousel-slide__btn:hover {
-  transform: scale(1.04);
+  transform: translateY(-5px);
 }
 
 .mytheme-carousel-slide__btn--primary {
   background: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%);
   color: #FFFFFF;
-  box-shadow: 0 0 20px rgba(247, 29, 194, 0.35);
+  width: 190px;
+  text-align: center;
 }
 
 .mytheme-carousel-slide__btn--secondary {
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  background: rgba(57, 57, 60, 0.2);
   color: #fff;
+  width: 190px;
+  text-align: center;
 }
 
 .mytheme-carousel-slide__btn--secondary:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-5px);
 }
