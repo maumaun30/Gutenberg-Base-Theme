@@ -146,6 +146,116 @@ function mytheme_enqueue_carousel_assets() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_carousel_assets' );
+
+// Responsible Gaming Popup
+function fnlmx_responsible_gaming_popup() {
+  // Only show on the front page / landing page
+  if ( ! is_front_page() ) return;
+  ?>
+
+  <!-- ── Responsible Gaming Popup ── -->
+  <div class="fnlmx-rg-popup" id="fnlmx-rg-popup" aria-modal="true" role="dialog" aria-label="Responsible Gaming Guidelines" aria-hidden="true">
+    <div class="fnlmx-rg-popup__backdrop"></div>
+
+    <div class="fnlmx-rg-popup__panel">
+
+      <h2 class="fnlmx-rg-popup__title"><?php esc_html_e('Responsible Gaming Guidelines', 'luxe'); ?></h2>
+
+      <div class="fnlmx-rg-popup__body">
+        <ul class="fnlmx-rg-popup__list">
+          <li><?php esc_html_e('I am over 21 years of age.', 'luxe'); ?></li>
+          <li><?php esc_html_e('I am not a government official, or employee connected directly with the operation of the government or any of its agencies.', 'luxe'); ?></li>
+          <li><?php esc_html_e('I am not a member of the Armed Forces of the Philippines, including the Army, Navy, Air Force, or the Philippine National Police.', 'luxe'); ?></li>
+          <li><?php esc_html_e('I am not a holder of a Gaming Employment License (GEL).', 'luxe'); ?></li>
+          <li><?php esc_html_e('Playing in open and public places is prohibited.', 'luxe'); ?></li>
+          <li><a href="<?php echo esc_url( home_url('/self-exclude/') ); ?>"><?php esc_html_e('To Self-Exclude (Self-Ban)', 'luxe'); ?></a></li>
+          <li><a href="https://www.pagcor.ph/responsible-gaming.php" target="_blank" rel="noopener noreferrer"><?php esc_html_e("To Know More About PAGCOR's Responsible Gaming Program", 'luxe'); ?></a></li>
+          <li><a href="<?php echo esc_url( home_url('/gaming-support/') ); ?>"><?php esc_html_e('For Gaming Support Helplines', 'luxe'); ?></a></li>
+        </ul>
+
+        <div class="fnlmx-rg-popup__badges">
+          <div class="fnlmx-rg-popup__badge-item">
+            <?php
+              $pagcor_img = function_exists('get_field') ? get_field('fnlmx_pagcor_badge', 'option') : null;
+              if ( $pagcor_img && is_array($pagcor_img) ) : ?>
+                <img src="<?php echo esc_url($pagcor_img['url']); ?>" alt="PAGCOR" loading="lazy">
+            <?php else : ?>
+              <span class="fnlmx-rg-popup__badge-fallback">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="#F71DC2"><circle cx="12" cy="12" r="10"/></svg>
+                PAGCOR
+              </span>
+            <?php endif; ?>
+          </div>
+          <div class="fnlmx-rg-popup__badge-divider"></div>
+          <div class="fnlmx-rg-popup__badge-item">
+            <?php
+              $badge21_img = function_exists('get_field') ? get_field('fnlmx_21_badge', 'option') : null;
+              if ( $badge21_img && is_array($badge21_img) ) : ?>
+                <img src="<?php echo esc_url($badge21_img['url']); ?>" alt="21+ Know When To Stop" loading="lazy">
+            <?php else : ?>
+              <span class="fnlmx-rg-popup__badge-fallback fnlmx-rg-popup__badge-fallback--21">21+</span>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <p class="fnlmx-rg-popup__disclaimer">
+          <?php esc_html_e('Funds or credits in the account of player who is found ineligible to play shall mean forfeiture of said funds/credits in favor of the Government.', 'luxe'); ?>
+        </p>
+      </div>
+
+      <div class="fnlmx-rg-popup__actions">
+        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--exit" id="fnlmx-rg-exit">
+          <?php esc_html_e('Exit', 'luxe'); ?>
+        </button>
+        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed" id="fnlmx-rg-proceed">
+          <?php esc_html_e('Proceed', 'luxe'); ?>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const rgPopup   = document.getElementById('fnlmx-rg-popup');
+      const rgProceed = document.getElementById('fnlmx-rg-proceed');
+      const rgExit    = document.getElementById('fnlmx-rg-exit');
+
+      if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
+        setTimeout(function () {
+          rgPopup.classList.add('is-open');
+          rgPopup.setAttribute('aria-hidden', 'false');
+          document.body.classList.add('funalo-drawer-open');
+        }, 300);
+      }
+
+      if (rgProceed) {
+        rgProceed.addEventListener('click', function () {
+          sessionStorage.setItem('fnlmx_rg_accepted', '1');
+          rgPopup.classList.remove('is-open');
+          rgPopup.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('funalo-drawer-open');
+        });
+      }
+
+      if (rgExit) {
+        rgExit.addEventListener('click', function () {
+          if (document.referrer && document.referrer !== window.location.href) {
+            window.location.href = document.referrer;
+          } else {
+            window.close();
+            setTimeout(function () {
+              window.location.replace('about:blank');
+            }, 300);
+          }
+        });
+      }
+    });
+  </script>
+
+  <?php
+}
+add_action( 'wp_body_open', 'fnlmx_responsible_gaming_popup' );
  
 /**
  * Luxe Theme — Nav Walker & Menu Registration
