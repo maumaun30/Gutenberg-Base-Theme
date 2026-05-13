@@ -50,17 +50,13 @@
   --section-py: clamp(2.5rem, 6vw, 6rem);
 
   /* ── Nav ── */
-  --nav-bg:             #0F0D1E;
-  --nav-border:         rgba(247, 29, 194, 0.25);
-  --nav-text:           #ffffff;
-  --nav-text-muted:     rgba(255, 255, 255, 0.65);
+  --nav-bg: #0F0D1E;
+  --nav-gradient-bg: linear-gradient(180deg,rgba(0, 0, 0, 0.2) 0%,#0F0D1E 100%);
+  --nav-border: rgba(247, 29, 194, 0.25);
+  --nav-text: #ffffff;
+  --nav-text-muted: rgba(255, 255, 255, 0.65);
   --nav-active-underline: var(--color-primary);
-  --nav-height:         72px;
-}
-
-.site-main {
-  margin: 0 auto;
-  max-width: 75rem;
+  --nav-height: 72px;
 }
 
 /* ---- HEADER STYLE --------------- */
