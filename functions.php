@@ -155,6 +155,7 @@ function fnlmx_responsible_gaming_popup() {
   $guidelines_content = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_contents', 'option') : '';
   $images_wrapper     = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_img_wrapper', 'option') : [];
   $subparagraph       = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_subparagraph', 'option') : '';
+  $exit_url = 'https://www.google.com';
   ?>
 
   <!-- ── Responsible Gaming Popup ── -->
@@ -230,42 +231,38 @@ function fnlmx_responsible_gaming_popup() {
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const rgPopup   = document.getElementById('fnlmx-rg-popup');
-      const rgProceed = document.getElementById('fnlmx-rg-proceed');
-      const rgExit    = document.getElementById('fnlmx-rg-exit');
+        document.addEventListener('DOMContentLoaded', function () {
+            const rgPopup   = document.getElementById('fnlmx-rg-popup');
+            const rgProceed = document.getElementById('fnlmx-rg-proceed');
+            const rgExit    = document.getElementById('fnlmx-rg-exit');
 
-      if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
-        setTimeout(function () {
-          rgPopup.classList.add('is-open');
-          rgPopup.setAttribute('aria-hidden', 'false');
-          document.body.classList.add('funalo-drawer-open');
-        }, 300);
-      }
-
-      if (rgProceed) {
-        rgProceed.addEventListener('click', function () {
-          sessionStorage.setItem('fnlmx_rg_accepted', '1');
-          rgPopup.classList.remove('is-open');
-          rgPopup.setAttribute('aria-hidden', 'true');
-          document.body.classList.remove('funalo-drawer-open');
-        });
-      }
-
-      if (rgExit) {
-        rgExit.addEventListener('click', function () {
-          if (document.referrer && document.referrer !== window.location.href) {
-            window.location.href = document.referrer;
-          } else {
-            window.close();
+            if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
             setTimeout(function () {
-              window.location.replace('about:blank');
+                rgPopup.classList.add('is-open');
+                rgPopup.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('funalo-drawer-open');
             }, 300);
-          }
+            }
+
+            if (rgProceed) {
+            rgProceed.addEventListener('click', function () {
+                sessionStorage.setItem('fnlmx_rg_accepted', '1');
+                rgPopup.classList.remove('is-open');
+                rgPopup.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('funalo-drawer-open');
+            });
+            }
+
+            if (rgExit) {
+            rgExit.addEventListener('click', function () {
+                var fallback = <?php echo json_encode( esc_url( $exit_url ) ); ?>;
+                window.location.href = document.referrer && document.referrer !== window.location.href
+                ? document.referrer
+                : fallback;
+            });
+            }
         });
-      }
-    });
-  </script>
+    </script>
 
   <?php
 }
