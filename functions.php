@@ -149,8 +149,12 @@ add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_carousel_assets' );
 
 // Responsible Gaming Popup
 function fnlmx_responsible_gaming_popup() {
-  // Only show on the front page / landing page
   if ( ! is_front_page() ) return;
+
+  // ACF Fields (Options Page)
+  $guidelines_content = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_contents', 'option') : '';
+  $images_wrapper     = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_img_wrapper', 'option') : [];
+  $subparagraph       = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_subparagraph', 'option') : '';
   ?>
 
   <!-- ── Responsible Gaming Popup ── -->
@@ -162,45 +166,55 @@ function fnlmx_responsible_gaming_popup() {
       <h2 class="fnlmx-rg-popup__title"><?php esc_html_e('Responsible Gaming Guidelines', 'luxe'); ?></h2>
 
       <div class="fnlmx-rg-popup__body">
-        <ul class="fnlmx-rg-popup__list">
-          <li><?php esc_html_e('I am over 21 years of age.', 'luxe'); ?></li>
-          <li><?php esc_html_e('I am not a government official, or employee connected directly with the operation of the government or any of its agencies.', 'luxe'); ?></li>
-          <li><?php esc_html_e('I am not a member of the Armed Forces of the Philippines, including the Army, Navy, Air Force, or the Philippine National Police.', 'luxe'); ?></li>
-          <li><?php esc_html_e('I am not a holder of a Gaming Employment License (GEL).', 'luxe'); ?></li>
-          <li><?php esc_html_e('Playing in open and public places is prohibited.', 'luxe'); ?></li>
-          <li><a href="<?php echo esc_url( home_url('/self-exclude/') ); ?>"><?php esc_html_e('To Self-Exclude (Self-Ban)', 'luxe'); ?></a></li>
-          <li><a href="https://www.pagcor.ph/responsible-gaming.php" target="_blank" rel="noopener noreferrer"><?php esc_html_e("To Know More About PAGCOR's Responsible Gaming Program", 'luxe'); ?></a></li>
-          <li><a href="<?php echo esc_url( home_url('/gaming-support/') ); ?>"><?php esc_html_e('For Gaming Support Helplines', 'luxe'); ?></a></li>
-        </ul>
 
-        <div class="fnlmx-rg-popup__badges">
-          <div class="fnlmx-rg-popup__badge-item">
-            <?php
-              $pagcor_img = function_exists('get_field') ? get_field('fnlmx_pagcor_badge', 'option') : null;
-              if ( $pagcor_img && is_array($pagcor_img) ) : ?>
-                <img src="<?php echo esc_url($pagcor_img['url']); ?>" alt="PAGCOR" loading="lazy">
-            <?php else : ?>
+        <?php if ( $guidelines_content ) : ?>
+          <div class="fnlmx-rg-popup__wysiwyg">
+            <?php echo wp_kses_post( $guidelines_content ); ?>
+          </div>
+        <?php endif; ?>
+
+        <?php if ( ! empty( $images_wrapper ) ) : ?>
+          <div class="fnlmx-rg-popup__badges">
+            <?php foreach ( $images_wrapper as $index => $row ) :
+              $img = $row['fnlmx_gaming_guidelines_img'] ?? null;
+              if ( $index > 0 ) : ?>
+                <div class="fnlmx-rg-popup__badge-divider"></div>
+              <?php endif; ?>
+              <div class="fnlmx-rg-popup__badge-item">
+                <?php if ( $img && is_array($img) ) : ?>
+                  <img
+                    src="<?php echo esc_url( $img['url'] ); ?>"
+                    alt="<?php echo esc_attr( $img['alt'] ?? '' ); ?>"
+                    width="<?php echo esc_attr( $img['width'] ?? '' ); ?>"
+                    height="<?php echo esc_attr( $img['height'] ?? '' ); ?>"
+                    loading="lazy"
+                  >
+                <?php endif; ?>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        <?php else : ?>
+          <!-- Fallback badges when no ACF images are set -->
+          <div class="fnlmx-rg-popup__badges">
+            <div class="fnlmx-rg-popup__badge-item">
               <span class="fnlmx-rg-popup__badge-fallback">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="#F71DC2"><circle cx="12" cy="12" r="10"/></svg>
                 PAGCOR
               </span>
-            <?php endif; ?>
-          </div>
-          <div class="fnlmx-rg-popup__badge-divider"></div>
-          <div class="fnlmx-rg-popup__badge-item">
-            <?php
-              $badge21_img = function_exists('get_field') ? get_field('fnlmx_21_badge', 'option') : null;
-              if ( $badge21_img && is_array($badge21_img) ) : ?>
-                <img src="<?php echo esc_url($badge21_img['url']); ?>" alt="21+ Know When To Stop" loading="lazy">
-            <?php else : ?>
+            </div>
+            <div class="fnlmx-rg-popup__badge-divider"></div>
+            <div class="fnlmx-rg-popup__badge-item">
               <span class="fnlmx-rg-popup__badge-fallback fnlmx-rg-popup__badge-fallback--21">21+</span>
-            <?php endif; ?>
+            </div>
           </div>
-        </div>
+        <?php endif; ?>
 
-        <p class="fnlmx-rg-popup__disclaimer">
-          <?php esc_html_e('Funds or credits in the account of player who is found ineligible to play shall mean forfeiture of said funds/credits in favor of the Government.', 'luxe'); ?>
-        </p>
+        <?php if ( $subparagraph ) : ?>
+          <p class="fnlmx-rg-popup__disclaimer">
+            <?php echo esc_html( $subparagraph ); ?>
+          </p>
+        <?php endif; ?>
+
       </div>
 
       <div class="fnlmx-rg-popup__actions">
