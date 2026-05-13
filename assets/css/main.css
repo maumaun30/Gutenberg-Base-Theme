@@ -17,8 +17,8 @@
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
-  --bg-dark-2: /*#111114;*/#231F33;
-  --bg-dark-3: #18181c; /* main page bg */
+  --bg-dark-2: #231F33;
+  --bg-dark-3: #100E1B; /* main page bg */
   --bg-dark-4: #1f1f25;
   --bg-dark-5: #26262e;
 
@@ -56,6 +56,11 @@
   --nav-text-muted:     rgba(255, 255, 255, 0.65);
   --nav-active-underline: var(--color-primary);
   --nav-height:         72px;
+}
+
+.site-main {
+  margin: 0 auto;
+  max-width: 75rem;
 }
 
 /* ---- HEADER STYLE --------------- */
@@ -1089,9 +1094,9 @@ body.funalo-drawer-open {
 }
 
 .fnlmx-rg-popup__btn--exit {
-  background: rgba(255,255,255,0.08);
+  background: rgba(57, 57, 60, 0.2);
   color: rgba(255,255,255,0.75);
-  border: 1px solid rgba(255,255,255,0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .fnlmx-rg-popup__btn--exit:hover {
   background: rgba(255,255,255,0.13);
@@ -1099,7 +1104,7 @@ body.funalo-drawer-open {
 }
 
 .fnlmx-rg-popup__btn--proceed {
-  background: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%);
+  background: var(--color-funalomax-gradient);
   color: #fff;
 }
 
