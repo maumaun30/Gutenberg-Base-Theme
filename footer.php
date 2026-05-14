@@ -141,29 +141,6 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
 
       <!-- Right: Secure Payments + Online Support stacked -->
       <div class="fnlmx-footer__trust-col">
-
-        <?php if ( ! empty( $payment_rows ) ) : ?>
-          <div class="fnlmx-trust-block">
-            <h4 class="fnlmx-footer__nav-heading">
-              <?php esc_html_e( 'Secure Payments', 'luxe' ); ?>
-            </h4>
-            <div class="fnlmx-payment-list">
-              <?php foreach ( $payment_rows as $row ) :
-                $icon     = $row['fnlmx_payment_method_icon'] ?? null;
-                $icon_url = fnlmx_img_url( $icon, 'medium' );
-                $icon_alt = fnlmx_img_alt( $icon, 'Payment method' );
-                if ( ! $icon_url ) continue;
-              ?>
-                <div class="fnlmx-payment-badge">
-                  <img src="<?php echo esc_url( $icon_url ); ?>"
-                       alt="<?php echo esc_attr( $icon_alt ); ?>"
-                       loading="lazy">
-                </div>
-              <?php endforeach; ?>
-            </div>
-          </div>
-        <?php endif; ?>
-
         <?php if ( ! empty( $social_rows ) ) : ?>
           <div class="fnlmx-trust-block">
             <h4 class="fnlmx-footer__nav-heading">

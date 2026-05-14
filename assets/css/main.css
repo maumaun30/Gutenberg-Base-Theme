@@ -669,16 +669,11 @@ body.funalo-drawer-open {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1rem 2.5rem;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: .75rem;
   height: 72px;
   flex-shrink: 0;
+  border-right: 1px solid hsla(0, 0%, 100%, .12);
 }
 .fnlmx-footer__solaire img {
-  max-width: 200px;
-  max-height: 38px;
   width: auto;
   height: auto;
   display: block;
@@ -734,8 +729,8 @@ body.funalo-drawer-open {
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
   background: #181528;
-  border-radius: .75rem;
-  padding: 2rem;
+  border-radius: 8px;
+  padding: 20px;
 }
 
 .fnlmx-footer__nav-heading {
@@ -774,15 +769,14 @@ body.funalo-drawer-open {
 
 /* ── Trust column: Payments + Social stacked ────────────────── */
 .fnlmx-footer__trust-col {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  background: #181528;
+  border-radius: 8px;
+  padding: 20px;
 }
 
 .fnlmx-trust-block {
   display: flex;
   flex-direction: column;
-  gap: .875rem;
 }
 
 /* Payment badges */
