@@ -1123,44 +1123,84 @@ body.funalo-drawer-open {
 
 /* ---- CTA SECTION --------------- */
 .fnlmx-cta {
-    display: flex;
-    align-items: stretch;
-    overflow: hidden;
-    color: #ffffff;
-}
- 
-/* --------------------------------------------------------------------------
-   Left pane — solid bg + content
-   -------------------------------------------------------------------------- */
-.fnlmx-cta__content-pane {
-    flex: 0 0 55%;
-    background-color: #0E0125;
-    display: flex;
-    align-items: center;
-    padding: 60px 48px;
-}
- 
-.fnlmx-cta__content {
-    max-width: 520px;
-    width: 100%;
-}
- 
-/* --------------------------------------------------------------------------
-   Right pane — ACF image fills the pane
-   -------------------------------------------------------------------------- */
-.fnlmx-cta__image-pane {
-    flex: 0 0 45%;
     position: relative;
     overflow: hidden;
-    min-height: 260px;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #ffffff;
+    /* Fallback bg colour if no image is set */
+    background-color: #0e0125;
 }
  
-.fnlmx-cta__image {
+/* --------------------------------------------------------------------------
+   Background images — absolutely positioned, cover the whole section
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__bg {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
     object-position: center;
     display: block;
+    z-index: 0;
+    pointer-events: none;
+    user-select: none;
+}
+ 
+/* Desktop bg (landscape) — visible ≥ 768px */
+.fnlmx-cta__bg--desktop {
+    display: block;
+}
+ 
+/* Mobile bg (portrait / vertical) — hidden by default */
+.fnlmx-cta__bg--mobile {
+    display: none;
+}
+ 
+/* --------------------------------------------------------------------------
+   Inner split layout — sits above the bg image
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: stretch;
+    min-height: 260px;
+}
+ 
+/* --------------------------------------------------------------------------
+   Left pane — content, transparent (bg image shows through)
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__content-pane {
+    flex: 0 0 55%;
+    display: flex;
+    align-items: center;
+    padding: 60px 48px 60px 48px;
+}
+ 
+.fnlmx-cta__content {
+    width: 100%;
+    max-width: 520px;
+}
+ 
+/* --------------------------------------------------------------------------
+   Right pane — CTA image, no background, transparent
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__image-pane {
+    flex: 0 0 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+ 
+.fnlmx-cta__image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    /* No object-fit cover — let the image render naturally (transparent bg) */
 }
  
 /* --------------------------------------------------------------------------
@@ -1237,7 +1277,7 @@ body.funalo-drawer-open {
 }
  
 /* --------------------------------------------------------------------------
-   Tablet  (768px – 1023px)  — keep side-by-side, tighter padding
+   Tablet  (768px – 1023px)
    -------------------------------------------------------------------------- */
 @media (min-width: 768px) and (max-width: 1023px) {
     .fnlmx-cta__content-pane {
@@ -1247,22 +1287,29 @@ body.funalo-drawer-open {
  
     .fnlmx-cta__image-pane {
         flex: 0 0 50%;
+        padding: 20px;
     }
 }
  
 /* --------------------------------------------------------------------------
-   Mobile  (≤ 767px)  — stack vertically: content on top, image on bottom
+   Mobile  (≤ 767px) — stack vertically, swap to portrait bg image
    -------------------------------------------------------------------------- */
 @media (max-width: 767px) {
-    .fnlmx-cta {
+ 
+    /* Swap bg images */
+    .fnlmx-cta__bg--desktop { display: none;  }
+    .fnlmx-cta__bg--mobile  { display: block; }
+ 
+    /* Stack layout */
+    .fnlmx-cta__inner {
         flex-direction: column;
     }
  
-    /* Top pane — content */
+    /* Top — content */
     .fnlmx-cta__content-pane {
         flex: none;
         width: 100%;
-        padding: 48px 24px 40px;
+        padding: 48px 24px 32px;
     }
  
     .fnlmx-cta__content {
@@ -1285,11 +1332,16 @@ body.funalo-drawer-open {
         max-width: 300px;
     }
  
-    /* Bottom pane — image */
+    /* Bottom — CTA image */
     .fnlmx-cta__image-pane {
         flex: none;
         width: 100%;
-        min-height: 280px;
+        padding: 0 24px 48px;
+        justify-content: center;
+    }
+ 
+    .fnlmx-cta__image {
+        max-width: 320px;
     }
 }
 
