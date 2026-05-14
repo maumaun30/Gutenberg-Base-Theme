@@ -268,39 +268,26 @@ function fnlmx_responsible_gaming_popup() {
 add_action( 'wp_body_open', 'fnlmx_responsible_gaming_popup' );
 
 // CTA SECTION
+
 function fnlmx_cta_section() {
-    $cta_title      = get_field( 'fnlmx_cta_title', 'option' );
+    $cta_title       = get_field( 'fnlmx_cta_title', 'option' );
     $cta_description = get_field( 'fnlmx_cta_description', 'option' );
-    $cta_buttons    = get_field( 'fnlmx_cta_button_wrapper', 'option' );
-    $cta_desktop_bg = get_field( 'fnlmx_cta_desktop_bg', 'option' );
-    $cta_mobile_bg  = get_field( 'fnlmx_cta_mobile_bg', 'option' );
+    $cta_buttons     = get_field( 'fnlmx_cta_button_wrapper', 'option' );
+    $cta_image       = get_field( 'fnlmx_cta_image', 'option' );
 
     if ( ! $cta_title && ! $cta_description ) {
         return '';
     }
 
-    $desktop_bg_url = ! empty( $cta_desktop_bg['url'] ) ? esc_url( $cta_desktop_bg['url'] ) : '';
-    $desktop_bg_alt = ! empty( $cta_desktop_bg['alt'] ) ? esc_attr( $cta_desktop_bg['alt'] ) : '';
-    $mobile_bg_url  = ! empty( $cta_mobile_bg['url'] )  ? esc_url( $cta_mobile_bg['url'] )  : '';
-    $mobile_bg_alt  = ! empty( $cta_mobile_bg['alt'] )  ? esc_attr( $cta_mobile_bg['alt'] )  : '';
+    $image_url = ! empty( $cta_image['url'] ) ? esc_url( $cta_image['url'] ) : '';
+    $image_alt = ! empty( $cta_image['alt'] ) ? esc_attr( $cta_image['alt'] ) : '';
 
     ob_start(); ?>
 
     <section class="fnlmx-cta">
 
-        <?php if ( $desktop_bg_url ) : ?>
-            <div class="fnlmx-cta__bg fnlmx-cta__bg--desktop" aria-hidden="true">
-                <img src="<?php echo $desktop_bg_url; ?>" alt="<?php echo $desktop_bg_alt; ?>">
-            </div>
-        <?php endif; ?>
-
-        <?php if ( $mobile_bg_url ) : ?>
-            <div class="fnlmx-cta__bg fnlmx-cta__bg--mobile" aria-hidden="true">
-                <img src="<?php echo $mobile_bg_url; ?>" alt="<?php echo $mobile_bg_alt; ?>">
-            </div>
-        <?php endif; ?>
-
-        <div class="fnlmx-cta__inner">
+        <?php /* Left (desktop) / Top (mobile) — solid colour content pane */ ?>
+        <div class="fnlmx-cta__content-pane">
             <div class="fnlmx-cta__content">
 
                 <?php if ( $cta_title ) : ?>
@@ -335,6 +322,18 @@ function fnlmx_cta_section() {
                 <?php endif; ?>
 
             </div>
+        </div>
+
+        <?php /* Right (desktop) / Bottom (mobile) — ACF image pane */ ?>
+        <div class="fnlmx-cta__image-pane">
+            <?php if ( $image_url ) : ?>
+                <img
+                    src="<?php echo $image_url; ?>"
+                    alt="<?php echo $image_alt; ?>"
+                    class="fnlmx-cta__image"
+                    loading="lazy"
+                >
+            <?php endif; ?>
         </div>
 
     </section>
