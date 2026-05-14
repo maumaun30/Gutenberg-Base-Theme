@@ -268,6 +268,7 @@ function fnlmx_responsible_gaming_popup() {
 add_action( 'wp_body_open', 'fnlmx_responsible_gaming_popup' );
 
 // CTA SECTION
+
 function fnlmx_cta_section() {
     $cta_title       = get_field( 'fnlmx_cta_title', 'option' );
     $cta_description = get_field( 'fnlmx_cta_description', 'option' );
@@ -289,9 +290,15 @@ function fnlmx_cta_section() {
 
     ob_start(); ?>
 
-    <section class="fnlmx-cta">
+    <?php /*
+        .fnlmx-cta-wrap  — full viewport width, holds the bg images (position: relative)
+        .fnlmx-cta       — max-width 1280px centred, holds the split content (position: relative z-index:1)
+        The bg images are absolutely positioned inside .fnlmx-cta-wrap so they
+        always cover the full width regardless of the inner container's max-width.
+    */ ?>
+    <div class="fnlmx-cta-wrap">
 
-        <?php /* Full-cover background image — desktop (landscape) */ ?>
+        <?php /* Desktop bg — covers full wrap width */ ?>
         <?php if ( $desktop_bg_url ) : ?>
             <img
                 src="<?php echo $desktop_bg_url; ?>"
@@ -302,7 +309,7 @@ function fnlmx_cta_section() {
             >
         <?php endif; ?>
 
-        <?php /* Full-cover background image — mobile (portrait / vertical) */ ?>
+        <?php /* Mobile bg — covers full wrap width, swaps in on mobile */ ?>
         <?php if ( $mobile_bg_url ) : ?>
             <img
                 src="<?php echo $mobile_bg_url; ?>"
@@ -313,62 +320,64 @@ function fnlmx_cta_section() {
             >
         <?php endif; ?>
 
-        <?php /* Inner split layout sits on top of bg */ ?>
-        <div class="fnlmx-cta__inner">
+        <?php /* Constrained content container */ ?>
+        <section class="fnlmx-cta">
+            <div class="fnlmx-cta__inner">
 
-            <?php /* Left / Top — content (no bg colour, text over bg image) */ ?>
-            <div class="fnlmx-cta__content-pane">
-                <div class="fnlmx-cta__content">
+                <?php /* Left / Top — content pane (transparent) */ ?>
+                <div class="fnlmx-cta__content-pane">
+                    <div class="fnlmx-cta__content">
 
-                    <?php if ( $cta_title ) : ?>
-                        <h2 class="fnlmx-cta__title"><?php echo esc_html( $cta_title ); ?></h2>
-                    <?php endif; ?>
+                        <?php if ( $cta_title ) : ?>
+                            <h2 class="fnlmx-cta__title"><?php echo esc_html( $cta_title ); ?></h2>
+                        <?php endif; ?>
 
-                    <?php if ( $cta_description ) : ?>
-                        <div class="fnlmx-cta__description"><?php echo wp_kses_post( $cta_description ); ?></div>
-                    <?php endif; ?>
+                        <?php if ( $cta_description ) : ?>
+                            <div class="fnlmx-cta__description"><?php echo wp_kses_post( $cta_description ); ?></div>
+                        <?php endif; ?>
 
-                    <?php if ( ! empty( $cta_buttons ) ) : ?>
-                        <div class="fnlmx-cta__buttons">
-                            <?php foreach ( $cta_buttons as $index => $button ) :
-                                $label = ! empty( $button['fnlmx_cta_button_label'] ) ? $button['fnlmx_cta_button_label'] : '';
-                                $link  = ! empty( $button['fnlmx_cta_button_link'] )  ? $button['fnlmx_cta_button_link']  : '';
+                        <?php if ( ! empty( $cta_buttons ) ) : ?>
+                            <div class="fnlmx-cta__buttons">
+                                <?php foreach ( $cta_buttons as $index => $button ) :
+                                    $label = ! empty( $button['fnlmx_cta_button_label'] ) ? $button['fnlmx_cta_button_label'] : '';
+                                    $link  = ! empty( $button['fnlmx_cta_button_link'] )  ? $button['fnlmx_cta_button_link']  : '';
 
-                                if ( ! $label ) continue;
+                                    if ( ! $label ) continue;
 
-                                $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
-                                $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
-                                $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
-                            ?>
-                                <?php if ( $link ) : ?>
-                                    <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $target; ?>>
-                                        <?php echo esc_html( $label ); ?>
-                                    </a>
-                                <?php else : ?>
-                                    <span class="<?php echo esc_attr( $btn_class ); ?>"><?php echo esc_html( $label ); ?></span>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
+                                    $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
+                                    $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
+                                    $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
+                                ?>
+                                    <?php if ( $link ) : ?>
+                                        <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $target; ?>>
+                                            <?php echo esc_html( $label ); ?>
+                                        </a>
+                                    <?php else : ?>
+                                        <span class="<?php echo esc_attr( $btn_class ); ?>"><?php echo esc_html( $label ); ?></span>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
 
+                    </div>
                 </div>
+
+                <?php /* Right / Bottom — CTA image (transparent, no bg) */ ?>
+                <div class="fnlmx-cta__image-pane">
+                    <?php if ( $image_url ) : ?>
+                        <img
+                            src="<?php echo $image_url; ?>"
+                            alt="<?php echo $image_alt; ?>"
+                            class="fnlmx-cta__image"
+                            loading="lazy"
+                        >
+                    <?php endif; ?>
+                </div>
+
             </div>
+        </section>
 
-            <?php /* Right / Bottom — CTA image (no bg, transparent) */ ?>
-            <div class="fnlmx-cta__image-pane">
-                <?php if ( $image_url ) : ?>
-                    <img
-                        src="<?php echo $image_url; ?>"
-                        alt="<?php echo $image_alt; ?>"
-                        class="fnlmx-cta__image"
-                        loading="lazy"
-                    >
-                <?php endif; ?>
-            </div>
-
-        </div><!-- /.fnlmx-cta__inner -->
-
-    </section>
+    </div><!-- /.fnlmx-cta-wrap -->
 
     <?php
     return ob_get_clean();
