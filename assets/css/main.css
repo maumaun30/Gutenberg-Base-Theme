@@ -1122,19 +1122,15 @@ body.funalo-drawer-open {
 }
 
 /* ---- CTA SECTION --------------- */
-.fnlmx-cta {
+.fnlmx-cta-wrap {
     position: relative;
     overflow: hidden;
-    max-width: 1280px;
-    margin-left: auto;
-    margin-right: auto;
-    color: #ffffff;
-    /* Fallback bg colour if no image is set */
-    background-color: #0e0125;
+    width: 100%;
+    background-color: #0e0125; /* fallback */
 }
  
 /* --------------------------------------------------------------------------
-   Background images — absolutely positioned, cover the whole section
+   Background images — cover the full wrapper (breaks out of max-width)
    -------------------------------------------------------------------------- */
 .fnlmx-cta__bg {
     position: absolute;
@@ -1157,6 +1153,18 @@ body.funalo-drawer-open {
 /* Mobile bg (portrait / vertical) — hidden by default */
 .fnlmx-cta__bg--mobile {
     display: none;
+}
+ 
+/* --------------------------------------------------------------------------
+   Inner section — max-width container, sits above bg image
+   -------------------------------------------------------------------------- */
+.fnlmx-cta {
+    position: relative;
+    z-index: 1;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #ffffff;
 }
  
 /* --------------------------------------------------------------------------
@@ -1286,7 +1294,6 @@ body.funalo-drawer-open {
  
     .fnlmx-cta__image-pane {
         flex: 0 0 50%;
-        padding: 20px;
     }
 }
  
