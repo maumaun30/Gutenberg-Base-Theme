@@ -1121,6 +1121,181 @@ body.funalo-drawer-open {
   }
 }
 
+/* ---- CTA SECTION --------------- */
+.fnlmx-cta {
+	position: relative;
+	overflow: hidden;
+	background-color: #0e0820; /* fallback if no BG image */
+	color: #ffffff;
+}
+ 
+/* --------------------------------------------------------------------------
+   Background images
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__bg {
+	position: absolute;
+	inset: 0;
+	z-index: 0;
+}
+ 
+.fnlmx-cta__bg img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center right; /* phone mockup sits on the right */
+	display: block;
+}
+ 
+/* Desktop BG visible by default, mobile BG hidden */
+.fnlmx-cta__bg--desktop { display: block; }
+.fnlmx-cta__bg--mobile  { display: none;  }
+ 
+/* --------------------------------------------------------------------------
+   Inner layout
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__inner {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	align-items: center;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 60px 48px;
+}
+ 
+/* Content sits on the left half (right half is the phone mockup in BG image) */
+.fnlmx-cta__content {
+	max-width: 560px;
+}
+ 
+/* --------------------------------------------------------------------------
+   Typography
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__title {
+	font-size: clamp(1.5rem, 2.5vw, 2rem);
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 0.02em;
+	margin: 0 0 20px;
+	line-height: 1.2;
+	color: #ffffff;
+}
+ 
+.fnlmx-cta__description {
+	font-size: clamp(0.875rem, 1.2vw, 1rem);
+	line-height: 1.7;
+	color: rgba(255, 255, 255, 0.85);
+	margin: 0 0 32px;
+}
+ 
+.fnlmx-cta__description p {
+	margin: 0;
+}
+ 
+/* --------------------------------------------------------------------------
+   Buttons
+   -------------------------------------------------------------------------- */
+.fnlmx-cta__buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	align-items: center;
+}
+ 
+.fnlmx-cta__btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 14px 32px;
+	font-size: 0.875rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
+	border-radius: 4px;
+	text-decoration: none;
+	cursor: pointer;
+	transition: opacity 0.2s ease, transform 0.2s ease;
+	white-space: nowrap;
+}
+ 
+.fnlmx-cta__btn:hover {
+	opacity: 0.88;
+	transform: translateY(-1px);
+}
+ 
+/* Primary – solid pink/magenta */
+.fnlmx-cta__btn--primary {
+	background-color: #e91e8c;
+	color: #ffffff;
+	border: 2px solid #e91e8c;
+}
+ 
+/* Secondary – transparent with white border */
+.fnlmx-cta__btn--secondary {
+	background-color: transparent;
+	color: #ffffff;
+	border: 2px solid #ffffff;
+}
+ 
+.fnlmx-cta__btn--secondary:hover {
+	background-color: rgba(255, 255, 255, 0.08);
+}
+ 
+/* --------------------------------------------------------------------------
+   Responsive – Mobile (≤ 767px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 767px) {
+ 
+	/* Swap background images */
+	.fnlmx-cta__bg--desktop { display: none;  }
+	.fnlmx-cta__bg--mobile  { display: block; }
+ 
+	.fnlmx-cta__bg--mobile img {
+		object-position: bottom center; /* phone mockup at the bottom */
+	}
+ 
+	.fnlmx-cta__inner {
+		flex-direction: column;
+		align-items: stretch;
+		padding: 48px 24px;
+		/* Extra bottom padding so text doesn't overlap the phone mockup in BG */
+		padding-bottom: 340px;
+	}
+ 
+	.fnlmx-cta__content {
+		max-width: 100%;
+		text-align: center;
+	}
+ 
+	.fnlmx-cta__title {
+		font-size: clamp(1.25rem, 5vw, 1.5rem);
+	}
+ 
+	.fnlmx-cta__buttons {
+		flex-direction: column;
+		align-items: center;
+		gap: 12px;
+	}
+ 
+	.fnlmx-cta__btn {
+		width: 100%;
+		max-width: 300px;
+	}
+}
+ 
+/* --------------------------------------------------------------------------
+   Responsive – Tablet (768px – 1023px)
+   -------------------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 1023px) {
+	.fnlmx-cta__inner {
+		padding: 48px 32px;
+	}
+ 
+	.fnlmx-cta__content {
+		max-width: 420px;
+	}
+}
+
 /* ============================================================
    BASE
    ============================================================ */
