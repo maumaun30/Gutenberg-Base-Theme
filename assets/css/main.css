@@ -589,39 +589,23 @@ body.funalo-drawer-open {
   overflow: hidden;
 }
 
-/* ---- Footer shell --------------------------------------------- */
+/* ---- Footer --------------------------------------------- */
+
+/* ── Shell ──────────────────────────────────────────────────────── */
 .fnlmx-footer {
-  background-color: var(--bg-dark-3);
+  background-color: #110F20;
   color: #fff;
   font-family: 'Montserrat', sans-serif;
 }
 
-/* ---- Shared container ----------------------------------------- */
-.fnlmx-footer__container {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 0 1.5rem;
-}
-
-/* ================================================================ */
-/*  FOOTER — Full replacement for the footer section in main.css   */
-/* ================================================================ */
-
-/* ---- Footer shell --------------------------------------------- */
-.fnlmx-footer {
-  background-color: #0d0d18;
-  color: #fff;
-  font-family: 'Montserrat', sans-serif;
-}
-
-/* ---- Shared container ----------------------------------------- */
+/* ── Container ──────────────────────────────────────────────────── */
 .fnlmx-footer__container {
   max-width: 80rem;
   margin: 0 auto;
   padding: 3rem 2rem;
 }
 
-/* ---- Divider line --------------------------------------------- */
+/* ── Divider ────────────────────────────────────────────────────── */
 .fnlmx-footer__divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.08);
@@ -629,27 +613,31 @@ body.funalo-drawer-open {
 }
 
 /* ================================================================ */
-/*  ROW 1 — Brand left | Solaire + RG right                        */
+/*  ROW 1 — Brand left | Pills right                               */
 /* ================================================================ */
 .fnlmx-footer__top-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 2rem;
   flex-wrap: wrap;
 }
 
-/* Brand column */
+/* Brand */
 .fnlmx-footer__brand {
   flex: 0 0 auto;
-  max-width: 420px;
+  max-width: 460px;
 }
 
-.fnlmx-footer__brand .custom-logo-link img,
 .fnlmx-footer__brand .custom-logo-link {
   display: block;
-  max-width: 160px;
   margin-bottom: 1rem;
+}
+
+.fnlmx-footer__brand .custom-logo-link img {
+  max-width: 160px;
+  height: auto;
+  display: block;
 }
 
 .fnlmx-footer__site-name {
@@ -668,95 +656,98 @@ body.funalo-drawer-open {
   margin: 0;
 }
 
-/* Right side wrapper — flex row with gap between the two pills */
+/* Right side — two pills side by side */
 .fnlmx-footer__top-right {
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-wrap: wrap;
+  flex-shrink: 0;
 }
 
-/* Solaire — standalone wide pill */
+/* ── Pill 1: Solaire ─────────────────────────────────────────── */
 .fnlmx-footer__solaire {
   display: flex;
   align-items: center;
   justify-content: center;
-  /*padding: 1rem 2rem;*/
+  padding: 1rem 2.5rem;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: .75rem;
   height: 72px;
   flex-shrink: 0;
-  border-right: 1px solid hsla(0, 0%, 100%, .12);
 }
 .fnlmx-footer__solaire img {
-  /*max-width: 200px;
-  max-height: 40px;*/
+  max-width: 200px;
+  max-height: 38px;
   width: auto;
   height: auto;
   display: block;
   object-fit: contain;
 }
 
-/* RG group — separate pill containing multiple badges side by side */
+/* ── Pill 2: RG group (PAGCOR, 21, etc.) ────────────────────── */
 .fnlmx-footer__rg-group {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 0;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: .75rem;
+  overflow: hidden;
   height: 72px;
+  flex-shrink: 0;
 }
 
-/* Individual RG badge inside the group pill */
 .fnlmx-rg-badge {
-    /* border-right: 1px solid hsla(0,0%,100%,.12); */
-    flex-shrink: 0;
-    justify-content: center;
-    padding: 0.3rem 2rem 0.3rem;
-    background: #181528;
-    border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: .75rem 1.75rem;
+  height: 72px;
+  border-right: 1px solid rgba(255, 255, 255, .1);
+  flex-shrink: 0;
 }
-
+.fnlmx-rg-badge:last-child {
+  border-right: none;
+}
 .fnlmx-rg-badge img {
-  max-height: 44px;
+  max-height: 42px;
   max-width: 160px;
   width: auto;
   display: block;
   object-fit: contain;
 }
 
-.fnlmx-footer__navigation {
-  padding: 20px;
-  background: #181528;
-  border-radius: 8px;
-}
-
 /* ================================================================ */
-/*  ROW 2 — Support | Legal | Payments+Social                      */
+/*  ROW 2 — Nav pill (left) | Trust col (right)                    */
 /* ================================================================ */
 .fnlmx-footer__bottom-row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2.5rem;
-}
-
-@media (min-width: 640px) {
-  .fnlmx-footer__bottom-row {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  gap: 1.5rem;
+  align-items: start;
 }
 
 @media (min-width: 1024px) {
   .fnlmx-footer__bottom-row {
-    /* Support | Legal take ~equal space; trust col takes more */
-    grid-template-columns: 1fr 1fr 1.6fr;
-    gap: 3rem;
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
   }
 }
 
-/* Nav column shared styles */
-.fnlmx-footer__nav-col {}
+/* ── Nav pill: Support + Legal side by side inside a dark card ── */
+.fnlmx-footer__nav-pill {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  background: #181528;
+  border-radius: .75rem;
+  padding: 2rem;
+}
 
 .fnlmx-footer__nav-heading {
   font-family: 'Montserrat', sans-serif;
-  font-size: .95rem;
+  font-size: .875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .08em;
@@ -770,7 +761,7 @@ body.funalo-drawer-open {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: .75rem;
+  gap: .875rem;
 }
 
 .fnlmx-footer__nav-list li { margin: 0; }
@@ -788,21 +779,20 @@ body.funalo-drawer-open {
   color: #fff;
 }
 
-/* Trust column — stacked vertically */
+/* ── Trust column: Payments + Social stacked ────────────────── */
 .fnlmx-footer__trust-col {
   display: flex;
   flex-direction: column;
   gap: 2rem;
 }
 
-/* Trust block */
 .fnlmx-trust-block {
   display: flex;
   flex-direction: column;
   gap: .875rem;
 }
 
-/* ── Payment badges ──────────────────────────────────────────── */
+/* Payment badges */
 .fnlmx-payment-list {
   display: flex;
   flex-wrap: wrap;
@@ -815,14 +805,14 @@ body.funalo-drawer-open {
   justify-content: center;
   padding: .4rem .875rem;
   background: rgba(255, 255, 255, .05);
-  border: 1px solid rgba(255, 255, 255, .15);
+  border: 1px solid rgba(255, 255, 255, .12);
   border-radius: .5rem;
   height: 44px;
   min-width: 68px;
   transition: border-color .22s, background .22s, transform .22s;
 }
 .fnlmx-payment-badge:hover {
-  border-color: rgba(255, 255, 255, .3);
+  border-color: rgba(255, 255, 255, .28);
   background: rgba(255, 255, 255, .09);
   transform: translateY(-2px);
 }
@@ -834,7 +824,7 @@ body.funalo-drawer-open {
   object-fit: contain;
 }
 
-/* ── Social icons ────────────────────────────────────────────── */
+/* Social icons */
 .fnlmx-social-list {
   display: flex;
   gap: .5rem;
@@ -890,14 +880,102 @@ body.funalo-drawer-open {
 }
 
 /* ================================================================ */
-/*  RESPONSIVE TWEAKS                                               */
+/*  MOBILE  ≤ 767px                                                 */
 /* ================================================================ */
 @media (max-width: 767px) {
+
+  .fnlmx-footer__container {
+    padding: 2.5rem 1.25rem;
+  }
+
+  /* Stack brand above pills */
   .fnlmx-footer__top-row {
     flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
   }
+
+  .fnlmx-footer__brand {
+    max-width: 100%;
+    text-align: center;
+    width: 100%;
+  }
+
+  .fnlmx-footer__brand .custom-logo-link {
+    margin: 0 auto 1rem;
+  }
+
+  /* Stack Solaire above RG group on mobile */
   .fnlmx-footer__top-right {
-    justify-content: flex-start;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: .75rem;
+  }
+
+  .fnlmx-footer__solaire {
+    width: 100%;
+    height: 64px;
+    padding: .75rem 1.5rem;
+  }
+
+  .fnlmx-footer__rg-group {
+    width: 100%;
+    height: 64px;
+    justify-content: center;
+  }
+
+  .fnlmx-rg-badge {
+    flex: 1;
+    height: 64px;
+    padding: .75rem 1rem;
+    justify-content: center;
+  }
+
+  /* Nav pill stacks its two columns */
+  .fnlmx-footer__nav-pill {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  /* Trust col full width */
+  .fnlmx-footer__trust-col {
+    gap: 1.5rem;
+  }
+
+  /* Social icons wrap nicely */
+  .fnlmx-social-list {
+    gap: .5rem;
+  }
+
+  /* Payments wrap */
+  .fnlmx-payment-list {
+    gap: .5rem;
+  }
+}
+
+/* ================================================================ */
+/*  TABLET  768px – 1023px                                          */
+/* ================================================================ */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+  .fnlmx-footer__top-right {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .fnlmx-footer__bottom-row {
+    grid-template-columns: 1fr;
+  }
+
+  .fnlmx-footer__trust-col {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .fnlmx-trust-block {
+    flex: 1 1 200px;
   }
 }
 

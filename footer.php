@@ -20,11 +20,11 @@ function fnlmx_opt( $key ) {
     return function_exists( 'get_field' ) ? get_field( $key, 'option' ) : null;
 }
 
-$footer_desc     = fnlmx_opt( 'fnlmx_footer_description' );
-$solaire_img     = fnlmx_opt( 'fnlmx_footer_solaire' );
-$rg_rows         = fnlmx_opt( 'fnlmx_responsible_gaming' );
-$payment_rows    = fnlmx_opt( 'fnlmx_footer_payments' );
-$social_rows     = fnlmx_opt( 'fnlmx_footer_social' );
+$footer_desc  = fnlmx_opt( 'fnlmx_footer_description' );
+$solaire_img  = fnlmx_opt( 'fnlmx_footer_solaire' );
+$rg_rows      = fnlmx_opt( 'fnlmx_responsible_gaming' );
+$payment_rows = fnlmx_opt( 'fnlmx_footer_payments' );
+$social_rows  = fnlmx_opt( 'fnlmx_footer_social' );
 
 /* Image url helper */
 function fnlmx_img_url( $img, $size = 'full' ) {
@@ -41,9 +41,9 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
 <footer class="fnlmx-footer">
   <div class="fnlmx-footer__container">
 
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- ROW 1: Brand left  |  Solaire + RG badges right           -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         ROW 1 — Brand (left)  |  Solaire pill + RG pill (right)
+    ════════════════════════════════════════════════════════════════ -->
     <div class="fnlmx-footer__top-row">
 
       <!-- Brand: logo + description -->
@@ -61,10 +61,10 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
         <?php endif; ?>
       </div>
 
-      <!-- Right side: Solaire pill + RG badges pill (two separate containers) -->
+      <!-- Right side: two separate pills -->
       <div class="fnlmx-footer__top-right">
 
-        <!-- Solaire — standalone wide pill -->
+        <!-- Pill 1: Solaire standalone -->
         <?php if ( $solaire_img ) :
           $sol_url = fnlmx_img_url( $solaire_img, 'medium' );
           $sol_alt = fnlmx_img_alt( $solaire_img, 'A Product of Solaire' );
@@ -76,7 +76,7 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </div>
         <?php endif; ?>
 
-        <!-- RG badges — grouped together in their own pill -->
+        <!-- Pill 2: RG badges grouped (PAGCOR, 21, etc.) -->
         <?php if ( ! empty( $rg_rows ) ) : ?>
           <div class="fnlmx-footer__rg-group">
             <?php foreach ( $rg_rows as $row ) :
@@ -94,50 +94,52 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           </div>
         <?php endif; ?>
 
-      </div>
+      </div><!-- /top-right -->
     </div><!-- /top-row -->
 
     <div class="fnlmx-footer__divider"></div>
 
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- ROW 2: Support | Legal | Payments + Social                 -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         ROW 2 — Nav pill (left)  |  Payments + Social (right)
+    ════════════════════════════════════════════════════════════════ -->
     <div class="fnlmx-footer__bottom-row">
-      <div class="fnlmx-footer__navigation">
-      <!-- Support nav -->
-      <nav class="fnlmx-footer__nav-col">
-        <h4 class="fnlmx-footer__nav-heading">
-          <?php esc_html_e( 'Support', 'luxe' ); ?>
-        </h4>
-        <ul class="fnlmx-footer__nav-list">
-          <?php wp_nav_menu([
-            'theme_location' => 'footer-links',
-            'container'      => false,
-            'items_wrap'     => '%3$s',
-            'walker'         => new Luxe_Footer_Walker(),
-            'fallback_cb'    => 'luxe_footer_links_fallback',
-          ]); ?>
-        </ul>
-      </nav>
 
-      <!-- Legal nav -->
-      <nav class="fnlmx-footer__nav-col">
-        <h4 class="fnlmx-footer__nav-heading">
-          <?php esc_html_e( 'Legal', 'luxe' ); ?>
-        </h4>
-        <ul class="fnlmx-footer__nav-list">
-          <?php wp_nav_menu([
-            'theme_location' => 'footer-legal',
-            'container'      => false,
-            'items_wrap'     => '%3$s',
-            'walker'         => new Luxe_Footer_Walker(),
-            'fallback_cb'    => 'luxe_footer_legal_fallback',
-          ]); ?>
-        </ul>
-      </nav>
-      </div>
+      <!-- Left: Support + Legal inside one dark pill -->
+      <div class="fnlmx-footer__nav-pill">
 
-      <!-- Payments + Social stacked -->
+        <nav class="fnlmx-footer__nav-col">
+          <h4 class="fnlmx-footer__nav-heading">
+            <?php esc_html_e( 'Support', 'luxe' ); ?>
+          </h4>
+          <ul class="fnlmx-footer__nav-list">
+            <?php wp_nav_menu([
+              'theme_location' => 'footer-links',
+              'container'      => false,
+              'items_wrap'     => '%3$s',
+              'walker'         => new Luxe_Footer_Walker(),
+              'fallback_cb'    => 'luxe_footer_links_fallback',
+            ]); ?>
+          </ul>
+        </nav>
+
+        <nav class="fnlmx-footer__nav-col">
+          <h4 class="fnlmx-footer__nav-heading">
+            <?php esc_html_e( 'Legal', 'luxe' ); ?>
+          </h4>
+          <ul class="fnlmx-footer__nav-list">
+            <?php wp_nav_menu([
+              'theme_location' => 'footer-legal',
+              'container'      => false,
+              'items_wrap'     => '%3$s',
+              'walker'         => new Luxe_Footer_Walker(),
+              'fallback_cb'    => 'luxe_footer_legal_fallback',
+            ]); ?>
+          </ul>
+        </nav>
+
+      </div><!-- /nav-pill -->
+
+      <!-- Right: Secure Payments + Online Support stacked -->
       <div class="fnlmx-footer__trust-col">
 
         <?php if ( ! empty( $payment_rows ) ) : ?>
@@ -192,9 +194,9 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
 
     </div><!-- /bottom-row -->
 
-    <!-- ═══════════════════════════════════════════════════════════ -->
-    <!-- COPYRIGHT                                                   -->
-    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- ═══════════════════════════════════════════════════════════════
+         COPYRIGHT
+    ════════════════════════════════════════════════════════════════ -->
     <div class="fnlmx-footer__divider"></div>
     <div class="fnlmx-footer__copyright">
       <p class="fnlmx-footer__copy">
