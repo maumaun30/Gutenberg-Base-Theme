@@ -103,7 +103,7 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
     <!-- ROW 2: Support | Legal | Payments + Social                 -->
     <!-- ═══════════════════════════════════════════════════════════ -->
     <div class="fnlmx-footer__bottom-row">
-
+      <div class="fnlmx-footer__navigation">
       <!-- Support nav -->
       <nav class="fnlmx-footer__nav-col">
         <h4 class="fnlmx-footer__nav-heading">
@@ -135,6 +135,7 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
           ]); ?>
         </ul>
       </nav>
+      </div>
 
       <!-- Payments + Social stacked -->
       <div class="fnlmx-footer__trust-col">
