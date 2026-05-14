@@ -591,7 +591,7 @@ body.funalo-drawer-open {
 
 /* ---- Footer shell --------------------------------------------- */
 .fnlmx-footer {
-  background-color: var(--bg-dark-1);
+  background-color: var(--bg-dark-3);
   color: #fff;
   font-family: 'Montserrat', sans-serif;
 }
@@ -708,10 +708,9 @@ body.funalo-drawer-open {
     /* border-right: 1px solid hsla(0,0%,100%,.12); */
     flex-shrink: 0;
     justify-content: center;
-    padding: 1rem 1.5rem;
-    background: rgba(147, 0, 10, 0.1);
-    border: 1px solid rgba(255, 180, 171, 0.2);
-    border-radius: .75rem;
+    padding: 0.3rem 2rem 0.3rem;
+    background: #181528;
+    border-radius: 8px;
 }
 
 .fnlmx-rg-badge img {
@@ -720,6 +719,12 @@ body.funalo-drawer-open {
   width: auto;
   display: block;
   object-fit: contain;
+}
+
+.fnlmx-footer__navigation {
+  padding: 20px;
+  background: #181528;
+  border-radius: 8px;
 }
 
 /* ================================================================ */
@@ -1262,7 +1267,7 @@ body.funalo-drawer-open {
  
 .fnlmx-cta__btn:hover {
     opacity: 0.88;
-    transform: translateY(-1px);
+    transform: translateY(-5px);
 }
  
 /* Primary — solid pink */
@@ -1280,7 +1285,7 @@ body.funalo-drawer-open {
     max-width: 200px;
 }
  
-a.fnlmx-cta__btn--secondary:hover {
+a.fnlmx-cta__btn--secondary:hover, a.fnlmx-cta__btn--primary:hover {
   color: unset;
 }
  
