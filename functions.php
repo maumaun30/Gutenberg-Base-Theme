@@ -158,7 +158,6 @@ function fnlmx_responsible_gaming_popup() {
   $exit_url = 'https://www.google.com';
   ?>
 
-  <!-- ── Responsible Gaming Popup ── -->
   <div class="fnlmx-rg-popup" id="fnlmx-rg-popup" aria-modal="true" role="dialog" aria-label="Responsible Gaming Guidelines" aria-hidden="true">
     <div class="fnlmx-rg-popup__backdrop"></div>
 
@@ -267,6 +266,83 @@ function fnlmx_responsible_gaming_popup() {
   <?php
 }
 add_action( 'wp_body_open', 'fnlmx_responsible_gaming_popup' );
+
+// CTA SECTION
+function fnlmx_cta_section() {
+    $cta_title      = get_field( 'fnlmx_cta_title', 'option' );
+    $cta_description = get_field( 'fnlmx_cta_description', 'option' );
+    $cta_buttons    = get_field( 'fnlmx_cta_button_wrapper', 'option' );
+    $cta_desktop_bg = get_field( 'fnlmx_cta_desktop_bg', 'option' );
+    $cta_mobile_bg  = get_field( 'fnlmx_cta_mobile_bg', 'option' );
+
+    if ( ! $cta_title && ! $cta_description ) {
+        return '';
+    }
+
+    $desktop_bg_url = ! empty( $cta_desktop_bg['url'] ) ? esc_url( $cta_desktop_bg['url'] ) : '';
+    $desktop_bg_alt = ! empty( $cta_desktop_bg['alt'] ) ? esc_attr( $cta_desktop_bg['alt'] ) : '';
+    $mobile_bg_url  = ! empty( $cta_mobile_bg['url'] )  ? esc_url( $cta_mobile_bg['url'] )  : '';
+    $mobile_bg_alt  = ! empty( $cta_mobile_bg['alt'] )  ? esc_attr( $cta_mobile_bg['alt'] )  : '';
+
+    ob_start(); ?>
+
+    <section class="fnlmx-cta">
+
+        <?php if ( $desktop_bg_url ) : ?>
+            <div class="fnlmx-cta__bg fnlmx-cta__bg--desktop" aria-hidden="true">
+                <img src="<?php echo $desktop_bg_url; ?>" alt="<?php echo $desktop_bg_alt; ?>">
+            </div>
+        <?php endif; ?>
+
+        <?php if ( $mobile_bg_url ) : ?>
+            <div class="fnlmx-cta__bg fnlmx-cta__bg--mobile" aria-hidden="true">
+                <img src="<?php echo $mobile_bg_url; ?>" alt="<?php echo $mobile_bg_alt; ?>">
+            </div>
+        <?php endif; ?>
+
+        <div class="fnlmx-cta__inner">
+            <div class="fnlmx-cta__content">
+
+                <?php if ( $cta_title ) : ?>
+                    <h2 class="fnlmx-cta__title"><?php echo esc_html( $cta_title ); ?></h2>
+                <?php endif; ?>
+
+                <?php if ( $cta_description ) : ?>
+                    <div class="fnlmx-cta__description"><?php echo wp_kses_post( $cta_description ); ?></div>
+                <?php endif; ?>
+
+                <?php if ( ! empty( $cta_buttons ) ) : ?>
+                    <div class="fnlmx-cta__buttons">
+                        <?php foreach ( $cta_buttons as $index => $button ) :
+                            $label = ! empty( $button['fnlmx_cta_button_label'] ) ? $button['fnlmx_cta_button_label'] : '';
+                            $link  = ! empty( $button['fnlmx_cta_button_link'] )  ? $button['fnlmx_cta_button_link']  : '';
+
+                            if ( ! $label ) continue;
+
+                            $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
+                            $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
+                            $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
+                        ?>
+                            <?php if ( $link ) : ?>
+                                <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $target; ?>>
+                                    <?php echo esc_html( $label ); ?>
+                                </a>
+                            <?php else : ?>
+                                <span class="<?php echo esc_attr( $btn_class ); ?>"><?php echo esc_html( $label ); ?></span>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+            </div>
+        </div>
+
+    </section>
+
+    <?php
+    return ob_get_clean();
+}
+add_shortcode( 'fnlmx_cta', 'fnlmx_cta_section' );
  
 /**
  * Luxe Theme — Nav Walker & Menu Registration
