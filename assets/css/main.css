@@ -689,23 +689,16 @@ body.funalo-drawer-open {
 .fnlmx-footer__rg-group {
   display: flex;
   align-items: center;
-  gap: 0;
-  background: rgba(255, 255, 255, .04);
-  border: 1px solid rgba(255, 255, 255, .12);
-  border-radius: .75rem;
-  overflow: hidden;
+  gap: 20px;
   height: 72px;
-  flex-shrink: 0;
 }
 
 .fnlmx-rg-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: .75rem 1.75rem;
-  height: 72px;
-  border-right: 1px solid rgba(255, 255, 255, .1);
   flex-shrink: 0;
+  justify-content: center;
+  padding: 0.3rem 2rem 0.3rem;
+  background: #181528;
+  border-radius: 8px;
 }
 .fnlmx-rg-badge:last-child {
   border-right: none;
