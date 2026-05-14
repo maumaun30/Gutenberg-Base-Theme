@@ -879,7 +879,7 @@ body.funalo-drawer-open {
     display: none;
   }
 
-  ..fnlmx-rg-badge img {
+  .fnlmx-rg-badge img, .custom-logo img {
     margin: auto;
   }
 
@@ -892,6 +892,7 @@ body.funalo-drawer-open {
     flex-direction: column;
     align-items: flex-start;
     gap: 1.5rem;
+    margin-bottom: 20px;
   }
 
   .fnlmx-footer__brand {
