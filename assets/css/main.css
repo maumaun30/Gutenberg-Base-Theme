@@ -1267,20 +1267,21 @@ body.funalo-drawer-open {
  
 /* Primary — solid pink */
 .fnlmx-cta__btn--primary {
-    background-color: #e91e8c;
-    color: #ffffff;
-    border: 2px solid #e91e8c;
+  background: var(--color-funalomax-gradient);;
+  color: #ffffff;
+  max-width: 200px;
 }
  
 /* Secondary — white outline */
 .fnlmx-cta__btn--secondary {
     background-color: transparent;
     color: #ffffff;
-    border: 2px solid #ffffff;
+    border: 1px solid #334155;
+    max-width: 200px;
 }
  
-.fnlmx-cta__btn--secondary:hover {
-    background-color: rgba(255, 255, 255, 0.08);
+a.fnlmx-cta__btn--secondary:hover {
+  color: unset;
 }
  
 /* --------------------------------------------------------------------------
