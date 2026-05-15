@@ -612,6 +612,13 @@ body.funalo-drawer-open {
   margin: 2.5rem 0;
 }
 
+.fnlmx-footer__divider-mobile {
+  display: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 20px;
+}
+
 /* ================================================================ */
 /*  ROW 1 — Brand left | Pills right                               */
 /* ================================================================ */
@@ -879,6 +886,10 @@ body.funalo-drawer-open {
     display: none;
   }
 
+  .fnlmx-footer__divider-mobile {
+    display: unset;
+  }
+
   .fnlmx-footer__brand .custom-logo-link img {
     margin: auto;
   }
@@ -995,7 +1006,7 @@ body.funalo-drawer-open {
     margin: auto;
   }
 
-  ..fnlmx-footer__brand .custom-logo-link img {
+  .fnlmx-footer__brand .custom-logo-link img {
     margin: auto;
   }
 
