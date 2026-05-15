@@ -873,6 +873,17 @@ body.funalo-drawer-open {
   letter-spacing: .02em;
 }
 
+@media (max-width: 1024px) {
+  .fnlmx-footer__top-right {
+    flex-direction: column;
+  }
+
+  .fnlmx-footer__solaire {
+    border-right: unset;
+  }
+
+}
+
 /* ================================================================ */
 /*  MOBILE  ≤ 767px                                                 */
 /* ================================================================ */
@@ -887,7 +898,7 @@ body.funalo-drawer-open {
   }
 
   .fnlmx-footer__divider-mobile {
-    display: unset;
+    display: block;
   }
 
   .fnlmx-footer__brand .custom-logo-link img {
@@ -985,6 +996,11 @@ body.funalo-drawer-open {
   .fnlmx-footer__top-right {
     flex-wrap: wrap;
     justify-content: flex-end;
+    flex-direction: row;
+  }
+
+  .fnlmx-footer__solaire {
+    border-right: 1px solid hsla(0,0%,100%,.12);
   }
 
   .fnlmx-footer__bottom-row {
