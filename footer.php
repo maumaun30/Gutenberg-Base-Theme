@@ -59,6 +59,7 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
         <?php if ( $footer_desc ) : ?>
           <p class="fnlmx-footer__desc"><?php echo wp_kses_post( $footer_desc ); ?></p>
         <?php endif; ?>
+        <div class="fnlmx-footer__divider-mobile"></div>
       </div>
 
       <!-- Right side: two separate pills -->
