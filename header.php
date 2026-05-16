@@ -8,6 +8,73 @@
 <body <?php body_class(); ?>>
 <?php wp_body_open(); ?>
 
+<!-- ── Responsible Gaming Popup ── -->
+<div class="fnlmx-rg-popup" id="fnlmx-rg-popup" aria-modal="true" role="dialog" aria-label="Responsible Gaming Guidelines" aria-hidden="true">
+  <div class="fnlmx-rg-popup__backdrop"></div>
+
+  <div class="fnlmx-rg-popup__panel">
+
+    <h2 class="fnlmx-rg-popup__title"><?php esc_html_e('Responsible Gaming Guidelines', 'luxe'); ?></h2>
+
+    <div class="fnlmx-rg-popup__body">
+      <ul class="fnlmx-rg-popup__list">
+        <li><?php esc_html_e('I am over 21 years of age.', 'luxe'); ?></li>
+        <li><?php esc_html_e('I am not a government official, or employee connected directly with the operation of the government or any of its agencies.', 'luxe'); ?></li>
+        <li><?php esc_html_e('I am not a member of the Armed Forces of the Philippines, including the Army, Navy, Air Force, or the Philippine National Police.', 'luxe'); ?></li>
+        <li><?php esc_html_e('I am not a holder of a Gaming Employment License (GEL).', 'luxe'); ?></li>
+        <li><?php esc_html_e('Playing in open and public places is prohibited.', 'luxe'); ?></li>
+        <li><a href="<?php echo esc_url( home_url('/self-exclude/') ); ?>"><?php esc_html_e('To Self-Exclude (Self-Ban)', 'luxe'); ?></a></li>
+        <li><a href="https://www.pagcor.ph/responsible-gaming.php" target="_blank" rel="noopener noreferrer"><?php esc_html_e("To Know More About PAGCOR's Responsible Gaming Program", 'luxe'); ?></a></li>
+        <li><a href="<?php echo esc_url( home_url('/gaming-support/') ); ?>"><?php esc_html_e('For Gaming Support Helplines', 'luxe'); ?></a></li>
+      </ul>
+
+      <!-- PAGCOR + 21 badges -->
+      <div class="fnlmx-rg-popup__badges">
+        <div class="fnlmx-rg-popup__badge-item">
+          <?php
+            $pagcor_img = function_exists('get_field') ? get_field('fnlmx_pagcor_badge', 'option') : null;
+            if ( $pagcor_img && is_array($pagcor_img) ) :
+          ?>
+            <img src="<?php echo esc_url($pagcor_img['url']); ?>" alt="PAGCOR" loading="lazy">
+          <?php else : ?>
+            <span class="fnlmx-rg-popup__badge-fallback">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#F71DC2"><circle cx="12" cy="12" r="10"/></svg>
+              PAGCOR
+            </span>
+          <?php endif; ?>
+        </div>
+        <div class="fnlmx-rg-popup__badge-divider"></div>
+        <div class="fnlmx-rg-popup__badge-item">
+          <?php
+            $badge21_img = function_exists('get_field') ? get_field('fnlmx_21_badge', 'option') : null;
+            if ( $badge21_img && is_array($badge21_img) ) :
+          ?>
+            <img src="<?php echo esc_url($badge21_img['url']); ?>" alt="21+ Know When To Stop" loading="lazy">
+          <?php else : ?>
+            <span class="fnlmx-rg-popup__badge-fallback fnlmx-rg-popup__badge-fallback--21">21+</span>
+          <?php endif; ?>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <p class="fnlmx-rg-popup__disclaimer">
+        <?php esc_html_e('Funds or credits in the account of player who is found ineligible to play shall mean forfeiture of said funds/credits in favor of the Government.', 'luxe'); ?>
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="fnlmx-rg-popup__actions">
+      <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--exit" id="fnlmx-rg-exit">
+        <?php esc_html_e('Exit', 'luxe'); ?>
+      </button>
+      <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed" id="fnlmx-rg-proceed">
+        <?php esc_html_e('Proceed', 'luxe'); ?>
+      </button>
+    </div>
+
+  </div>
+</div>
+
 
 <nav class="funalo-nav" role="navigation" aria-label="Main navigation">
 
@@ -146,7 +213,7 @@
       </svg>
     </button>
 
-    <div class="funalo-search-overlay__content">
+    <div class="fnlmx-search-overlay__content">
       <p class="funalo-search-overlay__label"><?php esc_html_e('What are you looking for?', 'luxe'); ?></p>
       <?php get_search_form(); ?>
     </div>
@@ -157,7 +224,48 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
 
-    /* ── Mobile Drawer ── */
+    /* ══════════════════════════════════════
+       RESPONSIBLE GAMING POPUP
+    ══════════════════════════════════════ */
+    const rgPopup   = document.getElementById('fnlmx-rg-popup');
+    const rgProceed = document.getElementById('fnlmx-rg-proceed');
+    const rgExit    = document.getElementById('fnlmx-rg-exit');
+
+    if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
+      // Small delay so page renders first
+      setTimeout(function () {
+        rgPopup.classList.add('is-open');
+        rgPopup.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('funalo-drawer-open');
+      }, 300);
+    }
+
+    if (rgProceed) {
+      rgProceed.addEventListener('click', function () {
+        sessionStorage.setItem('fnlmx_rg_accepted', '1');
+        rgPopup.classList.remove('is-open');
+        rgPopup.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('funalo-drawer-open');
+      });
+    }
+
+    if (rgExit) {
+      rgExit.addEventListener('click', function () {
+        if (document.referrer && document.referrer !== window.location.href) {
+          window.location.href = document.referrer;
+        } else {
+          // No referrer — try close tab, fallback to blank
+          window.close();
+          setTimeout(function () {
+            window.location.replace('about:blank');
+          }, 300);
+        }
+      });
+    }
+
+    /* ══════════════════════════════════════
+       MOBILE DRAWER
+    ══════════════════════════════════════ */
     const hamburger = document.getElementById('funalo-hamburger');
     const drawer    = document.getElementById('funalo-mobile-menu');
     const backdrop  = document.getElementById('funalo-backdrop');
@@ -188,7 +296,9 @@
       if (backdrop) backdrop.addEventListener('click', closeDrawer);
     }
 
-    /* ── Search Overlay ── */
+    /* ══════════════════════════════════════
+       SEARCH OVERLAY
+    ══════════════════════════════════════ */
     const searchBtn     = document.getElementById('funalo-search-btn');
     const searchOverlay = document.getElementById('funalo-search-overlay');
     const searchClose   = document.getElementById('funalo-search-close');
@@ -209,7 +319,6 @@
     if (searchBtn)   searchBtn.addEventListener('click', openSearch);
     if (searchClose) searchClose.addEventListener('click', closeSearch);
 
-    /* ── Escape key closes either ── */
     document.addEventListener('keydown', function (e) {
       if (e.key !== 'Escape') return;
       if (drawer && drawer.classList.contains('is-open')) closeDrawer();
