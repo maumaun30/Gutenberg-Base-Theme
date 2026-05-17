@@ -249,12 +249,12 @@
   text-decoration: none;
   color: #ffffff;
   background: var(--color-funalomax-gradient);
-  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
 }
 
 .funalo-nav__cta a:hover {
-  transform: translateY(-5px);
+  opacity: 0.88;
 }
 
 /* ── Search Icon Button ── */
