@@ -1,0 +1,41 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/fast-deposit",
+  "title": "Fast Deposit Banner",
+  "category": "design",
+  "icon": "money-alt",
+  "description": "Fast Deposit e-wallet banner featuring GCash and Maya logos.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "badgeLabel": {
+      "type": "string",
+      "default": "Fast Deposit"
+    },
+    "badgeSubLabel": {
+      "type": "string",
+      "default": "With Trusted E-Wallets"
+    },
+    "ctaText": {
+      "type": "string",
+      "default": "Instant top-ups with GCash and Maya"
+    },
+    "gcashLogoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "mayaLogoUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "shieldIconUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "lightningIconUrl": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}

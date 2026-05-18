@@ -1,0 +1,280 @@
+.wp-block-mytheme-fast-deposit {
+}
+
+/*
+ * Fast Deposit Banner Block — style.css
+ * Pixel-matched to the FUNaloMAX Fast Deposit UI design.
+ * --------------------------------------------------------- */
+
+/* ═══════════════════════════════════════════════════════════
+   WRAPPER
+   ═══════════════════════════════════════════════════════════ */
+.fnlmx-fast-deposit-wrap {
+	width: 880px;
+	margin: auto;
+	display: block;
+	box-sizing: border-box;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   INNER PILL — gradient border via background-clip trick
+   ═══════════════════════════════════════════════════════════ */
+.fnlmx-fast-deposit {
+	display: flex;
+	align-items: center;
+	box-sizing: border-box;
+	overflow: hidden;
+	gap: 0;
+	border-radius: 12px;
+	min-height: 73px;
+	padding: 0 24px;
+	border: 2px solid transparent;
+	background:
+		linear-gradient(#0F0D1E, #0F0D1E) padding-box,
+		linear-gradient(90deg, #F71DC2, #FEBB3C) border-box;
+	background-origin: border-box;
+	background-clip: padding-box, border-box;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LEFT — shield icon + label
+   ═══════════════════════════════════════════════════════════ */
+.fnlmx-fast-deposit__left {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex: 0 0 auto;
+	padding-right: 24px;
+}
+
+.fnlmx-fast-deposit__icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 40px;
+	height: 40px;
+	border-radius: 10px;
+	background: #2A2A2A;
+	color: #F71DC2;
+	flex-shrink: 0;
+}
+
+.fnlmx-fast-deposit__icon svg {
+	width: 20px;
+	height: 20px;
+}
+
+.fnlmx-fast-deposit__shield-img {
+	width: 22px;
+	height: 22px;
+	object-fit: contain;
+}
+
+.fnlmx-fast-deposit__label {
+	display: flex;
+	flex-direction: column;
+	gap: 3px;
+}
+
+.fnlmx-fast-deposit__title {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 800;
+	font-size: 14px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: #ffffff;
+	line-height: 1;
+	white-space: nowrap;
+}
+
+.fnlmx-fast-deposit__subtitle {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 600;
+	font-size: 9px;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.45);
+	line-height: 1;
+	white-space: nowrap;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   VERTICAL DIVIDERS — desktop only
+   ═══════════════════════════════════════════════════════════ */
+.fnlmx-fast-deposit__divider {
+	width: 1px;
+	height: 36px;
+	background: rgba(255, 255, 255, 0.1);
+	flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CENTER — logos
+   ═══════════════════════════════════════════════════════════ */
+.fnlmx-fast-deposit__logos {
+	display: flex;
+	align-items: center;
+	gap: 28px;
+	flex: 1;
+	justify-content: center;
+	padding: 0 28px;
+}
+
+.fnlmx-fast-deposit__logo {
+	height: 30px;
+	width: auto;
+	max-width: 120px;
+	object-fit: contain;
+	display: block;
+}
+
+.fnlmx-fast-deposit__logo-placeholder {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+	font-size: 16px;
+	color: #ffffff;
+	letter-spacing: 0.02em;
+}
+
+.fnlmx-fast-deposit__logo-placeholder--maya {
+	color: #00b140;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RIGHT — CTA text + lightning bolt
+   ═══════════════════════════════════════════════════════════ */
+.fnlmx-fast-deposit__right {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	flex: 0 0 auto;
+	padding-left: 24px;
+}
+
+.fnlmx-fast-deposit__cta-text {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 500;
+	font-size: 11.5px;
+	color: rgba(255, 255, 255, 0.7);
+	line-height: 1.45;
+	text-align: right;
+	max-width: 130px;
+}
+
+.fnlmx-fast-deposit__lightning {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 36px;
+	height: 36px;
+	border-radius: 8px;
+	background: #2A2A2A;
+	flex-shrink: 0;
+}
+
+.fnlmx-fast-deposit__lightning svg {
+	width: 18px;
+	height: 18px;
+	color: #ffffff;
+}
+
+.fnlmx-fast-deposit__lightning-img {
+	width: 18px;
+	height: 18px;
+	object-fit: contain;
+	display: block;
+}
+
+@media (max-width: 1023px) {
+	.fnlmx-fast-deposit {
+		padding: 0 16px;
+		min-height: 56px;
+	}
+	.fnlmx-fast-deposit__left  { padding-right: 16px; }
+	.fnlmx-fast-deposit__right { padding-left: 16px; }
+	.fnlmx-fast-deposit__logos { padding: 0 16px; gap: 20px; }
+	.fnlmx-fast-deposit__cta-text { font-size: 10.5px; max-width: 125px; }
+}
+
+@media (max-width: 880px) {
+	.fnlmx-fast-deposit-wrap {
+		width: 700px;
+	}
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE — ≤ 640px
+   Layout:
+     Row 1: [shield + label]  |  [cta text + lightning]
+     Row 2: [GCash logo  maya logo] centered
+   ═══════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+	.fnlmx-fast-deposit-wrap {
+		width: 400px;
+	}
+    
+    .fnlmx-fast-deposit {
+		flex-wrap: wrap;
+		align-items: center;
+		padding: 14px 16px;
+		min-height: unset;
+		gap: 0;
+	}
+
+	/* Row 1 left: shield + label — grows to fill space */
+	.fnlmx-fast-deposit__left {
+		flex: 1 1 auto;
+		padding-right: 12px;
+	}
+
+	/* Row 1 right: cta text + lightning — hugs the right edge */
+	.fnlmx-fast-deposit__right {
+		flex: 0 0 auto;
+		padding-left: 0;
+		gap: 10px;
+	}
+
+	/* Show CTA text on mobile (visible in your screenshot) */
+	.fnlmx-fast-deposit__cta-text {
+		display: block;
+		font-size: 9px;
+		max-width: 115px;
+		text-align: right;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+		font-weight: 600;
+	}
+
+	/* Hide vertical dividers on mobile */
+	.fnlmx-fast-deposit__divider {
+		display: none;
+	}
+
+	/* Row 2: logos — full width, centered */
+	.fnlmx-fast-deposit__logos {
+		order: 3;
+		flex: 1 1 100%;
+		justify-content: center;
+		padding: 12px 0 2px;
+		gap: 24px;
+	}
+
+	/* Slightly larger logos on mobile since they have more room */
+	.fnlmx-fast-deposit__logo {
+		height: 26px;
+	}
+
+    .fnlmx-fast-deposit__icon, .fnlmx-fast-deposit__lightning {
+        width: 30px;
+        height: 30px;
+    }
+
+    .fnlmx-fast-deposit__shield-img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .fnlmx-fast-deposit__title {
+        font-size: 12px;
+    }
+}
