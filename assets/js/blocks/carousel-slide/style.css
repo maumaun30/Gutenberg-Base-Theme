@@ -206,3 +206,21 @@ a.mytheme-carousel-slide__btn:hover {
 .mytheme-carousel-slide__btn--secondary:hover {
   transform: translateY(-5px);
 }
+
+@media (max-width: 767px) {
+  .mytheme-carousel-slide__title {
+    text-align: center;
+    font-size: 42px;
+  }
+
+  .mytheme-carousel-slide__subtitle {
+    text-align: center;
+  }
+
+  .mytheme-carousel-slide__buttons {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: 0 auto;
+  }
+}
