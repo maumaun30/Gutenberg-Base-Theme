@@ -4,6 +4,16 @@ assets/js/**/build/
 assets/css/main.min.css
 assets/css/critical.min.css
 
+# Build / cache output
+dist/
+build/
+.cache/
+.parcel-cache/
+.turbo/
+.next/
+.vite/
+*.tsbuildinfo
+
 *.log
 .DS_Store
 Thumbs.db
