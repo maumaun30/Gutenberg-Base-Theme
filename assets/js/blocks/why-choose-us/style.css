@@ -1,10 +1,15 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Block wrapper ───────────────────────────────────────────────── */
 .wp-block-mytheme-why-choose-us.mytheme-why-choose-us {
-  background-color: var(--bg-dark-3, #0f0f0f);
-  padding: var(--section-py, 80px) 0;
+  background-color: var(--bg-dark-3, #060d1a);
+  padding: var(--section-py, 72px) 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .mytheme-wcu__container {
-  max-width: 1280px;
+  max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
 }
@@ -12,134 +17,121 @@
 /* ── Heading ─────────────────────────────────────────────────────── */
 .mytheme-wcu__heading {
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 48px;
 }
 
 .mytheme-wcu__title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  color: #fff;
-  letter-spacing: 0.02em;
-  margin: 0 0 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.25;
+  margin: 0 0 18px;
 }
 
 .mytheme-wcu__subtitle {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.25rem;
-  color: rgba(255, 255, 255, 0.6);
-  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.975rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.75;
+  margin: 0 auto;
+  max-width: 826px;
 }
 
 /* ── Grid ────────────────────────────────────────────────────────── */
 .mytheme-wcu__grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
 }
 
-@media (min-width: 640px) {
-  .mytheme-wcu__grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 1024px) {
+@media (min-width: 900px) {
   .mytheme-wcu__grid {
     grid-template-columns: repeat(4, 1fr);
   }
 }
 
-/* ── Card ────────────────────────────────────────────────────────── */
+/* ── Card — outer box containing icon + label ────────────────────── */
 .mytheme-wcu__card {
-  position: relative;
-  padding: 32px;
-  border-radius: 16px;
-  background-color: var(--bg-gray-4, #1a1a1a);
-  border: 1px solid var(--border, #2a2a2a);
-  box-shadow: var(--shadow-md, 0 4px 24px rgba(0,0,0,0.4));
-  overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 20px 24px;
+  border-radius: 6px;
+  background-color: #0F172A;
+  border: 1px solid #1E293B;
+  cursor: default;
+  transition: border-color 0.25s ease, background-color 0.25s ease;
 }
 
-.mytheme-wcu__card:hover {
-  transform: translateY(-8px);
-}
-
-/* ── Icon box ────────────────────────────────────────────────────── */
-.mytheme-wcu__icon-box {
-  width: 64px;
-  height: 64px;
-  margin-bottom: 24px;
-  border-radius: 12px;
+/* ── Icon bg shape — dark rounded square behind the logo ─────────── */
+.mytheme-wcu__icon-bg {
+  width: 240px;
+  height: 40px;
+  background-color: #1E293B;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--bg-dark-2, #111);
-  border: 2px solid var(--color-primary, #f5b335);
-  box-shadow: 0 0 20px rgba(245, 179, 53, 0.2);
-  transition: transform 0.3s ease, rotate 0.3s ease;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
-.mytheme-wcu__card:hover .mytheme-wcu__icon-box {
-  transform: scale(1.1) rotate(6deg);
+/* ── Logo image / inline SVG ─────────────────────────────────────── */
+.mytheme-payment-logo {
+  display: block;
+  max-width: 70px;
+  max-height: 36px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
 }
 
-/* SVG icon — use currentColor for easy theming */
-.mytheme-feature-svg {
+/* Inline SVGs inherit colour */
+.mytheme-wcu__icon-bg svg.mytheme-payment-logo {
+  fill: currentColor;
+  color: #ffffff;
+}
+
+/* ── Logo placeholder (no media set) ────────────────────────────── */
+.mytheme-wcu__logo-placeholder {
   width: 32px;
   height: 32px;
-  display: block;
-  object-fit: contain;
-  /* For inline SVGs, currentColor inherits from parent */
-  color: var(--color-primary, #f5b335);
-  fill: currentColor;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
 }
 
-/* ── Card text ───────────────────────────────────────────────────── */
-.mytheme-wcu__card-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 1.25rem;
-  color: #fff;
-  margin: 0 0 12px;
+/* ── Card label — inside the card at the bottom ──────────────────── */
+.mytheme-wcu__card-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
 }
 
-.mytheme-wcu__card-desc {
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.7;
+/* ── Tagline ─────────────────────────────────────────────────────── */
+.mytheme-wcu__tagline {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  text-align: center;
   margin: 0;
+  padding-top: 4px;
 }
 
-/* ── Bottom accent line ──────────────────────────────────────────── */
-.mytheme-wcu__accent-line {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  border-radius: 0 0 16px 16px;
-  background-color: var(--color-primary, #f5b335);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
-}
-
-.mytheme-wcu__card:hover .mytheme-wcu__accent-line {
-  transform: scaleX(1);
-}
-
-/* ── Hover glow ──────────────────────────────────────────────────── */
-.mytheme-wcu__glow {
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  box-shadow: 0 0 40px rgba(245, 179, 53, 0.3);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-}
-
-.mytheme-wcu__card:hover .mytheme-wcu__glow {
-  opacity: 1;
+@media (max-width: 767px) {
+  .mytheme-wcu__icon-bg {
+    width: 130px;
+  }
 }

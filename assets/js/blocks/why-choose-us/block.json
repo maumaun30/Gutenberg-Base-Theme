@@ -4,26 +4,30 @@
   "title": "Why Choose Us",
   "category": "design",
   "icon": "star-filled",
-  "description": "Feature cards section with SVG icons, repeatable items.",
+  "description": "Payment / feature cards section with logos and repeatable items.",
   "editorScript": "file:./build/index.js",
   "style": "file:./style.css",
   "render": "file:./render.php",
   "attributes": {
     "sectionTitle": {
       "type": "string",
-      "default": "Why Choose Us"
+      "default": "MANAGE YOUR FUNDS USING YOUR PREFERRED PAYMENT OPTIONS"
     },
     "sectionSubtitle": {
       "type": "string",
-      "default": "The advantages that set us apart"
+      "default": "Keeping track of your funds is a straightforward process. We have partnered with the following trusted payment services providers:"
+    },
+    "sectionTagline": {
+      "type": "string",
+      "default": "Enjoy quick deposits, smooth transactions, and a hassle-free experience every time."
     },
     "features": {
       "type": "array",
       "default": [
-        { "svgId": 0, "svgUrl": "", "title": "Lightning Fast", "description": "Experience unparalleled speed with our optimized infrastructure built for performance." },
-        { "svgId": 0, "svgUrl": "", "title": "Secure & Private", "description": "Enterprise-grade security ensuring your data remains protected at all times." },
-        { "svgId": 0, "svgUrl": "", "title": "Precision Focused", "description": "Tailored solutions designed specifically for your business objectives." },
-        { "svgId": 0, "svgUrl": "", "title": "Global Reach", "description": "Scale seamlessly across regions with our worldwide network infrastructure." }
+        { "svgId": 0, "svgUrl": "", "title": "GCASH", "description": "" },
+        { "svgId": 0, "svgUrl": "", "title": "MAYA", "description": "" },
+        { "svgId": 0, "svgUrl": "", "title": "INSTAPAY", "description": "" },
+        { "svgId": 0, "svgUrl": "", "title": "DRAGONPAY", "description": "" }
       ]
     }
   }

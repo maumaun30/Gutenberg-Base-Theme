@@ -13,53 +13,39 @@ import {
 } from '@wordpress/components';
 import { plus, chevronUp, chevronDown, trash } from '@wordpress/icons';
 
-// Placeholder shown in editor when no SVG is uploaded yet
-function SvgPlaceholder() {
+function ImgPlaceholder() {
   return (
     <svg
       viewBox="0 0 64 64"
       xmlns="http://www.w3.org/2000/svg"
-      style={{ width: '32px', height: '32px', opacity: 0.3 }}
+      style={{ width: '32px', height: '32px', opacity: 0.25 }}
     >
       <rect x="8" y="8" width="48" height="48" rx="4" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="6 3" />
-      <text x="32" y="38" textAnchor="middle" fontSize="20" fill="currentColor">SVG</text>
+      <text x="32" y="38" textAnchor="middle" fontSize="14" fill="currentColor">IMG</text>
     </svg>
   );
 }
 
 export default function Edit({ attributes, setAttributes }) {
-  const { sectionTitle, sectionSubtitle, features } = attributes;
-
-  // ── Repeater helpers ──────────────────────────────────────────────
+  const { sectionTitle, sectionSubtitle, sectionTagline, features } = attributes;
 
   const updateFeature = (index, field, value) => {
-    const updated = features.map((f, i) =>
-      i === index ? { ...f, [field]: value } : f
-    );
+    const updated = features.map((f, i) => i === index ? { ...f, [field]: value } : f);
     setAttributes({ features: updated });
   };
 
-  const updateFeatureSvg = (index, media) => {
-    const updated = features.map((f, i) =>
-      i === index ? { ...f, svgId: media.id, svgUrl: media.url } : f
-    );
+  const updateFeatureMedia = (index, media) => {
+    const updated = features.map((f, i) => i === index ? { ...f, svgId: media.id, svgUrl: media.url } : f);
     setAttributes({ features: updated });
   };
 
-  const clearFeatureSvg = (index) => {
-    const updated = features.map((f, i) =>
-      i === index ? { ...f, svgId: 0, svgUrl: '' } : f
-    );
+  const clearFeatureMedia = (index) => {
+    const updated = features.map((f, i) => i === index ? { ...f, svgId: 0, svgUrl: '' } : f);
     setAttributes({ features: updated });
   };
 
   const addFeature = () => {
-    setAttributes({
-      features: [
-        ...features,
-        { svgId: 0, svgUrl: '', title: 'New Feature', description: 'Describe this feature.' },
-      ],
-    });
+    setAttributes({ features: [...features, { svgId: 0, svgUrl: '', title: 'NEW ITEM', description: '' }] });
   };
 
   const removeFeature = (index) => {
@@ -75,11 +61,11 @@ export default function Edit({ attributes, setAttributes }) {
   };
 
   const blockProps = useBlockProps({
-    className: 'why-choose-us-editor',
+    className: 'mytheme-payments-editor',
     style: {
-      backgroundColor: 'var(--bg-dark-3, #0f0f0f)',
-      padding: '48px 32px',
-      borderRadius: '8px',
+      backgroundColor: '#060d1a',
+      padding: '64px 32px',
+      fontFamily: "'Montserrat', sans-serif",
     },
   });
 
@@ -96,19 +82,22 @@ export default function Edit({ attributes, setAttributes }) {
             label="Subtitle"
             value={sectionSubtitle}
             onChange={(value) => setAttributes({ sectionSubtitle: value })}
-            rows={2}
+            rows={3}
+          />
+          <TextControl
+            label="Tagline (below cards)"
+            value={sectionTagline}
+            onChange={(value) => setAttributes({ sectionTagline: value })}
           />
         </PanelBody>
 
-        <PanelBody title={`Features (${features.length})`} initialOpen={true}>
+        <PanelBody title={`Items (${features.length})`} initialOpen={true}>
           {features.map((feature, index) => (
             <Card key={index} style={{ marginBottom: '12px', border: '1px solid #444' }}>
               <CardHeader>
                 <Flex align="center">
                   <FlexItem>
-                    <strong style={{ color: '#aaa', fontSize: '12px' }}>
-                      Feature {index + 1}
-                    </strong>
+                    <strong style={{ color: '#aaa', fontSize: '12px' }}>Item {index + 1}</strong>
                   </FlexItem>
                   <FlexBlock />
                   <FlexItem>
@@ -122,48 +111,35 @@ export default function Edit({ attributes, setAttributes }) {
                   </FlexItem>
                 </Flex>
               </CardHeader>
-
               <CardBody>
-                {/* SVG upload field */}
                 <p style={{ fontSize: '11px', color: '#aaa', margin: '0 0 8px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  Icon (SVG)
+                  Logo / Icon
                 </p>
                 <MediaUploadCheck>
                   <MediaUpload
-                    onSelect={(media) => updateFeatureSvg(index, media)}
-                    allowedTypes={['image/svg+xml']}
+                    onSelect={(media) => updateFeatureMedia(index, media)}
+                    allowedTypes={['image']}
                     value={feature.svgId}
                     render={({ open }) => (
                       <Flex align="center" gap={2} style={{ marginBottom: '12px' }}>
-                        {/* Preview */}
                         <FlexItem>
-                          <div
-                            style={{
-                              width: '48px',
-                              height: '48px',
-                              borderRadius: '8px',
-                              backgroundColor: 'var(--bg-dark-2, #1a1a1a)',
-                              border: '1px solid #444',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              overflow: 'hidden',
-                            }}
-                          >
+                          <div style={{
+                            width: '56px', height: '40px', borderRadius: '6px',
+                            backgroundColor: '#0e1a2e', border: '1px solid #2a3a55',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
+                          }}>
                             {feature.svgUrl
-                              ? <img src={feature.svgUrl} alt="" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
-                              : <SvgPlaceholder />
+                              ? <img src={feature.svgUrl} alt="" style={{ maxWidth: '40px', maxHeight: '28px', objectFit: 'contain' }} />
+                              : <ImgPlaceholder />
                             }
                           </div>
                         </FlexItem>
-
-                        {/* Buttons */}
                         <FlexBlock>
                           <Button variant="secondary" isSmall onClick={open} style={{ marginBottom: '4px', display: 'block', width: '100%' }}>
-                            {feature.svgUrl ? 'Replace SVG' : 'Upload SVG'}
+                            {feature.svgUrl ? 'Replace Logo' : 'Upload Logo'}
                           </Button>
                           {feature.svgUrl && (
-                            <Button variant="tertiary" isSmall isDestructive onClick={() => clearFeatureSvg(index)} style={{ display: 'block', width: '100%' }}>
+                            <Button variant="tertiary" isSmall isDestructive onClick={() => clearFeatureMedia(index)} style={{ display: 'block', width: '100%' }}>
                               Remove
                             </Button>
                           )}
@@ -172,17 +148,10 @@ export default function Edit({ attributes, setAttributes }) {
                     )}
                   />
                 </MediaUploadCheck>
-
                 <TextControl
-                  label="Title"
+                  label="Label"
                   value={feature.title}
                   onChange={(value) => updateFeature(index, 'title', value)}
-                />
-                <TextareaControl
-                  label="Description"
-                  value={feature.description}
-                  onChange={(value) => updateFeature(index, 'description', value)}
-                  rows={3}
                 />
               </CardBody>
             </Card>
@@ -194,25 +163,31 @@ export default function Edit({ attributes, setAttributes }) {
             onClick={addFeature}
             style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}
           >
-            Add Feature
+            Add Item
           </Button>
         </PanelBody>
       </InspectorControls>
 
       {/* ── Editor canvas preview ── */}
       <div {...blockProps}>
-        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+        <style>{`@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');`}</style>
+
+        {/* Heading */}
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <RichText
             tagName="h2"
             value={sectionTitle}
             onChange={(value) => setAttributes({ sectionTitle: value })}
             placeholder="Section title…"
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              color: 'white',
-              letterSpacing: '0.02em',
-              margin: '0 0 12px',
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: 'clamp(1.4rem, 2.5vw, 2rem)',
+              fontWeight: 900,
+              color: '#ffffff',
+              letterSpacing: '0.03em',
+              textTransform: 'uppercase',
+              margin: '0 0 16px',
+              lineHeight: 1.2,
             }}
             allowedFormats={[]}
           />
@@ -221,74 +196,92 @@ export default function Edit({ attributes, setAttributes }) {
             value={sectionSubtitle}
             onChange={(value) => setAttributes({ sectionSubtitle: value })}
             placeholder="Section subtitle…"
-            style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.6)', margin: 0 }}
+            style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: '0.95rem',
+              fontWeight: 400,
+              color: 'rgba(255,255,255,0.65)',
+              margin: '0 auto',
+              maxWidth: '660px',
+              lineHeight: 1.7,
+            }}
             allowedFormats={['core/bold', 'core/italic']}
           />
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${Math.min(features.length, 4)}, 1fr)`,
-            gap: '24px',
-          }}
-        >
+        {/* Cards grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(${Math.min(features.length, 4)}, 1fr)`,
+          gap: '16px',
+          marginBottom: '32px',
+        }}>
           {features.map((feature, index) => (
             <div
               key={index}
               style={{
-                position: 'relative',
-                padding: '32px',
-                borderRadius: '16px',
-                backgroundColor: 'var(--bg-gray-4, #1a1a1a)',
-                border: '1px solid var(--border, #2a2a2a)',
-                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '16px',
+                padding: '28px 20px 24px',
+                borderRadius: '6px',
+                backgroundColor: '#0F172A',
+                border: '1px solid #1E293B',
               }}
             >
-              {/* Icon box */}
-              <div
-                style={{
-                  width: '64px',
-                  height: '64px',
-                  marginBottom: '24px',
-                  borderRadius: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  backgroundColor: 'var(--bg-dark-2, #111)',
-                  border: '2px solid var(--color-primary, #f5b335)',
-                  boxShadow: '0 0 20px rgba(245, 179, 53, 0.2)',
-                }}
-              >
+              {/* Icon bg shape */}
+              <div style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '14px',
+                backgroundColor: 'rgba(255,255,255,0.06)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                overflow: 'hidden',
+                flexShrink: 0,
+              }}>
                 {feature.svgUrl
-                  ? <img src={feature.svgUrl} alt="" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
-                  : <SvgPlaceholder />
+                  ? <img src={feature.svgUrl} alt={feature.title} style={{ maxWidth: '48px', maxHeight: '48px', objectFit: 'contain' }} />
+                  : <ImgPlaceholder />
                 }
               </div>
 
-              <h3 style={{ fontFamily: "'Outfit', sans-serif", fontWeight: 600, fontSize: '1.25rem', color: '#fff', margin: '0 0 12px' }}>
+              {/* Label inside card */}
+              <span style={{
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: 800,
+                fontSize: '0.78rem',
+                color: '#ffffff',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                textAlign: 'center',
+                lineHeight: 1,
+              }}>
                 {feature.title}
-              </h3>
-              <p style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: 0 }}>
-                {feature.description}
-              </p>
-
-              {/* Bottom accent line preview */}
-              <div
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  height: '3px',
-                  borderRadius: '0 0 16px 16px',
-                  backgroundColor: 'var(--color-primary, #f5b335)',
-                  opacity: 0.4,
-                }}
-              />
+              </span>
             </div>
           ))}
         </div>
+
+        {/* Tagline — always rendered so it's clickable/editable on canvas */}
+        <RichText
+          tagName="p"
+          value={sectionTagline}
+          onChange={(value) => setAttributes({ sectionTagline: value })}
+          placeholder="Tagline below cards…"
+          style={{
+            fontFamily: "'Montserrat', sans-serif",
+            textAlign: 'center',
+            fontSize: '0.875rem',
+            color: 'rgba(255,255,255,0.5)',
+            margin: 0,
+          }}
+          allowedFormats={['core/bold', 'core/italic']}
+        />
       </div>
     </>
   );

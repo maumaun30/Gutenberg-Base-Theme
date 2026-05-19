@@ -1,12 +1,8 @@
 <?php
-
 /**
- * Template: taxonomy-game_category.php
+ * Template: taxonomy-game_category.php  (FunaloMAX redesign)
  * CPT      : game
- * Taxonomy : game_category  (hierarchical)
- *
- * Sub-category pills  → in-page JS filter (no page reload / navigation)
- * Each collection row → horizontal drag + arrow slider
+ * Taxonomy : game_category
  */
 
 get_header();
@@ -16,1055 +12,363 @@ $term_id        = $current_term->term_id;
 $term_name      = $current_term->name;
 $term_desc      = $current_term->description;
 $parent_term_id = $current_term->parent;
+$ancestors      = array_reverse( get_ancestors( $term_id, 'game_category', 'taxonomy' ) );
 
-/* Direct child terms */
-$child_terms = get_terms([
-  'taxonomy'   => 'game_category',
-  'parent'     => $term_id,
-  'hide_empty' => false,
-  'orderby'    => 'name',
-  'order'      => 'ASC',
-]);
-$has_children = (! empty($child_terms) && ! is_wp_error($child_terms));
-
-/* Breadcrumb ancestors */
-$ancestors = array_reverse(get_ancestors($term_id, 'game_category', 'taxonomy'));
-
-/* Total game count */
+/* Total game count (this term + descendants) */
 $total_q = new WP_Query([
   'post_type'      => 'game',
   'tax_query'      => [[
-    'taxonomy' => 'game_category',
-    'field' => 'term_id',
-    'terms' => $term_id,
-    'include_children' => true
+    'taxonomy'         => 'game_category',
+    'field'            => 'term_id',
+    'terms'            => $term_id,
+    'include_children' => true,
   ]],
   'posts_per_page' => 1,
-  'fields' => 'ids',
+  'fields'         => 'ids',
 ]);
 $game_count = $total_q->found_posts;
 wp_reset_postdata();
 
-/*
- * Pre-fetch all games per child term.
- * All data is rendered in HTML; JS shows/hides collections — no AJAX.
- */
-$collections = [];
-if ($has_children) {
-  foreach ($child_terms as $ct) {
-    $q = new WP_Query([
-      'post_type'      => 'game',
-      'tax_query'      => [[
-        'taxonomy' => 'game_category',
-        'field' => 'term_id',
-        'terms' => $ct->term_id,
-        'include_children' => true
-      ]],
-      'posts_per_page' => 20,
-      'orderby'        => 'date',
-      'order'          => 'DESC',
-    ]);
-    $games = [];
-    if ($q->have_posts()) {
-      while ($q->have_posts()) {
-        $q->the_post();
-        $gcats = get_the_terms(get_the_ID(), 'game_category');
-        $games[] = [
-          'id'        => get_the_ID(),
-          'title'     => get_the_title(),
-          'permalink' => get_permalink(),
-          'thumb'     => get_the_post_thumbnail_url(get_the_ID(), 'large'),
-          'badge'     => ($gcats && ! is_wp_error($gcats)) ? $gcats[0]->name : '',
-        ];
-      }
-      wp_reset_postdata();
-    }
-    if (! empty($games)) {
-      $collections[$ct->term_id] = ['term' => $ct, 'games' => $games];
-    }
-  }
-}
+/* First 12 games for the grid */
+$grid_q = new WP_Query([
+  'post_type'      => 'game',
+  'tax_query'      => [[
+    'taxonomy'         => 'game_category',
+    'field'            => 'term_id',
+    'terms'            => $term_id,
+    'include_children' => true,
+  ]],
+  'posts_per_page' => 12,
+  'orderby'        => 'date',
+  'order'          => 'DESC',
+]);
+
+$assets_url = get_template_directory_uri() . '/assets/images/category-template';
+$help_bg    = $assets_url . '/ce643052fadd.png';
+$icon_fast  = $assets_url . '/3e7742d8c6a2.png';
+$icon_live  = $assets_url . '/e511fe448018.png';
+$icon_safe  = $assets_url . '/e0b724fc2859.png';
+$icon_vip   = $assets_url . '/4ef55b3479fa.png';
+$icon_pad   = $assets_url . '/470715bf4e55.png';
+
+/* Pass to hero partial */
+set_query_var( 'term',           $current_term );
+set_query_var( 'term_name',      $term_name );
+set_query_var( 'term_desc',      $term_desc );
+set_query_var( 'parent_term_id', $parent_term_id );
+set_query_var( 'ancestors',      $ancestors );
+set_query_var( 'game_count',     $game_count );
 ?>
 <style>
-  /* ---- Page --------------------------------------------------------- */
-  .gc-page {
-    background: var(--bg-dark-3);
-    min-height: 100vh;
-    color: #fff;
+  :root {
+    --fm-bg:        rgb(16,14,27);
+    --fm-bg-2:      rgb(4,1,19);
+    --fm-card:      rgba(26,26,26,.7);
+    --fm-card-br:   rgba(255,255,255,.1);
+    --fm-text:      #fff;
+    --fm-muted:     rgb(161,161,170);
+    --fm-muted-2:   rgb(126,121,132);
+    --fm-pink:      rgb(247,29,194);
+    --fm-pink-2:    rgb(214,61,74);
+    --fm-hot:       rgb(147,0,10);
   }
 
-  /* ---- Hero --------------------------------------------------------- */
-  .gc-hero {
-    background: var(--bg-dark-1);
-    padding: calc(var(--section-py) + 60px) 0 var(--section-py);
-    position: relative;
-    overflow: hidden;
-  }
+  .fm-page { background: var(--fm-bg); color: var(--fm-text); font-family: 'Montserrat', system-ui, sans-serif; }
+  .fm-container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
-  .gc-orb {
-    position: absolute;
-    border-radius: 50%;
-    pointer-events: none;
-    filter: blur(120px);
-    opacity: .2;
-  }
+  /* HERO */
+  .fm-hero { position: relative; min-height: 395px; overflow: hidden; }
+  .fm-hero__bg { position: absolute; inset: 0 0 auto 0; height: 100%; background-size: cover; background-position: center; }
+  .fm-hero__overlay { position: absolute; inset: 0; background: linear-gradient(rgba(14,14,14,1) 0%, rgba(14,14,14,.4) 50%, rgba(14,14,14,0) 100%); }
+  .fm-hero__inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 25px 44px 60px; }
+  .fm-bc { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 12px; }
+  .fm-bc a { color: #fff; text-decoration: none; opacity: .85; }
+  .fm-bc a:hover { color: var(--fm-pink); opacity: 1; }
+  .fm-bc__cur { font-weight: 700; color: var(--fm-pink); }
+  .fm-hero__title { font-weight: 700; font-size: clamp(32px, 4vw, 48px); line-height: 1.1; letter-spacing: -.02em; color: #fff; margin: 70px 0 30px; max-width: 672px; }
+  .fm-hero__desc { font-size: 18px; line-height: 1.6; color: rgb(220,190,212); max-width: 576px; margin: 0; }
 
-  .gc-orb--1 {
-    top: 0;
-    left: 25%;
-    width: 24rem;
-    height: 24rem;
-    background: radial-gradient(circle, var(--color-primary), transparent);
-  }
-
-  .gc-orb--2 {
-    bottom: 0;
-    right: 25%;
-    width: 24rem;
-    height: 24rem;
-    background: radial-gradient(circle, var(--color-secondary), transparent);
-  }
-
-  .gc-hero__inner {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    max-width: 60rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  /* Breadcrumb */
-  .gc-bc {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 1.5rem;
-    font-family: 'Outfit', sans-serif;
-    font-size: .8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: .1em;
-  }
-
-  .gc-bc a {
-    color: rgba(255, 255, 255, .5);
-    text-decoration: none;
-    transition: color .2s;
-  }
-
-  .gc-bc a:hover {
-    color: var(--color-primary);
-  }
-
-  .gc-bc__sep {
-    color: rgba(255, 255, 255, .25);
-  }
-
-  .gc-bc__cur {
-    color: var(--color-primary);
-  }
-
-  /* Badge pill */
-  .gc-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    padding: .75rem 1.5rem;
-    border-radius: 9999px;
-    margin-bottom: 2rem;
-    background: rgba(247, 29, 194, .1);
-    border: 1px solid rgba(247, 29, 194, .3);
-    font-family: 'Outfit', sans-serif;
-    font-size: .875rem;
-    font-weight: 600;
-    color: var(--color-primary);
-    text-transform: uppercase;
-    letter-spacing: .1em;
-  }
-
-  /* Heading */
-  .gc-hero h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: var(--text-h1);
-    color: #fff;
-    letter-spacing: .05em;
-    line-height: 1.1;
-    margin-bottom: 1.25rem;
-  }
-
-  .gc-hero h1 span {
-    color: var(--color-primary);
-  }
-
-  .gc-hero__desc {
-    font-family: 'Lexend', sans-serif;
-    font-size: var(--text-lead);
-    color: rgba(255, 255, 255, .7);
-    line-height: 1.7;
-    /*max-width: 42rem;*/
-    margin: 0 auto 2.5rem;
-  }
-
-  /* Stats */
-  .gc-stats {
+  /* GAMES GRID */
+  .fm-games { padding: 56px 0 80px; }
+  .fm-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-    max-width: 48rem;
-    margin: 0 auto;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 20px;
   }
+  @media (max-width: 1024px) { .fm-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 640px)  { .fm-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
 
-  @media(min-width:640px) {
-    .gc-stats {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  .gc-stat {
-    padding: 1rem;
-    border-radius: .75rem;
-    background: var(--bg-dark-4);
-    border: 1px solid var(--border);
-    text-align: center;
-    animation: fadeUp .5s ease both;
-  }
-
-  .gc-stat svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin: 0 auto;
-    color: var(--color-primary);
-  }
-
-  .gc-stat__val {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.5rem;
-    color: #fff;
-    letter-spacing: .05em;
-    margin: .5rem 0 .25rem;
-  }
-
-  .gc-stat__lbl {
-    font-family: 'Lexend', sans-serif;
-    font-size: .8rem;
-    color: rgba(255, 255, 255, .6);
-  }
-
-  /* ------------------------------------------------------------------ */
-  /*  STICKY FILTER PILLS                                                */
-  /* ------------------------------------------------------------------ */
-  .gc-filters {
-    background: var(--bg-dark-2);
-    padding: 1.75rem 0;
-    border-bottom: 1px solid var(--border);
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-
-  .gc-filters__inner {
-    max-width: 80rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  .gc-filters__lbl {
-    font-family: 'Outfit', sans-serif;
-    font-size: .7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .12em;
-    color: rgba(255, 255, 255, .35);
-    margin-bottom: .875rem;
-  }
-
-  .gc-filters__row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .625rem;
-  }
-
-  .gc-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: .4rem;
-    padding: .45rem 1.125rem;
-    border-radius: 9999px;
-    cursor: pointer;
-    background: var(--bg-dark-4);
-    border: 1px solid var(--border);
-    font-family: 'Outfit', sans-serif;
-    font-size: .8rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, .7);
-    transition: all .22s ease;
-    user-select: none;
-  }
-
-  .gc-pill:hover {
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-  }
-
-  .gc-pill.is-active {
-    background: var(--color-primary);
-    color: #000;
-    border-color: var(--color-primary);
-    box-shadow: var(--shadow-glow);
-  }
-
-  .gc-pill__count {
-    background: rgba(0, 0, 0, .22);
-    border-radius: 9999px;
-    padding: .1rem .45rem;
-    font-size: .65rem;
-    font-weight: 700;
-  }
-
-  .gc-pill.is-active .gc-pill__count {
-    background: rgba(0, 0, 0, .25);
-  }
-
-  /* ------------------------------------------------------------------ */
-  /*  MAIN SECTION                                                       */
-  /* ------------------------------------------------------------------ */
-  .gc-section {
-    background: var(--bg-dark-2);
-    padding: var(--section-py) 0;
-  }
-
-  .gc-section-contents {
-    background: var(--bg-dark-2);
-    padding: 0 0 40px;
-  }
-
-  .gc-container {
-    max-width: 80rem;
-    margin: 0 auto;
-    padding: 0 1.5rem;
-  }
-
-  /* Collection block */
-  .gc-collection {
-    margin-bottom: 4rem;
-    animation: fadeUp .4s ease both;
-  }
-
-  .gc-collection.is-hidden {
-    display: none;
-  }
-
-  .gc-collection:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Collection header */
-  .gc-col-hd {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-  }
-
-  @media(min-width:768px) {
-    .gc-col-hd {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
-
-  .gc-col-hd__left {
-    display: flex;
-    align-items: center;
-    gap: .875rem;
-  }
-
-  .gc-col-icon {
-    width: 3rem;
-    height: 3rem;
-    border-radius: .75rem;
-    flex-shrink: 0;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .gc-col-icon svg {
-    width: 1.375rem;
-    height: 1.375rem;
-    color: #000;
-  }
-
-  .gc-col-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: var(--text-h3);
-    color: #fff;
-    letter-spacing: .05em;
-    margin: 0 0 .15rem;
-  }
-
-  .gc-col-desc {
-    font-family: 'Lexend', sans-serif;
-    font-size: .875rem;
-    color: rgba(255, 255, 255, .55);
-    margin: 0;
-  }
-
-  /* Arrow buttons */
-  .gc-slider-nav {
-    display: flex;
-    align-items: center;
-    gap: .5rem;
-    flex-shrink: 0;
-  }
-
-  .gc-arr {
-    width: 2.25rem;
-    height: 2.25rem;
-    border-radius: 50%;
-    cursor: pointer;
-    background: var(--bg-dark-4);
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, .7);
-    transition: all .22s;
-  }
-
-  .gc-arr:hover {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-    color: #000;
-    box-shadow: var(--shadow-glow);
-  }
-
-  .gc-arr:disabled {
-    opacity: .3;
-    pointer-events: none;
-  }
-
-  .gc-arr svg {
-    width: 1rem;
-    height: 1rem;
-  }
-
-  /* Slider */
-  .gc-slider-wrap {
+  .fm-card {
     position: relative;
-  }
-
-  .gc-slider-wrap::after {
-    content: '';
-    pointer-events: none;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 5rem;
-    z-index: 2;
-    background: linear-gradient(to right, transparent, var(--bg-dark-2));
-  }
-
-  .gc-slider {
-    display: flex;
-    gap: 1.125rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: .5rem;
-    cursor: grab;
-  }
-
-  .gc-slider:active {
-    cursor: grabbing;
-  }
-
-  .gc-slider::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Card */
-  .gc-card {
-    scroll-snap-align: start;
-    flex: 0 0 calc(50% - .5rem);
-    position: relative;
-    border-radius: 1rem;
+    aspect-ratio: 1 / 1;
+    border-radius: 12px;
     overflow: hidden;
-    background: var(--bg-dark-4);
-    border: 1px solid var(--border);
+    background: var(--fm-card);
+    border: 1px solid var(--fm-card-br);
     text-decoration: none;
     display: block;
-    transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
   }
-
-  @media(min-width:480px) {
-    .gc-card {
-      flex: 0 0 calc(33.333% - .75rem);
-    }
-  }
-
-  @media(min-width:768px) {
-    .gc-card {
-      flex: 0 0 calc(25% - .85rem);
-    }
-  }
-
-  @media(min-width:1280px) {
-    .gc-card {
-      flex: 0 0 calc(20% - .9rem);
-    }
-  }
-
-  .gc-card:hover {
-    transform: translateY(-6px);
-    box-shadow: var(--shadow-lg);
-    border-color: var(--border-strong);
-  }
-
-  .gc-card:hover .gc-card__img {
-    transform: scale(1.07);
-  }
-
-  .gc-card:hover .gc-card__name {
-    color: var(--color-primary);
-  }
-
-  .gc-card:hover .gc-card__glow {
-    opacity: 1;
-  }
-
-  .gc-card__img-wrap {
-    position: relative;
-    aspect-ratio: 3/4;
-    overflow: hidden;
-  }
-
-  .gc-card__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform .6s ease;
-    display: block;
-  }
-
-  .gc-card__fallback {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, var(--bg-dark-4), var(--bg-gray-4));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .gc-card__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, .92) 0%, rgba(0, 0, 0, .25) 55%, transparent 100%);
-  }
-
-  .gc-card__badge {
-    position: absolute;
-    top: .625rem;
-    left: .625rem;
-    padding: .2rem .65rem;
-    border-radius: 9999px;
-    background: rgba(247, 29, 194, .2);
-    border: 1px solid rgba(247, 29, 194, .45);
-    color: var(--color-primary);
-    font-family: 'Outfit', sans-serif;
-    font-size: .6rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .06em;
-    backdrop-filter: blur(6px);
-  }
-
-  .gc-card__info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-  }
-
-  .gc-card__name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: var(--text-h4);
-    color: #fff;
+  .fm-card:hover { transform: translateY(-4px); border-color: rgba(247,29,194,.5); box-shadow: 0 10px 30px rgba(247,29,194,.18); }
+  .fm-card__img { position: absolute; inset: 1px; width: calc(100% - 2px); height: calc(100% - 2px); object-fit: cover; display: block; }
+  .fm-card__fallback { position: absolute; inset: 1px; background: linear-gradient(135deg, #1a1729, #0c0a1e); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.2); font-size: 32px; font-weight: 700; }
+  .fm-card__badge {
+    position: absolute; top: 13px; left: 13px;
+    padding: 4px 10px; border-radius: 4px;
+    background: var(--fm-hot); color: #fff;
+    font-size: 10px; font-weight: 700; line-height: 15px;
     letter-spacing: .04em;
+  }
+  .fm-card__title {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,.85), transparent);
+    color: #fff; font-size: 13px; font-weight: 600;
     margin: 0;
-    line-height: 1.1;
-    transition: color .3s;
   }
 
-  .gc-card__glow {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0;
-    background: radial-gradient(circle at 50% 0%, rgba(247, 29, 194, .18), transparent 70%);
-    transition: opacity .5s;
+  .fm-viewall { display: flex; justify-content: center; margin-top: 48px; }
+  .fm-viewall a {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 306px; height: 59px; padding: 0 24px;
+    border-radius: 6px; border: 2px solid var(--fm-pink);
+    color: #fff; font-size: 20px; font-weight: 500; letter-spacing: .02em;
+    text-decoration: none; text-transform: uppercase;
+    transition: background .25s, color .25s;
   }
+  .fm-viewall a:hover { background: var(--fm-pink); color: #000; }
 
-  /* Empty */
-  .gc-empty {
-    text-align: center;
-    padding: 5rem 1rem;
-    font-family: 'Lexend', sans-serif;
-    color: rgba(255, 255, 255, .4);
+  /* WHY / QUICK GUIDE */
+  .fm-info { background: var(--fm-bg-2); padding: 80px 0; }
+  .fm-info__grid {
+    display: grid; grid-template-columns: 1fr 1px 1fr; gap: 60px; align-items: start;
   }
-
-  /* Keyframes */
-  @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(18px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  @media (max-width: 900px) {
+    .fm-info__grid { grid-template-columns: 1fr; gap: 48px; }
+    .fm-info__divider { display: none; }
   }
+  .fm-info__divider { width: 1px; background: linear-gradient(to bottom, transparent, rgba(255,255,255,.12), transparent); align-self: stretch; }
 
-  /* Description card */
-.sg-desc-card {
-  background:var(--bg-dark-4); border:1px solid var(--border);
-  border-radius:1.25rem;; padding:2rem;
-}
-.sg-desc-card h2 {
-  font-family:'Bebas Neue',sans-serif; font-size:var(--text-h3);
-  color:#fff; letter-spacing:.05em; margin:0 0 1.25rem;
-  padding-bottom:.875rem; border-bottom:1px solid var(--border);
-}
-.sg-desc-card .sg-content {
-  font-family:'Lexend',sans-serif; font-size:.95rem; line-height:1.8;
-  color:rgba(255,255,255,.75);
-}
-.sg-desc-card .sg-content p  { margin-bottom:1rem; }
-.sg-desc-card .sg-content p:last-child { margin-bottom:0; }
-.sg-desc-card .sg-content h3 {
-  font-family:'Bebas Neue',sans-serif; font-size:1.25rem;
-  color:var(--color-primary); letter-spacing:.05em; margin:1.5rem 0 .5rem;
-}
-.sg-desc-card .sg-content ul { list-style:none; padding:0; }
-.sg-desc-card .sg-content ul li {
-  padding:.35rem 0 .35rem 1.5rem; position:relative;
-}
-.sg-desc-card .sg-content ul li::before {
-  content:''; position:absolute; left:0; top:.8rem;
-  width:.45rem; height:.45rem; border-radius:50%;
-  background:var(--color-primary);
-}
+  .fm-info h2 { font-weight: 700; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.15; letter-spacing: -.012em; margin: 0 0 16px; color: #fff; text-transform: uppercase; }
+  .fm-info h2 .fm-pink { color: var(--fm-pink); }
+  .fm-info__sub { color: var(--fm-muted-2); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.55; margin: 0 0 32px; }
+
+  .fm-feat { display: flex; flex-direction: column; gap: 28px; }
+  .fm-feat__row { display: flex; align-items: center; gap: 24px; }
+  .fm-feat__icon { width: 71px; height: 73px; flex-shrink: 0; background-size: contain; background-repeat: no-repeat; background-position: center; }
+  .fm-feat__txt h3 { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; font-size: 17px; color: rgb(183,183,184); margin: 0 0 8px; text-transform: uppercase; letter-spacing: .02em; }
+  .fm-feat__txt p { font-family: 'Inter', system-ui, sans-serif; font-size: 15px; color: var(--fm-muted-2); margin: 0; }
+
+  .fm-faq { display: flex; flex-direction: column; gap: 14px; margin-top: 24px; }
+  .fm-faq details {
+    background: rgb(11,4,24); border: 1px solid rgb(28,16,43);
+    border-radius: 8px; padding: 22px 24px;
+    transition: border-color .2s;
+  }
+  .fm-faq details[open] { border-radius: 13px 10px 6px 7px; }
+  .fm-faq details:hover { border-color: rgba(247,29,194,.35); }
+  .fm-faq summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; gap: 18px;
+    font-family: 'Inter', system-ui, sans-serif; font-weight: 700;
+    font-size: 19px; color: rgb(202,202,203);
+  }
+  .fm-faq summary::-webkit-details-marker { display: none; }
+  .fm-faq summary .fm-faq__ico { width: 32px; height: 32px; flex-shrink: 0; background-size: contain; background-repeat: no-repeat; background-position: center; color: rgb(186,85,211); display: flex; align-items: center; justify-content: center; }
+  .fm-faq summary .fm-faq__chev { margin-left: auto; transition: transform .25s; color: var(--fm-muted-2); }
+  .fm-faq details[open] summary .fm-faq__chev { transform: rotate(90deg); }
+  .fm-faq__body { margin-top: 16px; font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.55; color: var(--fm-muted-2); padding-left: 50px; }
+
+  /* NEED HELP */
+  .fm-help { position: relative; min-height: 377px; overflow: hidden; }
+  .fm-help__bg { position: absolute; inset: 0; background-size: cover; background-position: center; }
+  .fm-help__inner { position: relative; z-index: 2; max-width: 1280px; margin: 0 auto; padding: 64px 76px; }
+  .fm-help h2 { font-weight: 700; font-size: 24px; line-height: 1.2; text-transform: uppercase; margin: 0 0 32px; color: #fff; max-width: 600px; }
+  .fm-help p { font-size: 16px; line-height: 1.5; color: rgb(203,213,225); max-width: 600px; margin: 0 0 40px; }
+  .fm-help__actions { display: flex; gap: 22px; flex-wrap: wrap; }
+  .fm-btn-pink {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 20px; height: 44px; min-width: 154px;
+    border-radius: 8px; background: linear-gradient(var(--fm-pink-2) 0%, var(--fm-pink) 100%);
+    color: #fff; font-weight: 700; font-size: 16px; text-decoration: none;
+    letter-spacing: -.02em; transition: transform .2s, box-shadow .2s;
+  }
+  .fm-btn-pink:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(247,29,194,.4); }
+  .fm-btn-ghost {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 0 20px; height: 44px; min-width: 154px;
+    border-radius: 8px; border: 1px solid rgb(51,65,85);
+    color: #fff; font-weight: 700; font-size: 12px; text-decoration: none;
+    transition: background .2s;
+  }
+  .fm-btn-ghost:hover { background: rgba(255,255,255,.05); }
+
+  /* ACF content sections (kept from original) */
+  .fm-content-block { padding: 60px 0; background: var(--fm-bg); }
+  .fm-content-card {
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--fm-card-br);
+    border-radius: 20px; padding: 32px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: rgba(255,255,255,.75);
+    line-height: 1.7;
+  }
+  .fm-content-card h2, .fm-content-card h3 { color: #fff; font-family: 'Montserrat', sans-serif; }
 </style>
 
-<div class="gc-page">
+<div class="fm-page">
 
-  <!-- ════════════════════════ HERO ══════════════════════════════════ -->
-  <?php
-  set_query_var( 'term',           $current_term );
-  set_query_var( 'term_name',      $term_name );
-  set_query_var( 'term_desc',      $term_desc );
-  set_query_var( 'parent_term_id', $parent_term_id );
-  set_query_var( 'ancestors',      $ancestors );
-  set_query_var( 'game_count',     $game_count );
-  get_template_part( 'template-parts/game-category-hero' );
-  ?>
-  <!-- /hero -->
+  <?php get_template_part( 'template-parts/game-category-hero' ); ?>
 
-
-  <?php if ($has_children && ! empty($collections)) : ?>
-
-    <!-- ════════════════ STICKY FILTER PILLS ═══════════════════════════ -->
-    <div class="gc-filters" id="gc-filter-bar">
-      <div class="gc-filters__inner">
-        <p class="gc-filters__lbl">Explore More <?php echo esc_html($term_name); ?> Games</p>
-        <div class="gc-filters__row" id="gc-pill-row">
-
-          <button class="gc-pill is-active" data-filter="all">
-            All
-            <span class="gc-pill__count"><?php echo array_sum(array_map(fn($c) => count($c['games']), $collections)); ?></span>
-          </button>
-
-          <?php foreach ($collections as $cid => $col) : ?>
-            <button class="gc-pill" data-filter="col-<?php echo esc_attr($cid); ?>">
-              <?php echo esc_html($col['term']->name); ?>
-              <span class="gc-pill__count"><?php echo count($col['games']); ?></span>
-            </button>
-          <?php endforeach; ?>
-
+  <!-- GAMES GRID -->
+  <section class="fm-games">
+    <div class="fm-container">
+      <?php if ( $grid_q->have_posts() ) : ?>
+        <div class="fm-grid">
+          <?php $i = 0; while ( $grid_q->have_posts() ) : $grid_q->the_post(); $i++;
+            $thumb = get_the_post_thumbnail_url( get_the_ID(), 'medium_large' );
+            $is_hot = function_exists( 'get_field' ) ? (bool) get_field( 'is_hot' ) : false;
+          ?>
+            <a href="<?php the_permalink(); ?>" class="fm-card" aria-label="<?php the_title_attribute(); ?>">
+              <?php if ( $thumb ) : ?>
+                <img src="<?php echo esc_url( $thumb ); ?>" alt="<?php the_title_attribute(); ?>" class="fm-card__img" loading="lazy">
+              <?php else : ?>
+                <div class="fm-card__fallback"><?php echo esc_html( mb_substr( get_the_title(), 0, 1 ) ); ?></div>
+              <?php endif; ?>
+              <?php if ( $is_hot ) : ?><span class="fm-card__badge">HOT</span><?php endif; ?>
+            </a>
+          <?php endwhile; wp_reset_postdata(); ?>
         </div>
-      </div>
-    </div>
 
-
-    <!-- ════════════════ COLLECTION SLIDERS ════════════════════════════ -->
-    <section class="gc-section">
-      <div class="gc-container" id="gc-collections">
-
-        <?php foreach ($collections as $cid => $col) :
-          $ct = $col['term'];
+        <?php if ( $game_count > 12 ) :
+          $archive_link = get_post_type_archive_link( 'game' );
         ?>
-          <div class="gc-collection"
-            id="col-<?php echo esc_attr($cid); ?>"
-            data-collection="col-<?php echo esc_attr($cid); ?>">
-
-            <!-- Header row -->
-            <div class="gc-col-hd">
-              <div class="gc-col-hd__left">
-                <div class="gc-col-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02
-                                 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 class="gc-col-title"><?php echo esc_html($ct->name); ?></h2>
-                  <p class="gc-col-desc">
-                    <?php echo $ct->description
-                      ? esc_html($ct->description)
-                      : count($col['games']) . ' games in this category'; ?>
-                  </p>
-                </div>
-              </div>
-
-              <!-- Prev / Next arrows -->
-              <div class="gc-slider-nav">
-                <button class="gc-arr gc-arr--prev"
-                  data-target="slider-<?php echo esc_attr($cid); ?>"
-                  aria-label="Previous" disabled>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-                <button class="gc-arr gc-arr--next"
-                  data-target="slider-<?php echo esc_attr($cid); ?>"
-                  aria-label="Next">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Horizontal slider -->
-            <div class="gc-slider-wrap">
-              <div class="gc-slider" id="slider-<?php echo esc_attr($cid); ?>">
-                <?php foreach ($col['games'] as $g) : ?>
-                  <a href="<?php echo esc_url($g['permalink']); ?>" class="gc-card">
-                    <div class="gc-card__img-wrap">
-                      <?php if ($g['thumb']) : ?>
-                        <img src="<?php echo esc_url($g['thumb']); ?>"
-                          alt="<?php echo esc_attr($g['title']); ?>"
-                          class="gc-card__img" loading="lazy">
-                      <?php else : ?>
-                        <div class="gc-card__fallback">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
-                            fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5"
-                            stroke-linecap="round" stroke-linejoin="round">
-
-                            <!-- card (back) -->
-                            <rect x="10" y="3" width="10" height="12" rx="2"/>
-
-                            <!-- card symbol -->
-                            <path d="M15 7c-1 .8-1.6 1.3-1.6 2 0 .6.5 1 1 1 .5 0 .8-.2 1.1-.6.3.4.6.6 1.1.6.5 0 1-.4 1-1 0-.7-.6-1.2-1.6-2l-.5-.4-.5.4z"/>
-                            <line x1="15" y1="10" x2="15" y2="12"/>
-
-                            <!-- dice (front) -->
-                            <rect x="3" y="8" width="12" height="12" rx="2"/>
-
-                            <!-- dice dots -->
-                            <circle cx="6.5" cy="11.5" r="0.7"/>
-                            <circle cx="11.5" cy="11.5" r="0.7"/>
-                            <circle cx="6.5" cy="16.5" r="0.7"/>
-                            <circle cx="11.5" cy="16.5" r="0.7"/>
-                            <circle cx="9" cy="14" r="0.7"/>
-                        </svg>
-                        </div>
-                      <?php endif; ?>
-                      <div class="gc-card__overlay"></div>
-                      <?php if ($g['badge']) : ?>
-                        <span class="gc-card__badge"><?php echo esc_html($g['badge']); ?></span>
-                      <?php endif; ?>
-                      <div class="gc-card__info">
-                        <h3 class="gc-card__name"><?php echo esc_html($g['title']); ?></h3>
-                      </div>
-                    </div>
-                    <div class="gc-card__glow"></div>
-                  </a>
-                <?php endforeach; ?>
-              </div>
-            </div><!-- /.gc-slider-wrap -->
-
-          </div><!-- /.gc-collection -->
-        <?php endforeach; ?>
-
-      </div><!-- /#gc-collections -->
-    </section>
-
-
-  <?php else : ?>
-    <!-- ════════════════ FLAT SLIDER (leaf term, no children) ══════════ -->
-    <section class="gc-section">
-      <div class="gc-container">
-        <?php if (have_posts()) : ?>
-          <div class="gc-collection">
-            <div class="gc-col-hd">
-              <div class="gc-col-hd__left">
-                <div class="gc-col-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="6" y1="11" x2="10" y2="11" />
-                    <line x1="8" y1="9" x2="8" y2="13" />
-                    <line x1="15" y1="12" x2="15.01" y2="12" />
-                    <line x1="18" y1="10" x2="18.01" y2="10" />
-                    <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59C2.604 9.416 2 14.456 2 16
-                         a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16
-                         h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3
-                         c0-1.545-.604-6.584-.685-7.258A4 4 0 0 0 17.32 5z" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 class="gc-col-title"><?php echo esc_html($term_name); ?></h2>
-                  <p class="gc-col-desc"><?php echo number_format($game_count); ?> games available</p>
-                </div>
-              </div>
-              <div class="gc-slider-nav">
-                <button class="gc-arr gc-arr--prev" data-target="slider-flat" aria-label="Prev" disabled>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5">
-                    <polyline points="15 18 9 12 15 6" />
-                  </svg>
-                </button>
-                <button class="gc-arr gc-arr--next" data-target="slider-flat" aria-label="Next">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2.5">
-                    <polyline points="9 18 15 12 9 6" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-
-            <div class="gc-slider-wrap">
-              <div class="gc-slider" id="slider-flat">
-                <?php while (have_posts()) : the_post();
-                  $thumb  = get_the_post_thumbnail_url(get_the_ID(), 'large');
-                  $gcats  = get_the_terms(get_the_ID(), 'game_category');
-                  $badge  = ($gcats && ! is_wp_error($gcats)) ? $gcats[0]->name : '';
-                ?>
-                  <a href="<?php the_permalink(); ?>" class="gc-card">
-                    <div class="gc-card__img-wrap">
-                      <?php if ($thumb) : ?>
-                        <img src="<?php echo esc_url($thumb); ?>"
-                          alt="<?php the_title_attribute(); ?>"
-                          class="gc-card__img" loading="lazy">
-                      <?php else : ?>
-                        <div class="gc-card__fallback">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24"
-                            fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5">
-                            <rect x="2" y="3" width="20" height="14" rx="2" />
-                            <line x1="8" y1="21" x2="16" y2="21" />
-                            <line x1="12" y1="17" x2="12" y2="21" />
-                          </svg>
-                        </div>
-                      <?php endif; ?>
-                      <div class="gc-card__overlay"></div>
-                      <?php if ($badge) : ?>
-                        <span class="gc-card__badge"><?php echo esc_html($badge); ?></span>
-                      <?php endif; ?>
-                      <div class="gc-card__info">
-                        <h3 class="gc-card__name"><?php the_title(); ?></h3>
-                      </div>
-                    </div>
-                    <div class="gc-card__glow"></div>
-                  </a>
-                <?php endwhile; ?>
-              </div>
-            </div>
-          </div>
-
-          <?php the_posts_pagination([
-            'mid_size'  => 2,
-            'prev_text' => '&larr; Prev',
-            'next_text' => 'Next &rarr;',
-          ]); ?>
-
-        <?php else : ?>
-          <div class="gc-empty">
-            <p>No games found in this category.</p>
+          <div class="fm-viewall">
+            <a href="<?php echo esc_url( $archive_link ?: '#' ); ?>">View All <?php echo esc_html( $term_name ); ?> Games</a>
           </div>
         <?php endif; ?>
+      <?php else : ?>
+        <p style="text-align:center;color:rgba(255,255,255,.5);padding:60px 0;">No <?php echo esc_html( $term_name ); ?> games available yet.</p>
+      <?php endif; ?>
+    </div>
+  </section>
+
+  <!-- WHY PLAY / QUICK GUIDE -->
+  <section class="fm-info">
+    <div class="fm-container">
+      <div class="fm-info__grid">
+
+        <!-- LEFT: Why Play -->
+        <div>
+          <h2>
+            Why Play <?php echo esc_html( strtoupper( $term_name ) ); ?><br>
+            On <span class="fm-pink">FunaloMAX?</span>
+          </h2>
+          <p class="fm-info__sub">Enjoy the best <?php echo esc_html( $term_name ); ?> games with a secure platform, fast payouts, and exciting rewards.</p>
+
+          <div class="fm-feat">
+            <div class="fm-feat__row">
+              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url( $icon_fast ); ?>');"></div>
+              <div class="fm-feat__txt"><h3>Fast Payouts</h3><p>Quick deposits and withdrawals</p></div>
+            </div>
+            <div class="fm-feat__row">
+              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url( $icon_live ); ?>');"></div>
+              <div class="fm-feat__txt"><h3>Live Dealer Games</h3><p>Real dealers, real excitement</p></div>
+            </div>
+            <div class="fm-feat__row">
+              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url( $icon_safe ); ?>');"></div>
+              <div class="fm-feat__txt"><h3>Secure &amp; Fair Play</h3><p>Advanced security and provably fair games</p></div>
+            </div>
+            <div class="fm-feat__row">
+              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url( $icon_vip ); ?>');"></div>
+              <div class="fm-feat__txt"><h3>VIP Rewards</h3><p>Exclusive bonuses and promotions</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="fm-info__divider"></div>
+
+        <!-- RIGHT: Quick Guide FAQ -->
+        <div>
+          <h2>Quick Guide To<br><span class="fm-pink"><?php echo esc_html( strtoupper( $term_name ) ); ?> Games</span></h2>
+
+          <div class="fm-faq">
+            <details open>
+              <summary>
+                <span class="fm-faq__ico" style="background-image:url('<?php echo esc_url( $icon_pad ); ?>');"></span>
+                How to play the <?php echo esc_html( $term_name ); ?> Games?
+                <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </summary>
+              <div class="fm-faq__body">
+                Log in to your FUNaloMAX account, go to the <?php echo esc_html( $term_name ); ?> section, and select a game. Choose a table, place your bets, and wait for the roll.
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="fm-faq__ico">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                </span>
+                What is the minimum deposit?
+                <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </summary>
+              <div class="fm-faq__body">
+                The minimum deposit on FUNaloMAX is set low so anyone can start playing. Check the cashier page for the current amount and supported payment methods.
+              </div>
+            </details>
+
+            <details>
+              <summary>
+                <span class="fm-faq__ico">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7Z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z"/></svg>
+                </span>
+                Are there bonuses for new players?
+                <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              </summary>
+              <div class="fm-faq__body">
+                Yes — new players get a welcome bonus on their first deposit, plus access to ongoing promos and a loyalty program.
+              </div>
+            </details>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- NEED HELP -->
+  <section class="fm-help">
+    <div class="fm-help__bg" style="background-image:url('<?php echo esc_url( $help_bg ); ?>');"></div>
+    <div class="fm-help__inner">
+      <h2>Need Help? We've Got Your Back</h2>
+      <p>Support is always within reach on our PAGCOR-licensed online casino. FUNaloMAX is ready to assist if you have a question or need help. Get in touch with us through our 24/7 live chat support. We also provide email assistance when you need it. You can count on friendly help from a team that understands your gaming needs and concerns.</p>
+      <div class="fm-help__actions">
+        <a href="#contact" class="fm-btn-pink">Contact Us</a>
+        <a href="mailto:support@funalomax.com" class="fm-btn-ghost">Email Support</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACF: Category contents -->
+  <?php $term_contents = function_exists( 'get_field' ) ? get_field( 'fnlmx_game_ctg_contents', 'game_category_' . $term_id ) : '';
+  if ( $term_contents ) : ?>
+    <section class="fm-content-block">
+      <div class="fm-container">
+        <div class="fm-content-card"><?php echo wp_kses_post( $term_contents ); ?></div>
       </div>
     </section>
   <?php endif; ?>
 
-</div><!-- /.gc-page -->
-
-<!-- ════════════════ GAME CATEGORY CONTENTS ══════════ -->
-    <?php
-// Get ACF field for current taxonomy term
-$term_contents = get_field('fnlmx_game_ctg_contents', 'game_category_' . $term_id);
-
-if ( $term_contents ) : ?>
-  <section class="gc-section-contents">
-    <div class="gc-container">
-      <div class="gc-term-contents">
-        <div class="sg-desc-card sg-fadein">
-          <?php echo wp_kses_post( $term_contents ); ?>
-        </div>
+  <!-- ACF: Quick guide -->
+  <?php $term_guide = function_exists( 'get_field' ) ? get_field( 'fnlmx_game_ctg_guide', 'game_category_' . $term_id ) : '';
+  if ( $term_guide ) : ?>
+    <section class="fm-content-block">
+      <div class="fm-container">
+        <div class="fm-content-card"><?php echo wp_kses_post( $term_guide ); ?></div>
       </div>
-    </div>
-  </section>
-<?php endif; ?>
+    </section>
+  <?php endif; ?>
 
-<!-- ════════════════ GAME CATEGORY QUICK GUIDE ══════════ -->
-    <?php
-// Get ACF field for current taxonomy term
-$term_contents = get_field('fnlmx_game_ctg_guide', 'game_category_' . $term_id);
-
-if ( $term_contents ) : ?>
-  <section class="gc-section-contents">
-    <div class="gc-container">
-      <div class="gc-term-contents">
-        <div class="sg-desc-card sg-fadein">
-          <?php echo wp_kses_post( $term_contents ); ?>
-        </div>
-      </div>
-    </div>
-  </section>
-<?php endif; ?>
-
-
-<!-- ════════════════════════ SCRIPTS ═══════════════════════════════ -->
-<script>
-  (function() {
-    'use strict';
-
-    /* ── 1. FILTER PILLS ─────────────────────────────────────────── */
-    var pillRow = document.getElementById('gc-pill-row');
-    var collections = document.querySelectorAll('.gc-collection[data-collection]');
-
-    if (pillRow) {
-      pillRow.addEventListener('click', function(e) {
-        var pill = e.target.closest('.gc-pill');
-        if (!pill) return;
-
-        /* Swap active pill */
-        pillRow.querySelectorAll('.gc-pill').forEach(function(p) {
-          p.classList.remove('is-active');
-        });
-        pill.classList.add('is-active');
-
-        var filter = pill.dataset.filter; /* 'all'  |  'col-{id}' */
-
-        collections.forEach(function(col) {
-          if (filter === 'all' || col.dataset.collection === filter) {
-            col.classList.remove('is-hidden');
-          } else {
-            col.classList.add('is-hidden');
-          }
-        });
-
-        /* Scroll smoothly to just below the sticky bar */
-        var bar = document.getElementById('gc-filter-bar');
-        var section = document.getElementById('gc-collections');
-        if (section) {
-          var offset = bar ? bar.offsetHeight : 0;
-          var top = section.getBoundingClientRect().top + window.pageYOffset - offset - 16;
-          window.scrollTo({
-            top: top,
-            behavior: 'smooth'
-          });
-        }
-      });
-    }
-
-
-    /* ── 2. ARROW BUTTONS ────────────────────────────────────────── */
-    function cardScrollAmount(slider) {
-      var card = slider.querySelector('.gc-card');
-      return card ? (card.offsetWidth + 18) * 2 : 320;
-    }
-
-    document.querySelectorAll('.gc-arr').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var slider = document.getElementById(this.dataset.target);
-        if (!slider) return;
-        var dir = this.classList.contains('gc-arr--prev') ? -1 : 1;
-        slider.scrollBy({
-          left: dir * cardScrollAmount(slider),
-          behavior: 'smooth'
-        });
-      });
-    });
-
-
-    /* ── 3. MOUSE DRAG ───────────────────────────────────────────── */
-    document.querySelectorAll('.gc-slider').forEach(function(slider) {
-      var isDown = false,
-        startX, scrollLeft, moved = false;
-
-      slider.addEventListener('mousedown', function(e) {
-        isDown = true;
-        moved = false;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-        slider.style.cursor = 'grabbing';
-      });
-      document.addEventListener('mouseup', function() {
-        if (!isDown) return;
-        isDown = false;
-        slider.style.cursor = 'grab';
-      });
-      slider.addEventListener('mousemove', function(e) {
-        if (!isDown) return;
-        e.preventDefault();
-        moved = true;
-        var x = e.pageX - slider.offsetLeft;
-        slider.scrollLeft = scrollLeft - (x - startX) * 1.5;
-      });
-      /* Block card link clicks after a drag */
-      slider.addEventListener('click', function(e) {
-        if (moved) {
-          e.preventDefault();
-          moved = false;
-        }
-      }, true);
-    });
-
-
-    /* ── 4. ARROW DISABLED STATE ─────────────────────────────────── */
-    function syncArrows(slider) {
-      var id = slider.id;
-      var prev = document.querySelector('.gc-arr--prev[data-target="' + id + '"]');
-      var next = document.querySelector('.gc-arr--next[data-target="' + id + '"]');
-      if (!prev || !next) return;
-      prev.disabled = slider.scrollLeft <= 2;
-      next.disabled = slider.scrollLeft >= slider.scrollWidth - slider.clientWidth - 2;
-    }
-
-    document.querySelectorAll('.gc-slider').forEach(function(slider) {
-      syncArrows(slider);
-      slider.addEventListener('scroll', function() {
-        syncArrows(slider);
-      }, {
-        passive: true
-      });
-    });
-
-  })();
-</script>
+</div>
 
 <?php get_footer(); ?>
