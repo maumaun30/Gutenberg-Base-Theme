@@ -1,0 +1,105 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/live-actions",
+  "title": "Live Actions",
+  "category": "design",
+  "icon": "games",
+  "description": "Live casino actions hero section with features, badge, and media panel.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "badge1": {
+      "type": "string",
+      "default": "FUN"
+    },
+    "badge2": {
+      "type": "string",
+      "default": "FAST"
+    },
+    "badge3": {
+      "type": "string",
+      "default": "SECURE"
+    },
+    "headingTop": {
+      "type": "string",
+      "default": "JOIN LIVE ONLINE"
+    },
+    "headingHighlight": {
+      "type": "string",
+      "default": "CASINO GAMES"
+    },
+    "headingBottom": {
+      "type": "string",
+      "default": "AT YOUR OWN PACE"
+    },
+    "description": {
+      "type": "string",
+      "default": "If you're after non-stop excitement and interactions, FUNaloMAX offers thousands of online casino games to pick."
+    },
+    "closingText": {
+      "type": "string",
+      "default": "No matter if you're on your break or in the middle of commuting, you can find time experiences that suit your schedule and mood."
+    },
+    "feature1IconId": {
+      "type": "number",
+      "default": 0
+    },
+    "feature1IconUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "feature1Title": {
+      "type": "string",
+      "default": "SAFE"
+    },
+    "feature1Desc": {
+      "type": "string",
+      "default": "Your security is our priority."
+    },
+    "feature2IconId": {
+      "type": "number",
+      "default": 0
+    },
+    "feature2IconUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "feature2Title": {
+      "type": "string",
+      "default": "FAST CASHOUT"
+    },
+    "feature2Desc": {
+      "type": "string",
+      "default": "Quick withdrawals, hassle-free."
+    },
+    "feature3IconId": {
+      "type": "number",
+      "default": 0
+    },
+    "feature3IconUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "feature3Title": {
+      "type": "string",
+      "default": "BIG WINS"
+    },
+    "feature3Desc": {
+      "type": "string",
+      "default": "Bigger jackpots await you."
+    },
+    "mediaImageId": {
+      "type": "number",
+      "default": 0
+    },
+    "mediaImageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "mediaImageAlt": {
+      "type": "string",
+      "default": "Live casino games on mobile"
+    }
+  }
+}
