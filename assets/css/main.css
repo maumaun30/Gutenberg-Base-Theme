@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
 
 /* ============================================================
    CSS CUSTOM PROPERTIES
@@ -1513,6 +1514,45 @@ a.fnlmx-cta__btn--secondary:hover, a.fnlmx-cta__btn--primary:hover {
     }
 }
 
+/* 404 Page */
+div#error-404-wrapper, div#search-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0 40px 0;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.error-404 {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+h1.page-title-404 {
+  font-size: 7rem;
+  font-weight: 900;
+}
+
+.page-subtitle-404, .page-description-404 {
+  margin-bottom: 20px;
+}
+
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+}
+
+@media (max-width: 767px) {
+  h1.page-title {
+    font-size: 5rem;
+  }
+}
+
 /* ============================================================
    BASE
    ============================================================ */
@@ -1640,6 +1680,30 @@ a.fnlmx-cta__btn--secondary:hover, a.fnlmx-cta__btn--primary:hover {
     width: 48px;
     background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
     border-radius: 999px;
+  }
+
+  .btn-primary-gradient {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    background: var(--color-funalomax-gradient);
+    color: #FFFFFF;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  a.btn-primary-gradient:hover{
+    color: unset;
+  }
+
+  .btn-primary-gradient:hover {
+    opacity: 0.88;
   }
 
   .btn-primary {
