@@ -51,7 +51,7 @@
       ?>
 
       <div class="funalo-nav__cta">
-        <a href="<?php echo esc_url( home_url('/join-now/') ); ?>">
+        <a href="<?php echo esc_url( 'https://funalomax.com/' ); ?>" target="_blank" rel="noopener noreferrer">
           <?php esc_html_e('Login / Register', 'luxe'); ?>
         </a>
       </div>
