@@ -261,9 +261,9 @@ export default function Edit({ attributes, setAttributes }) {
             <BadgePreview badge1={badge1} badge2={badge2} badge3={badge3} />
 
             <h2 className="lva-heading">
-              {headingTop}<br />
-              <span className="lva-heading__highlight">{headingHighlight}</span><br />
-              {headingBottom}
+              <span className="lva-heading__line">{headingTop}</span>
+              <span className="lva-heading__highlight">{headingHighlight}</span>
+              <span className="lva-heading__line">{headingBottom}</span>
             </h2>
 
             <p className="lva-description">{description}</p>

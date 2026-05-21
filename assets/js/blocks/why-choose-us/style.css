@@ -43,16 +43,12 @@
 /* ── Grid ────────────────────────────────────────────────────────── */
 .mytheme-wcu__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 32px;
 }
 
-@media (min-width: 900px) {
-  .mytheme-wcu__grid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
+
 
 /* ── Card — outer box containing icon + label ────────────────────── */
 .mytheme-wcu__card {
@@ -129,8 +125,24 @@
   padding-top: 4px;
 }
 
+@media (max-width: 1279px) {
+  .mytheme-wcu__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 767px) {
   .mytheme-wcu__icon-bg {
     width: 130px;
+  }
+}
+
+@media (max-width: 410px) {
+  .mytheme-wcu__grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .mytheme-wcu__icon-bg {
+    width: 240px;
   }
 }

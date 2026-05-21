@@ -279,3 +279,40 @@
         font-size: 12px;
     }
 }
+
+@media (max-width: 410px) {
+	.fnlmx-fast-deposit-wrap {
+		width: 300px;
+	}
+
+	.fnlmx-fast-deposit {
+		gap: 10px;
+	}
+
+	.fnlmx-fast-deposit__left {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		text-align: center;
+	}
+
+	.fnlmx-fast-deposit__right {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-wrap: wrap;
+		text-align: center;
+		width: 100%;
+	}
+
+	.fnlmx-fast-deposit__cta-text {
+		max-width: 135px;
+	}
+}
+
+@media (max-width: 340px) {
+	.fnlmx-fast-deposit-wrap {
+		width: 280px;
+	}
+}

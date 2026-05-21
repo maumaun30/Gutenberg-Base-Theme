@@ -7,7 +7,7 @@
 .wp-block-mytheme-live-actions.lva-section {
     position: relative;
     overflow: hidden;
-    background-color: #030218;
+    background-color: #02001e;
     font-family: 'Montserrat', sans-serif;
     width: 100%;
     max-width: 100% !important;
@@ -69,7 +69,7 @@
 
 /* ── Heading ────────────────────────────────────────────────── */
 .lva-heading {
-    font-size: /*clamp(1.75rem, 3.5vw, 3rem)*/47px;
+    font-size: 47px;
     font-weight: 700;
     text-transform: uppercase;
     line-height: 57px;
@@ -78,7 +78,13 @@
     margin: 0;
 }
 
+/* Each line renders as its own block — no <br> needed */
+.lva-heading__line {
+    display: block;
+}
+
 .lva-heading__highlight {
+    display: block;
     color: var(--color-primary, #F71DC2);
     font-size: 56px;
 }
@@ -145,7 +151,7 @@
     font-weight: 400;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: #9A9B9E
+    color: #9A9B9E;
 }
 
 .lva-feature__title--1 { /* SAFE — customise here */ }
@@ -179,14 +185,13 @@
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    min-height: 340px;
+    background: radial-gradient(circle, rgba(214,119,255,0.35) 0%, rgba(162,63,255,0.2) 35%, rgba(0,0,0,0) 70%);
 }
 
 /* Section image */
 .lva-media__img {
     display: block;
     width: 100%;
-    max-width: 560px;
     height: auto;
     object-fit: contain;
     object-position: bottom center;
@@ -212,12 +217,29 @@
    RESPONSIVE
    ============================================================= */
 
+@media (max-width: 1200px) {
+
+}
+
 /* Tablet */
-@media (max-width: 1023px) {
+@media (max-width: 1146px) {
     .lva-section__inner {
         grid-template-columns: 1fr;
         padding: 56px 32px;
         gap: 40px;
+    }
+
+    .lva-heading__line {
+        display: unset;
+    }
+
+    .lva-heading__highlight {
+        display: unset;
+        font-size: unset;
+    }
+
+    .lva-description, .lva-closing {
+        max-width: unset;
     }
 
     .lva-media {
@@ -233,7 +255,7 @@
 }
 
 /* Mobile */
-@media (max-width: 640px) {
+@media (max-width: 767px) {
     .lva-section__inner {
         padding: 48px 20px;
         gap: 32px;
@@ -243,7 +265,12 @@
         margin: auto;
     }
 
-    .lva-heading, .lva-heading__highlight {
+    .lva-badge__item {
+        font-size: 12px;
+    }
+
+    .lva-heading,
+    .lva-heading__highlight {
         font-size: clamp(1.5rem, 7vw, 2.25rem);
         line-height: 1.2;
         text-align: center;
@@ -252,17 +279,18 @@
     .lva-description {
         text-align: center;
         margin-bottom: 10px;
+        font-size: 16px;
     }
 
     .lva-closing {
         text-align: center;
         margin-top: 10px;
-
+        font-size: 16px;
     }
 
-    .lva-media {
+    /*.lva-media {
         display: none;
-    }
+    }*/
 
     .lva-media__img {
         max-width: 100%;

@@ -60,9 +60,9 @@ $features = [
             <?php endif; ?>
 
             <h2 class="lva-heading">
-                <?php echo esc_html( $heading_top ); ?><br>
-                <span class="lva-heading__highlight"><?php echo esc_html( $heading_highlight ); ?></span><br>
-                <?php echo esc_html( $heading_bottom ); ?>
+                <span class="lva-heading__line"><?php echo esc_html( $heading_top ); ?></span>
+                <span class="lva-heading__highlight"><?php echo esc_html( $heading_highlight ); ?></span>
+                <span class="lva-heading__line"><?php echo esc_html( $heading_bottom ); ?></span>
             </h2>
 
             <?php if ( $description ) : ?>

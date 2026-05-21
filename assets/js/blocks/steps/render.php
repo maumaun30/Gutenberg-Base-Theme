@@ -1,6 +1,7 @@
 <?php
 $section_title    = $attributes['sectionTitle'] ?? '';
 $section_subtitle = $attributes['sectionSubtitle'] ?? '';
+$footer_text      = $attributes['footerText'] ?? '';
 $steps            = $attributes['steps'] ?? [];
 $total            = count( $steps );
 ?>
@@ -25,30 +26,46 @@ $total            = count( $steps );
 
     <div class="mytheme-steps__grid">
       <?php foreach ( $steps as $index => $step ) :
-        $number      = esc_html( $step['number'] ?? '' );
-        $title       = esc_html( $step['title'] ?? '' );
-        $description = esc_html( $step['description'] ?? '' );
-        $is_last     = $index === $total - 1;
+        $number   = esc_html( $step['number'] ?? ( $index + 1 ) );
+        $title    = esc_html( $step['title'] ?? '' );
+        $desc     = esc_html( $step['description'] ?? '' );
+        $icon_url = esc_url( $step['iconUrl'] ?? '' );
+        $icon_alt = esc_attr( $step['iconAlt'] ?? '' );
+        $is_last  = $index === $total - 1;
       ?>
-        <div class="mytheme-steps__card">
+        <div class="mytheme-steps__item">
+
+          <div class="mytheme-steps__number" aria-label="Step <?php echo esc_attr( $number ); ?>">
+            <?php echo esc_html( $number ); ?>
+          </div>
 
           <?php if ( ! $is_last ) : ?>
             <div class="mytheme-steps__connector" aria-hidden="true"></div>
           <?php endif; ?>
 
-          <div class="mytheme-steps__number"><?php echo $number; ?></div>
+          <div class="mytheme-steps__card">
 
-          <h3 class="mytheme-steps__card-title"><?php echo $title; ?></h3>
+            <?php if ( $icon_url ) : ?>
+              <div class="mytheme-steps__icon">
+                <img src="<?php echo $icon_url; ?>" alt="<?php echo $icon_alt; ?>" />
+              </div>
+            <?php endif; ?>
 
-          <p class="mytheme-steps__card-desc"><?php echo $description; ?></p>
+            <h3 class="mytheme-steps__card-title"><?php echo $title; ?></h3>
+            <p class="mytheme-steps__card-desc"><?php echo $desc; ?></p>
 
-          <div class="mytheme-steps__glow" aria-hidden="true"></div>
+            <div class="mytheme-steps__glow" aria-hidden="true"></div>
+          </div>
+
         </div>
       <?php endforeach; ?>
     </div>
-    <div class="steps-description" style="text-align: center;padding-top: 40px;">
-      <p>Signing up is deliberately designed to be quick and hassle-free so that you can get into the action right away.</p>
-    </div>
+
+    <?php if ( $footer_text ) : ?>
+      <div class="steps-description">
+        <p><?php echo wp_kses_post( $footer_text ); ?></p>
+      </div>
+    <?php endif; ?>
 
   </div>
 </section>
