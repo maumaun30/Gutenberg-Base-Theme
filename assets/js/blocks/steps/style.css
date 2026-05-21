@@ -1,6 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
+/* ── Block wrapper ───────────────────────────────────────────────── */
 .wp-block-mytheme-steps.mytheme-steps {
-  background-color: var(--bg-dark-2, #111);
+  background-color: var(--bg-dark-2, #1a1025);
   padding: var(--section-py, 80px) 0;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .mytheme-steps__container {
@@ -12,103 +16,139 @@
 /* ── Heading ─────────────────────────────────────────────────────── */
 .mytheme-steps__heading {
   text-align: center;
-  margin-bottom: 64px;
+  margin-bottom: 48px;
 }
 
 .mytheme-steps__title {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 800;
   color: #fff;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
   margin: 0 0 16px;
+  line-height: 1.2;
+}
+
+.mytheme-steps__title .highlight {
+  color: var(--color-primary, #e91e8c);
 }
 
 .mytheme-steps__subtitle {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.25rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
 }
 
-/* ── Grid ────────────────────────────────────────────────────────── */
+/* ── Steps wrapper: badge row + card row ─────────────────────────── */
 .mytheme-steps__grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 32px;
+  gap: 16px;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 600px) {
   .mytheme-steps__grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
+@media (min-width: 1024px) {
+  .mytheme-steps__grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+}
+
+/* ── Each step: badge + card stacked ────────────────────────────── */
+.mytheme-steps__item {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+
+
+/* ── Number badge ────────────────────────────────────────────────── */
+.mytheme-steps__number {
+  position: relative;
+  z-index: 1;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  background-color: var(--color-primary, #e91e8c);
+  color: #fff;
+  border-radius: 6px;
+  margin-bottom: 0;
+  flex-shrink: 0;
+  /* NOT centered — left-aligned per design */
+  align-self: flex-start;
+}
+
 /* ── Card ────────────────────────────────────────────────────────── */
 .mytheme-steps__card {
   position: relative;
-  padding: 32px;
-  border-radius: 16px;
-  background-color: var(--bg-dark-4, #1e1e1e);
-  border: 1px solid var(--border, #2a2a2a);
-  box-shadow: var(--shadow-md, 0 4px 24px rgba(0,0,0,0.4));
-  transition: transform 0.5s ease;
+  flex: 1;
+  padding: 32px 24px 28px;
+  border-radius: 12px;
+  background-color: #1e1530;
+  border: 1px solid rgba(140, 60, 160, 0.35);
+  text-align: center;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
   overflow: hidden;
 }
 
 .mytheme-steps__card:hover {
-  transform: scale(1.05);
+  border-color: rgba(233, 30, 140, 0.55);
+  background-color: #231840;
 }
 
-/* Connecting line between cards (desktop only) */
-.mytheme-steps__connector {
-  display: none;
-}
-
-@media (min-width: 768px) {
-  .mytheme-steps__connector {
-    display: block;
-    position: absolute;
-    top: 64px;
-    left: 100%;
-    width: 32px;
-    height: 2px;
-    background: linear-gradient(to right, var(--color-primary, #f5b335), transparent);
-    z-index: 1;
-  }
-}
-
-/* ── Number badge ────────────────────────────────────────────────── */
-.mytheme-steps__number {
-  display: inline-block;
-  margin-bottom: 24px;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.5rem;
-  font-weight: 700;
-  background-color: var(--bg-dark-1, #0a0a0b);
-  color: var(--color-primary, #f5b335);
-  border: 2px solid var(--color-primary, #f5b335);
-  box-shadow: 0 0 20px rgba(245, 179, 53, 0.3);
+/* ── Icon area ───────────────────────────────────────────────────── */
+.mytheme-steps__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 20px;
   transition: transform 0.3s ease;
 }
 
-.mytheme-steps__card:hover .mytheme-steps__number {
-  transform: scale(1.1);
+.mytheme-steps__icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.mytheme-steps__card:hover .mytheme-steps__icon {
+  transform: scale(1.08);
 }
 
 /* ── Card text ───────────────────────────────────────────────────── */
 .mytheme-steps__card-title {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  font-size: 1.375rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: #fff;
-  margin: 0 0 16px;
+  margin: 0 0 10px;
 }
 
 .mytheme-steps__card-desc {
-  color: rgba(255, 255, 255, 0.7);
-  line-height: 1.7;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.65;
   margin: 0;
 }
 
@@ -116,13 +156,27 @@
 .mytheme-steps__glow {
   position: absolute;
   inset: 0;
-  border-radius: 16px;
-  background: radial-gradient(circle at center, rgba(245, 179, 53, 0.1), transparent 70%);
+  border-radius: 12px;
+  background: radial-gradient(circle at center, rgba(233, 30, 140, 0.08), transparent 70%);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.4s ease;
 }
 
 .mytheme-steps__card:hover .mytheme-steps__glow {
   opacity: 1;
+}
+
+/* ── Bottom description ──────────────────────────────────────────── */
+.steps-description {
+  text-align: center;
+  padding-top: 40px;
+}
+
+.steps-description p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
 }

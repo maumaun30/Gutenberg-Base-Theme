@@ -1,4 +1,4 @@
-import { useBlockProps, RichText, InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, RichText, InspectorControls, MediaUpload, MediaUploadCheck } from '@wordpress/block-editor';
 import {
   PanelBody,
   TextControl,
@@ -13,241 +13,299 @@ import {
 } from '@wordpress/components';
 import { plus, chevronUp, chevronDown, trash } from '@wordpress/icons';
 
-export default function Edit({ attributes, setAttributes }) {
-  const { sectionTitle, sectionSubtitle, steps } = attributes;
+// Design tokens
+const C = {
+  bg:      '#1a1025',
+  cardBg:  '#1e1530',
+  border:  'rgba(140,60,160,0.35)',
+  primary: '#e91e8c',
+  white:   '#ffffff',
+  muted:   'rgba(255,255,255,0.5)',
+};
 
-  // ── Repeater helpers ──────────────────────────────────────────────
+// Placeholder icon shown when no image uploaded
+const PlaceholderIcon = () => (
+  <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.35 }}>
+    <rect x="3" y="3" width="18" height="18" rx="2"/>
+    <circle cx="8.5" cy="8.5" r="1.5"/>
+    <polyline points="21 15 16 10 5 21"/>
+  </svg>
+);
+
+export default function Edit({ attributes, setAttributes }) {
+  const { sectionTitle, sectionSubtitle, footerText, steps } = attributes;
 
   const updateStep = (index, field, value) => {
-    const updated = steps.map((step, i) =>
-      i === index ? { ...step, [field]: value } : step
-    );
-    setAttributes({ steps: updated });
+    setAttributes({ steps: steps.map((s, i) => i === index ? { ...s, [field]: value } : s) });
   };
 
   const addStep = () => {
-    const next = String(steps.length + 1).padStart(2, '0');
     setAttributes({
-      steps: [
-        ...steps,
-        { number: next, title: 'New Step', description: 'Describe this step.' },
-      ],
+      steps: [...steps, {
+        number:  String(steps.length + 1),
+        iconUrl: '',
+        iconAlt: '',
+        title:   'New Step',
+        description: 'Describe this step.',
+      }],
     });
   };
 
-  const removeStep = (index) => {
-    setAttributes({ steps: steps.filter((_, i) => i !== index) });
-  };
+  const removeStep = (index) => setAttributes({ steps: steps.filter((_, i) => i !== index) });
 
-  const moveStep = (index, direction) => {
+  const moveStep = (index, dir) => {
     const updated = [...steps];
-    const target = index + direction;
+    const target = index + dir;
     if (target < 0 || target >= updated.length) return;
     [updated[index], updated[target]] = [updated[target], updated[index]];
     setAttributes({ steps: updated });
   };
 
-  // ── Block props ───────────────────────────────────────────────────
-
   const blockProps = useBlockProps({
     className: 'steps-editor-wrapper',
-    style: {
-      backgroundColor: 'var(--bg-dark-2, #111)',
-      padding: '48px 32px',
-      borderRadius: '8px',
-    },
+    style: { backgroundColor: C.bg, padding: '48px 32px', fontFamily: "'Montserrat', sans-serif" },
   });
+
+  const colCount = Math.min(steps.length, 4);
 
   return (
     <>
+      {/* ── Sidebar ── */}
       <InspectorControls>
         <PanelBody title="Section Heading" initialOpen={true}>
           <TextControl
-            label="Title"
+            label="Title (use <span class='highlight'>…</span> for pink text)"
             value={sectionTitle}
-            onChange={(value) => setAttributes({ sectionTitle: value })}
+            onChange={(v) => setAttributes({ sectionTitle: v })}
           />
           <TextareaControl
             label="Subtitle"
             value={sectionSubtitle}
-            onChange={(value) => setAttributes({ sectionSubtitle: value })}
+            onChange={(v) => setAttributes({ sectionSubtitle: v })}
             rows={2}
+          />
+          <TextareaControl
+            label="Footer Text"
+            value={footerText}
+            onChange={(v) => setAttributes({ footerText: v })}
+            rows={3}
           />
         </PanelBody>
 
         <PanelBody title={`Steps (${steps.length})`} initialOpen={true}>
           {steps.map((step, index) => (
-            <Card
-              key={index}
-              style={{ marginBottom: '12px', border: '1px solid #444' }}
-            >
+            <Card key={index} style={{ marginBottom: '12px', border: '1px solid #444' }}>
               <CardHeader>
                 <Flex align="center">
-                  <FlexItem>
-                    <strong style={{ color: '#aaa', fontSize: '12px' }}>
-                      Step {index + 1}
-                    </strong>
-                  </FlexItem>
+                  <FlexItem><strong style={{ color: '#aaa', fontSize: '12px' }}>Step {index + 1}</strong></FlexItem>
                   <FlexBlock />
-                  <FlexItem>
-                    <Button
-                      icon={chevronUp}
-                      isSmall
-                      disabled={index === 0}
-                      onClick={() => moveStep(index, -1)}
-                      label="Move up"
-                    />
-                  </FlexItem>
-                  <FlexItem>
-                    <Button
-                      icon={chevronDown}
-                      isSmall
-                      disabled={index === steps.length - 1}
-                      onClick={() => moveStep(index, 1)}
-                      label="Move down"
-                    />
-                  </FlexItem>
-                  <FlexItem>
-                    <Button
-                      icon={trash}
-                      isSmall
-                      isDestructive
-                      disabled={steps.length <= 1}
-                      onClick={() => removeStep(index)}
-                      label="Remove step"
-                    />
-                  </FlexItem>
+                  <FlexItem><Button icon={chevronUp}   isSmall disabled={index === 0}                onClick={() => moveStep(index, -1)} label="Move up"   /></FlexItem>
+                  <FlexItem><Button icon={chevronDown} isSmall disabled={index === steps.length - 1} onClick={() => moveStep(index,  1)} label="Move down" /></FlexItem>
+                  <FlexItem><Button icon={trash} isSmall isDestructive disabled={steps.length <= 1}  onClick={() => removeStep(index)}   label="Remove"    /></FlexItem>
                 </Flex>
               </CardHeader>
               <CardBody>
                 <TextControl
-                  label="Number label"
+                  label="Number Label"
                   value={step.number}
-                  onChange={(value) => updateStep(index, 'number', value)}
-                  placeholder="01"
+                  onChange={(v) => updateStep(index, 'number', v)}
+                  placeholder="1"
                 />
+
+                {/* Image upload */}
+                <div style={{ marginBottom: '16px' }}>
+                  <p style={{ marginBottom: '8px', fontSize: '11px', fontWeight: 600, textTransform: 'uppercase', color: '#1e1e1e' }}>Icon Image</p>
+                  <MediaUploadCheck>
+                    <MediaUpload
+                      onSelect={(media) => {
+                        updateStep(index, 'iconUrl', media.url);
+                        updateStep(index, 'iconAlt', media.alt || '');
+                      }}
+                      allowedTypes={['image']}
+                      value={step.iconUrl}
+                      render={({ open }) => (
+                        <div>
+                          {step.iconUrl ? (
+                            <div style={{ marginBottom: '8px' }}>
+                              <img
+                                src={step.iconUrl}
+                                alt={step.iconAlt}
+                                style={{ width: '48px', height: '48px', objectFit: 'contain', display: 'block', marginBottom: '6px' }}
+                              />
+                              <Flex gap={2}>
+                                <FlexItem>
+                                  <Button isSmall variant="secondary" onClick={open}>Replace</Button>
+                                </FlexItem>
+                                <FlexItem>
+                                  <Button isSmall variant="tertiary" isDestructive onClick={() => { updateStep(index, 'iconUrl', ''); updateStep(index, 'iconAlt', ''); }}>
+                                    Remove
+                                  </Button>
+                                </FlexItem>
+                              </Flex>
+                            </div>
+                          ) : (
+                            <Button isSmall variant="secondary" onClick={open}>Upload Icon</Button>
+                          )}
+                        </div>
+                      )}
+                    />
+                  </MediaUploadCheck>
+                </div>
+
                 <TextControl
                   label="Title"
                   value={step.title}
-                  onChange={(value) => updateStep(index, 'title', value)}
+                  onChange={(v) => updateStep(index, 'title', v)}
                 />
                 <TextareaControl
                   label="Description"
                   value={step.description}
-                  onChange={(value) => updateStep(index, 'description', value)}
+                  onChange={(v) => updateStep(index, 'description', v)}
                   rows={3}
                 />
               </CardBody>
             </Card>
           ))}
-
-          <Button
-            icon={plus}
-            variant="secondary"
-            onClick={addStep}
-            style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}
-          >
+          <Button icon={plus} variant="secondary" onClick={addStep} style={{ width: '100%', justifyContent: 'center', marginTop: '4px' }}>
             Add Step
           </Button>
         </PanelBody>
       </InspectorControls>
 
-      {/* ── Editor preview ── */}
+      {/* ── Editor canvas preview ── */}
       <div {...blockProps}>
+
+        {/* Heading */}
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <RichText
             tagName="h2"
             value={sectionTitle}
-            onChange={(value) => setAttributes({ sectionTitle: value })}
+            onChange={(v) => setAttributes({ sectionTitle: v })}
             placeholder="Section title…"
             style={{
-              fontFamily: "'Bebas Neue', sans-serif",
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              color: 'white',
-              letterSpacing: '0.02em',
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: 'clamp(1.5rem, 3vw, 2.25rem)',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              color: C.white,
+              letterSpacing: '0.01em',
               margin: '0 0 12px',
             }}
-            allowedFormats={[]}
+            allowedFormats={['core/bold', 'core/text-color']}
           />
           <RichText
             tagName="p"
             value={sectionSubtitle}
-            onChange={(value) => setAttributes({ sectionSubtitle: value })}
+            onChange={(v) => setAttributes({ sectionSubtitle: v })}
             placeholder="Section subtitle…"
-            style={{
-              fontSize: '1.125rem',
-              color: 'rgba(255,255,255,0.6)',
-              margin: 0,
-            }}
+            style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '1rem', color: C.muted, margin: 0 }}
             allowedFormats={['core/bold', 'core/italic']}
           />
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(${Math.min(steps.length, 3)}, 1fr)`,
-            gap: '32px',
-          }}
-        >
-          {steps.map((step, index) => (
-            <div
-              key={index}
-              style={{
-                position: 'relative',
-                padding: '32px',
-                borderRadius: '16px',
-                backgroundColor: 'var(--bg-dark-4, #1e1e1e)',
-                border: '1px solid var(--border, #333)',
-              }}
-            >
-              {/* Connecting line */}
-              {index < steps.length - 1 && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '64px',
-                    left: '100%',
-                    width: '32px',
-                    height: '2px',
-                    background: 'linear-gradient(to right, var(--color-primary, #f5b335), transparent)',
-                  }}
-                />
-              )}
+        {/* Steps grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: `repeat(${colCount}, 1fr)`, gap: '20px' }}>
+          {steps.map((step, index) => {
+            const isLast = index === steps.length - 1;
+            return (
+              <div key={index} style={{ display: 'flex', flexDirection: 'column', position: 'relative' }}>
 
-              <div
-                style={{
-                  display: 'inline-block',
-                  marginBottom: '24px',
-                  padding: '12px 24px',
-                  borderRadius: '12px',
-                  fontFamily: "'Bebas Neue', sans-serif",
-                  fontSize: '1.5rem',
+                {/* Badge */}
+                <div style={{
+                  position: 'relative',
+                  zIndex: 1,
+                  width: '34px',
+                  height: '34px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: C.primary,
+                  color: '#fff',
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: '0.8125rem',
                   fontWeight: 700,
-                  backgroundColor: 'var(--bg-dark-1, #0a0a0b)',
-                  color: 'var(--color-primary, #f5b335)',
-                  border: '2px solid var(--color-primary, #f5b335)',
-                }}
-              >
-                {step.number}
-              </div>
+                  borderRadius: '6px',
+                  flexShrink: 0,
+                  alignSelf: 'flex-start',
+                }}>
+                  {step.number}
+                </div>
 
-              <h3
-                style={{
-                  fontFamily: "'Outfit', sans-serif",
-                  fontWeight: 600,
-                  fontSize: '1.375rem',
-                  color: 'white',
-                  margin: '0 0 12px',
-                }}
-              >
-                {step.title}
-              </h3>
-              <p style={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.6, margin: 0 }}>
-                {step.description}
-              </p>
-            </div>
-          ))}
+                {/* Connector line */}
+                {!isLast && (
+                  <div style={{
+                    position: 'absolute',
+                    top: '17px',
+                    left: '34px',
+                    right: '-20px',
+                    height: '2px',
+                    background: `linear-gradient(to right, ${C.primary}, rgba(233,30,140,0.15))`,
+                    zIndex: 0,
+                  }} />
+                )}
+
+                {/* Card */}
+                <div style={{
+                  flex: 1,
+                  padding: '28px 20px 24px',
+                  borderRadius: '12px',
+                  backgroundColor: C.cardBg,
+                  border: `1px solid ${C.border}`,
+                  textAlign: 'center',
+                }}>
+                  {/* Icon image or placeholder */}
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    margin: '0 auto 18px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: C.primary,
+                  }}>
+                    {step.iconUrl
+                      ? <img src={step.iconUrl} alt={step.iconAlt} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                      : <PlaceholderIcon />
+                    }
+                  </div>
+
+                  <h3 style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontWeight: 700,
+                    fontSize: '0.875rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.1em',
+                    color: C.white,
+                    margin: '0 0 10px',
+                  }}>
+                    {step.title}
+                  </h3>
+
+                  <p style={{
+                    fontFamily: "'Montserrat', sans-serif",
+                    fontSize: '0.8125rem',
+                    color: C.muted,
+                    lineHeight: 1.65,
+                    margin: 0,
+                  }}>
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer text */}
+        <div style={{ textAlign: 'center', paddingTop: '40px' }}>
+          <RichText
+            tagName="p"
+            value={footerText}
+            onChange={(v) => setAttributes({ footerText: v })}
+            placeholder="Footer note…"
+            style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.9375rem', color: C.muted, margin: 0 }}
+            allowedFormats={['core/bold', 'core/italic']}
+          />
         </div>
       </div>
     </>
