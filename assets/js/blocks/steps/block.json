@@ -23,9 +23,21 @@
     },
     "steps": {
       "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "number":      { "type": "string" },
+          "iconId":      { "type": "integer" },
+          "iconUrl":     { "type": "string" },
+          "iconAlt":     { "type": "string" },
+          "title":       { "type": "string" },
+          "description": { "type": "string" }
+        }
+      },
       "default": [
         {
           "number": "1",
+          "iconId": 0,
           "iconUrl": "",
           "iconAlt": "",
           "title": "Sign Up",
@@ -33,6 +45,7 @@
         },
         {
           "number": "2",
+          "iconId": 0,
           "iconUrl": "",
           "iconAlt": "",
           "title": "Verify",
@@ -40,6 +53,7 @@
         },
         {
           "number": "3",
+          "iconId": 0,
           "iconUrl": "",
           "iconAlt": "",
           "title": "Log In",
@@ -47,6 +61,7 @@
         },
         {
           "number": "4",
+          "iconId": 0,
           "iconUrl": "",
           "iconAlt": "",
           "title": "Play",
