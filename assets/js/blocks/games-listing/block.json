@@ -9,27 +9,20 @@
   "style": "file:./style.css",
   "render": "file:./render.php",
   "attributes": {
-    "sectionLabel": {
-      "type": "string",
-      "default": "Game Library"
-    },
-    "heading": {
-      "type": "string",
-      "default": "Find All Your Favorite Games on One Platform"
-    },
-    "subheading": {
-      "type": "string",
-      "default": "FUNaloMAX brings together a wide range of games from trusted online casino game developers around the world. From nostalgic classics to modern casino titles, everything is in one place. A few taps is all it takes to find your favorite games and discover new ones."
-    },
     "postsPerCategory": {
       "type": "number",
-      "default": 4
+      "default": 6
     },
     "showViewAll": {
       "type": "boolean",
       "default": true
     },
     "selectedCategories": {
+      "type": "array",
+      "default": [],
+      "items": { "type": "number" }
+    },
+    "categoryOrder": {
       "type": "array",
       "default": [],
       "items": { "type": "number" }
