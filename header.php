@@ -143,7 +143,26 @@
 
     <div class="funalo-search-overlay__content">
       <p class="funalo-search-overlay__label"><?php esc_html_e('What are you looking for?', 'luxe'); ?></p>
-      <?php get_search_form(); ?>
+      <form role="search" method="get" class="funalo-search-overlay__form" action="<?php echo esc_url( home_url( '/' ) ); ?>">
+        <label class="screen-reader-text" for="funalo-search-field"><?php esc_html_e( 'Search for:', 'luxe' ); ?></label>
+        <input
+          type="search"
+          id="funalo-search-field"
+          class="funalo-search-overlay__field"
+          name="s"
+          value="<?php echo esc_attr( get_search_query() ); ?>"
+          placeholder="<?php esc_attr_e( '', 'luxe' ); ?>"
+          autocomplete="off"
+        />
+        <button type="submit" class="funalo-search-overlay__submit" aria-label="<?php esc_attr_e( 'Search', 'luxe' ); ?>">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+               fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </button>
+      </form>
     </div>
 
   </div>
