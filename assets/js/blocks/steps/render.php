@@ -31,17 +31,13 @@ $total            = count( $steps );
         $desc     = esc_html( $step['description'] ?? '' );
         $icon_url = esc_url( $step['iconUrl'] ?? '' );
         $icon_alt = esc_attr( $step['iconAlt'] ?? '' );
-        $is_last  = $index === $total - 1;
       ?>
         <div class="mytheme-steps__item">
 
+          <!-- Badge: absolutely positioned over top-left of card -->
           <div class="mytheme-steps__number" aria-label="Step <?php echo esc_attr( $number ); ?>">
             <?php echo esc_html( $number ); ?>
           </div>
-
-          <?php if ( ! $is_last ) : ?>
-            <div class="mytheme-steps__connector" aria-hidden="true"></div>
-          <?php endif; ?>
 
           <div class="mytheme-steps__card">
 
