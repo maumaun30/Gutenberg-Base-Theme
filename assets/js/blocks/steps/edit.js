@@ -92,6 +92,7 @@ export default function Edit({ attributes, setAttributes }) {
           />
         </PanelBody>
 
+
         <PanelBody title={`Steps (${steps.length})`} initialOpen={true}>
           {steps.map((step, index) => (
             <Card key={index} style={{ marginBottom: '12px', border: '1px solid #444' }}>
@@ -118,11 +119,16 @@ export default function Edit({ attributes, setAttributes }) {
                   <MediaUploadCheck>
                     <MediaUpload
                       onSelect={(media) => {
-                        updateStep(index, 'iconUrl', media.url);
-                        updateStep(index, 'iconAlt', media.alt || '');
+                        const updated = steps.map((s, i) => i === index ? {
+                          ...s,
+                          iconId:  media.id,
+                          iconUrl: media.url,
+                          iconAlt: media.alt || '',
+                        } : s);
+                        setAttributes({ steps: updated });
                       }}
                       allowedTypes={['image']}
-                      value={step.iconUrl}
+                      value={step.iconId || 0}
                       render={({ open }) => (
                         <div>
                           {step.iconUrl ? (
@@ -137,7 +143,10 @@ export default function Edit({ attributes, setAttributes }) {
                                   <Button isSmall variant="secondary" onClick={open}>Replace</Button>
                                 </FlexItem>
                                 <FlexItem>
-                                  <Button isSmall variant="tertiary" isDestructive onClick={() => { updateStep(index, 'iconUrl', ''); updateStep(index, 'iconAlt', ''); }}>
+                                  <Button isSmall variant="tertiary" isDestructive onClick={() => {
+                                    const updated = steps.map((s, i) => i === index ? { ...s, iconId: 0, iconUrl: '', iconAlt: '' } : s);
+                                    setAttributes({ steps: updated });
+                                  }}>
                                     Remove
                                   </Button>
                                 </FlexItem>
@@ -307,6 +316,15 @@ export default function Edit({ attributes, setAttributes }) {
             allowedFormats={['core/bold', 'core/italic']}
           />
         </div>
+
+        {/* Overlay — pure CSS gradient, no image */}
+        <div style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(90deg, rgba(16, 14, 27, 0.20) 0%, rgba(247, 29, 194, 0) 50%)',
+          pointerEvents: 'none',
+          zIndex: 100,
+        }} />
       </div>
     </>
   );
