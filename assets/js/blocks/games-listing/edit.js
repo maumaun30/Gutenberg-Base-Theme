@@ -56,7 +56,7 @@ function SortableList({ items, onReorder }) {
   if (items.length === 0) {
     return (
       <p style={{ fontSize: 12, color: '#aaa', margin: '8px 0' }}>
-        No categories selected. Check some in "Filter Categories" first.
+        No categories to order yet. Check categories in "Filter Categories" above, or leave all unchecked to show every category here.
       </p>
     );
   }
@@ -161,24 +161,34 @@ export default function Edit({ attributes, setAttributes }) {
       .catch((err) => { console.error(err); setLoading(false); });
   }, [categories, selectedCategories, postsPerCategory]);
 
-  // Build ordered list of active cats, respecting categoryOrder
+  // Base cats = all if none selected, else just the selected ones
   const baseCats = selectedCategories.length > 0
     ? categories.filter((c) => selectedCategories.includes(c.id))
     : categories;
 
-  const orderedCats = categoryOrder.length > 0
-    ? [...baseCats].sort((a, b) => {
-        const ia = categoryOrder.indexOf(a.id);
-        const ib = categoryOrder.indexOf(b.id);
-        return (ia === -1 ? 9999 : ia) - (ib === -1 ? 9999 : ib);
-      })
-    : baseCats;
+  // Merge saved order with baseCats so newly-checked items always appear
+  // in the sortable list even before they have been manually reordered.
+  const orderedCats = (() => {
+    if (baseCats.length === 0) return [];
+    if (categoryOrder.length === 0) return baseCats;
+    const inOrder    = categoryOrder.map((id) => baseCats.find((c) => c.id === id)).filter(Boolean);
+    const notInOrder = baseCats.filter((c) => !categoryOrder.includes(c.id));
+    return [...inOrder, ...notInOrder];
+  })();
 
   function toggleCategory(id, checked) {
     if (checked) {
-      setAttributes({ selectedCategories: [...selectedCategories, id] });
+      const newSelected = [...selectedCategories, id];
+      // Append to categoryOrder immediately so the item shows in the sortable list
+      const newOrder = categoryOrder.length > 0
+        ? [...categoryOrder, id]
+        : [...baseCats.map((c) => c.id), id];
+      setAttributes({ selectedCategories: newSelected, categoryOrder: newOrder });
     } else {
-      setAttributes({ selectedCategories: selectedCategories.filter((c) => c !== id) });
+      setAttributes({
+        selectedCategories: selectedCategories.filter((c) => c !== id),
+        categoryOrder: categoryOrder.filter((c) => c !== id),
+      });
     }
   }
 
