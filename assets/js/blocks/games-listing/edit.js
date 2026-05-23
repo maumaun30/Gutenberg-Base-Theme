@@ -202,8 +202,12 @@ export default function Edit({ attributes, setAttributes }) {
                         <div className="games-listing__cat-header-right">
                           <span className="games-listing__view-all-link">ALL</span>
                           <div className="games-listing__nav-btns">
-                            <button className="games-listing__nav-btn">&#8249;</button>
-                            <button className="games-listing__nav-btn">&#8250;</button>
+                            <button className="games-listing__nav-btn" aria-label="Previous">
+                              <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
+                            </button>
+                            <button className="games-listing__nav-btn" aria-label="Next">
+                              <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
+                            </button>
                           </div>
                         </div>
                       )}

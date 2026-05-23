@@ -24,7 +24,6 @@
   opacity: 0.12;
   pointer-events: none;
   background: radial-gradient(circle, var(--color-primary, #f71dc2), transparent);
-  display: none;
 }
 
 .games-listing__container {
@@ -40,7 +39,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
+  gap: 1rem;
   margin-bottom: 2.5rem;
   overflow-x: auto;
   scrollbar-width: none;
@@ -62,7 +61,7 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.5);
-  /*background-color: rgba(255, 255, 255, 0.04);*/
+  background-color: rgba(255, 255, 255, 0.04);
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.2s, background-color 0.2s, border-color 0.2s;
@@ -96,12 +95,6 @@
 /* hide a category section when filtered out */
 .games-listing__category.is-hidden {
   display: none;
-}
-
-.games-listing__category {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
 }
 
 /* ── Category row header ── */
@@ -154,31 +147,41 @@
 }
 
 .games-listing__nav-btn {
-  width: 1.6rem;
-  height: 1.6rem;
-  border-radius: 0.375rem;
-  background: #FFFFFF;
-  color: #000000;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.3rem;
+  border: none;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
-  font-size: 0.7rem;
-  font-family: 'Montserrat', sans-serif;
+  transition: background 0.2s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.games-listing__nav-btn svg {
+  width: 0.5rem;
+  height: 0.5rem;
+  fill: #000000;
+  display: block;
+  transition: fill 0.2s;
 }
 
 .games-listing__nav-btn:hover {
   background: var(--color-primary, #f71dc2);
-  color: #fff;
-  border-color: var(--color-primary, #f71dc2);
+}
+
+.games-listing__nav-btn:hover svg {
+  fill: #ffffff;
 }
 
 /* ── Separator line between header and card row ── */
 .games-listing__cat-divider {
   width: 100%;
   height: 1px;
-  background-color: #EC48994D;
+  background-color: rgba(255, 255, 255, 0.08);
   margin: 0.75rem 0;
 }
 
@@ -189,10 +192,9 @@
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  /* Extra padding lets cards lift on hover without being clipped */
-  padding-top: 8px;
-  padding-bottom: 12px;
-  margin-top: -8px;
+  /* Padding on all sides gives cards room to lift/scale without clipping */
+  padding: 10px 4px 14px 4px;
+  margin: -10px -4px -14px -4px;
 }
 
 .games-listing__scroll-wrap::-webkit-scrollbar { display: none; }
@@ -213,22 +215,10 @@
   .games-listing__grid { grid-auto-columns: calc((100% - 4 * 0.625rem) / 5); }
 }
 @media (max-width: 1023px) {
-  .games-listing__grid { 
-    grid-auto-columns: calc((100% - 3 * 0.625rem) / 4); 
-  }
-
-  .games-listing__tabs {
-    gap: 2rem;
-  }
+  .games-listing__grid { grid-auto-columns: calc((100% - 3 * 0.625rem) / 4); }
 }
 @media (max-width: 767px) {
-  .games-listing__grid { 
-    grid-auto-columns: calc((100% - 2 * 0.625rem) / 3); 
-  }
-
-  .games-listing__tabs {
-    gap: 5px;
-  }
+  .games-listing__grid { grid-auto-columns: calc((100% - 2 * 0.625rem) / 3); }
 }
 @media (max-width: 479px) {
   .games-listing__grid { grid-auto-columns: calc((100% - 1 * 0.625rem) / 2.3); }
@@ -282,7 +272,8 @@
   color: rgba(255, 255, 255, 0.12);
 }
 
-/* Game Card Overlay 
+/* Permanent overlay — dark gradient from bottom, matching Figma specs:
+   #141124 at 95% opacity → #141124 at 0% */
 .game-card__overlay {
   position: absolute;
   inset: 0;
@@ -292,9 +283,8 @@
     rgba(20, 17, 36, 0.6)  40%,
     rgba(20, 17, 36, 0)    100%
   );
-  background: radial-gradient(circle, transparent 70%, #000000 100%);
   z-index: 1;
-}*/
+}
 
 .game-card__price {
   position: absolute;

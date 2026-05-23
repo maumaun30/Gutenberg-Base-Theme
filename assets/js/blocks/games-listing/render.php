@@ -108,11 +108,15 @@ if ( ! empty( $category_order ) ) {
                   <button class="games-listing__nav-btn"
                           aria-label="Scroll left"
                           data-scroll-target="<?php echo $cat_id; ?>"
-                          data-scroll-dir="-1">&#8249;</button>
+                          data-scroll-dir="-1">
+                    <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
+                  </button>
                   <button class="games-listing__nav-btn"
                           aria-label="Scroll right"
                           data-scroll-target="<?php echo $cat_id; ?>"
-                          data-scroll-dir="1">&#8250;</button>
+                          data-scroll-dir="1">
+                    <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
+                  </button>
                 </div>
               </div>
             <?php endif; ?>
