@@ -1,4 +1,4 @@
-import { useEffect, useState } from '@wordpress/element';
+import { useEffect, useState, useRef } from '@wordpress/element';
 import {
   InspectorControls,
   useBlockProps,
@@ -9,18 +9,128 @@ import {
   ToggleControl,
   CheckboxControl,
   Spinner,
-  Button,
 } from '@wordpress/components';
 import apiFetch from '@wordpress/api-fetch';
 import './style.css';
 
+/* ── Drag-and-drop sortable list ── */
+function SortableList({ items, onReorder }) {
+  const [draggingId, setDraggingId] = useState(null);
+  const [overId, setOverId]         = useState(null);
+  const dragNode = useRef(null);
+
+  function handleDragStart(e, id) {
+    setDraggingId(id);
+    dragNode.current = e.currentTarget;
+    e.dataTransfer.effectAllowed = 'move';
+    // Slight delay so the ghost image renders before the style change
+    setTimeout(() => { if (dragNode.current) dragNode.current.style.opacity = '0.4'; }, 0);
+  }
+
+  function handleDragEnter(id) {
+    if (id !== draggingId) setOverId(id);
+  }
+
+  function handleDragEnd() {
+    if (dragNode.current) dragNode.current.style.opacity = '1';
+    dragNode.current = null;
+
+    if (draggingId !== null && overId !== null && draggingId !== overId) {
+      const from = items.findIndex((i) => i.id === draggingId);
+      const to   = items.findIndex((i) => i.id === overId);
+      const next = [...items];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      onReorder(next.map((i) => i.id));
+    }
+
+    setDraggingId(null);
+    setOverId(null);
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  }
+
+  if (items.length === 0) {
+    return (
+      <p style={{ fontSize: 12, color: '#aaa', margin: '8px 0' }}>
+        No categories selected. Check some in "Filter Categories" first.
+      </p>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      {items.map((cat) => {
+        const isDragging = cat.id === draggingId;
+        const isOver     = cat.id === overId;
+
+        return (
+          <div
+            key={cat.id}
+            draggable
+            onDragStart={(e) => handleDragStart(e, cat.id)}
+            onDragEnter={() => handleDragEnter(cat.id)}
+            onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '7px 10px',
+              borderRadius: 6,
+              background: isDragging
+                ? 'rgba(247,29,194,0.08)'
+                : isOver
+                  ? 'rgba(247,29,194,0.15)'
+                  : 'rgba(255,255,255,0.05)',
+              border: isOver
+                ? '1.5px dashed rgba(247,29,194,0.7)'
+                : '1.5px solid rgba(255,255,255,0.08)',
+              cursor: 'grab',
+              userSelect: 'none',
+              transition: 'background 0.15s, border-color 0.15s',
+            }}
+          >
+            {/* Drag handle dots */}
+            <span style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: 2,
+              opacity: 0.4,
+              flexShrink: 0,
+            }}>
+              {[0,1,2,3,4,5].map((d) => (
+                <span key={d} style={{
+                  width: 3,
+                  height: 3,
+                  borderRadius: '50%',
+                  background: '#fff',
+                  display: 'block',
+                }} />
+              ))}
+            </span>
+            <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#fff' }}>
+              {cat.name}
+            </span>
+            {/* drag hint */}
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>⠿</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Edit({ attributes, setAttributes }) {
   const { postsPerCategory, showViewAll, selectedCategories, categoryOrder } = attributes;
 
-  const [categories, setCategories]       = useState([]);
+  const [categories, setCategories]           = useState([]);
   const [gamesByCategory, setGamesByCategory] = useState({});
-  const [loading, setLoading]             = useState(true);
-  const [activeFilter, setActiveFilter]   = useState('all');
+  const [loading, setLoading]                 = useState(true);
+  const [activeFilter, setActiveFilter]       = useState('all');
 
   useEffect(() => {
     apiFetch({ path: '/wp/v2/game_category?per_page=100&_fields=id,name,slug' })
@@ -72,15 +182,8 @@ export default function Edit({ attributes, setAttributes }) {
     }
   }
 
-  function moveCat(id, direction) {
-    const base = categoryOrder.length > 0 ? [...categoryOrder] : orderedCats.map((c) => c.id);
-    const idx  = base.indexOf(id);
-    if (idx === -1) return;
-    const newIdx = idx + direction;
-    if (newIdx < 0 || newIdx >= base.length) return;
-    const updated = [...base];
-    [updated[idx], updated[newIdx]] = [updated[newIdx], updated[idx]];
-    setAttributes({ categoryOrder: updated });
+  function handleReorder(newOrderIds) {
+    setAttributes({ categoryOrder: newOrderIds });
   }
 
   const displayedCats = activeFilter === 'all'
@@ -120,28 +223,10 @@ export default function Edit({ attributes, setAttributes }) {
         </PanelBody>
 
         <PanelBody title="Category Order" initialOpen={false}>
-          <p style={{ fontSize: 12, color: '#aaa', marginBottom: 8 }}>
-            Drag order using ↑ ↓ to set display sequence.
+          <p style={{ fontSize: 12, color: '#aaa', marginBottom: 10 }}>
+            Drag the category boxes to reorder how they appear on the page.
           </p>
-          {orderedCats.map((cat, idx) => (
-            <div key={cat.id} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-              <span style={{ flex: 1, fontSize: 13, color: '#fff' }}>{cat.name}</span>
-              <Button
-                isSmall
-                variant="secondary"
-                disabled={idx === 0}
-                onClick={() => moveCat(cat.id, -1)}
-                aria-label="Move up"
-              >↑</Button>
-              <Button
-                isSmall
-                variant="secondary"
-                disabled={idx === orderedCats.length - 1}
-                onClick={() => moveCat(cat.id, 1)}
-                aria-label="Move down"
-              >↓</Button>
-            </div>
-          ))}
+          <SortableList items={orderedCats} onReorder={handleReorder} />
         </PanelBody>
       </InspectorControls>
 
@@ -187,7 +272,7 @@ export default function Edit({ attributes, setAttributes }) {
             </p>
           ) : (
             <div className="games-listing__categories">
-              {displayedCats.map((cat, idx) => {
+              {displayedCats.map((cat) => {
                 const entry = gamesByCategory[cat.id];
                 const games = entry?.games ?? [];
 
