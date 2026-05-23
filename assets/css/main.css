@@ -55,7 +55,7 @@
   --nav-gradient-bg: linear-gradient(180deg,rgba(0, 0, 0, 0.2) 0%,#0F0D1E 100%);
   --nav-border: rgba(247, 29, 194, 0.25);
   --nav-text: #ffffff;
-  --nav-text-muted: rgba(255, 255, 255, 0.65);
+  --nav-text-muted: #A1A1AA;
   --nav-active-underline: var(--color-primary);
   --nav-height: 72px;
 }
@@ -118,9 +118,9 @@
 
 .funalo-nav__primary li a {
   font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.08em;
+  font-weight: 500;
+  font-size: 16px;
+  letter-spacing: -0.8px;
   text-transform: uppercase;
   color: var(--nav-text-muted);
   text-decoration: none;
@@ -137,7 +137,6 @@
   width: 0;
   height: 3px;
   background: var(--color-nav-active);
-  border-radius: 2px;
   transition: width 0.25s ease;
 }
 
@@ -159,7 +158,6 @@
 /* Active item */
 .funalo-nav__primary li.current-menu-item > a {
   color: var(--color-nav-active);
-  font-weight: 800;
 }
 .funalo-nav__primary li.current-menu-item > a::after {
   width: 100%;
@@ -1325,6 +1323,7 @@ body.funalo-drawer-open {
     overflow: hidden;
     width: 100%;
     background-color: #0e0125; /* fallback */
+    font-family: 'Montserrat', sans-serif;
 }
  
 /* --------------------------------------------------------------------------

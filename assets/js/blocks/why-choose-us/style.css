@@ -4,7 +4,7 @@
 /* ── Block wrapper ───────────────────────────────────────────────── */
 .wp-block-mytheme-why-choose-us.mytheme-why-choose-us {
   background-color: var(--bg-dark-3, #060d1a);
-  padding: var(--section-py, 72px) 0;
+  padding: 30px 0 0;
   font-family: 'Montserrat', sans-serif;
 }
 
