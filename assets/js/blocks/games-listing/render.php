@@ -243,7 +243,7 @@ if ( ! empty( $category_order ) ) {
       if ( ! grid ) return;
       var wrap = grid.closest('.games-listing__scroll-wrap') || grid;
       var cardWidth = ( grid.querySelector('.game-card')?.offsetWidth ?? 160 ) + 10;
-      wrap.scrollBy({ left: parseInt( btn.getAttribute('data-scroll-dir'), 10 ) * cardWidth * 3, behavior: 'smooth' });
+      wrap.scrollBy({ left: parseInt( btn.getAttribute('data-scroll-dir'), 10 ) * cardWidth * 1, behavior: 'smooth' });/*3*/
     });
   });
 
