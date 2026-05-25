@@ -57,12 +57,11 @@
   border-radius: 0.5rem;
   border: 1px solid transparent;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.78rem;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  /*background-color: rgba(255, 255, 255, 0.04);*/
+  color: #FFFFFF;/*rgba(255, 255, 255, 0.5)*/
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.2s, background-color 0.2s, border-color 0.2s;
@@ -81,8 +80,8 @@
 }
 
 .games-listing__tab-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 25px;
+  height: 25px;
   flex-shrink: 0;
 }
 
@@ -224,15 +223,26 @@
 }
 
 @media (max-width: 1279px) {
-  .games-listing__grid { grid-auto-columns: calc((100% - 4 * 0.625rem) / 5); }
+  .games-listing__grid { 
+    grid-auto-columns: calc((100% - 4 * 0.625rem) / 5); 
+  }
+
+  .games-listing__tabs {
+    gap: 2rem;
+  }
 }
 @media (max-width: 1023px) {
   .games-listing__grid { 
     grid-auto-columns: calc((100% - 3 * 0.625rem) / 4); 
   }
 
-  .games-listing__tabs {
-    gap: 2rem;
+  .games-listing__tab {
+    font-size: 12px;
+  }
+  
+  .games-listing__tab-icon {
+    width: 20px;
+    height: 20px;
   }
 }
 @media (max-width: 767px) {
@@ -242,10 +252,49 @@
 
   .games-listing__tabs {
     gap: 5px;
+    flex-wrap: unset;
+  }
+
+  .games-listing__tab-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .games-listing__tab {
+    display: flex;
+    padding: 0.25rem 0.20rem;
+    flex-direction: row;
+    gap: 2px;
   }
 }
+
 @media (max-width: 479px) {
-  .games-listing__grid { grid-auto-columns: calc((100% - 1 * 0.625rem) / 2.3); }
+  .games-listing__grid { 
+    grid-auto-columns: calc((100% - 1 * 0.625rem) / 3);/*2.3*/
+  }
+}
+
+@media (max-width: 410px) {
+  .games-listing__grid { 
+    grid-auto-columns: calc((100% - 1 * 0.625rem) / 2);
+  }
+
+  .games-listing__tabs {
+    gap: 10px;
+  }
+
+  .games-listing__tab {
+    display: flex;
+    padding: 0.35rem 0.30rem;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 364px) {
+  .games-listing__tabs {
+    justify-content: unset;
+  }
 }
 
 /* ── Game card ── */
