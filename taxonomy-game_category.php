@@ -338,36 +338,10 @@ set_query_var( 'game_count',     $game_count );
 
   <!-- NEED HELP -->
   <section class="fm-help">
-    <div class="fm-help__bg" style="background-image:url('<?php echo esc_url( $help_bg ); ?>');"></div>
-    <div class="fm-help__inner">
-      <h2>Need Help? We've Got Your Back</h2>
-      <p>Support is always within reach on our PAGCOR-licensed online casino. FUNaloMAX is ready to assist if you have a question or need help. Get in touch with us through our 24/7 live chat support. We also provide email assistance when you need it. You can count on friendly help from a team that understands your gaming needs and concerns.</p>
-      <div class="fm-help__actions">
-        <a href="#contact" class="fm-btn-pink">Contact Us</a>
-        <a href="mailto:support@funalomax.com" class="fm-btn-ghost">Email Support</a>
-      </div>
-    </div>
+    <?php echo do_shortcode('[fnlmx_cta]'); ?>
   </section>
 
-  <!-- ACF: Category contents -->
-  <?php $term_contents = function_exists( 'get_field' ) ? get_field( 'fnlmx_game_ctg_contents', 'game_category_' . $term_id ) : '';
-  if ( $term_contents ) : ?>
-    <section class="fm-content-block">
-      <div class="fm-container">
-        <div class="fm-content-card"><?php echo wp_kses_post( $term_contents ); ?></div>
-      </div>
-    </section>
-  <?php endif; ?>
-
-  <!-- ACF: Quick guide -->
-  <?php $term_guide = function_exists( 'get_field' ) ? get_field( 'fnlmx_game_ctg_guide', 'game_category_' . $term_id ) : '';
-  if ( $term_guide ) : ?>
-    <section class="fm-content-block">
-      <div class="fm-container">
-        <div class="fm-content-card"><?php echo wp_kses_post( $term_guide ); ?></div>
-      </div>
-    </section>
-  <?php endif; ?>
+  
 
 </div>
 
