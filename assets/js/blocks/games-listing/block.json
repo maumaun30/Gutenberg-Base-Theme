@@ -26,6 +26,14 @@
       "type": "array",
       "default": [],
       "items": { "type": "number" }
+    },
+    "showRecommended": {
+      "type": "boolean",
+      "default": true
+    },
+    "recommendedPerPage": {
+      "type": "number",
+      "default": 12
     }
   }
 }

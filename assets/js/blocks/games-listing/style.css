@@ -104,6 +104,10 @@
   gap: 12px;
 }
 
+.games-listing__recommended {
+  margin-top: 2.5rem;
+}
+
 /* ── Category row header ── */
 .games-listing__cat-header {
   display: flex;
@@ -122,7 +126,6 @@
   font-size: 1rem !important;
   font-weight: 800 !important;
   color: var(--color-primary, #f71dc2) !important;
-  letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
   margin: 0 !important;
 }
