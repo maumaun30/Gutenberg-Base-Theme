@@ -19,7 +19,17 @@ $parent_term_id = get_query_var( 'parent_term_id' );
 $ancestors      = get_query_var( 'ancestors' );
 
 $assets_url = get_template_directory_uri() . '/assets/images/category-template';
-$hero_bg    = $assets_url . '/ce74fb3646e3.png';
+$hero_bg    = $assets_url . '/ce74fb3646e3.png'; // fallback
+
+/* Prefer ACF term image: fnlmx_game_category_featured_image */
+if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
+    $acf_img = get_field( 'fnlmx_game_category_featured_image', 'game_category_' . $term->term_id );
+    if ( is_array( $acf_img ) ) {
+        $hero_bg = ! empty( $acf_img['sizes']['large'] )
+            ? $acf_img['sizes']['large']
+            : ( ! empty( $acf_img['url'] ) ? $acf_img['url'] : $hero_bg );
+    }
+}
 ?>
 <section class="fm-hero">
   <div class="fm-hero__bg" style="background-image:url('<?php echo esc_url( $hero_bg ); ?>');"></div>
@@ -38,7 +48,7 @@ $hero_bg    = $assets_url . '/ce74fb3646e3.png';
     </nav>
 
     <h1 class="fm-hero__title">
-      Play <?php echo esc_html( $term_name ); ?> Games on<br>FUNaloMAX
+      Play <?php echo esc_html( $term_name ); ?> Games on<br><span style="color:#F71DC2;">FUNaloMAX</span>
     </h1>
 
     <p class="fm-hero__desc">
