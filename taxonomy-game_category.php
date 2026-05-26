@@ -124,14 +124,12 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-bc a {
-    color: #fff;
+    color: #FFFFFF;
     text-decoration: none;
-    opacity: .85;
   }
 
   .fm-bc a:hover {
-    color: var(--fm-pink);
-    opacity: 1;
+    color: var(--color-primary);
   }
 
   .fm-bc__cur {
@@ -183,20 +181,19 @@ set_query_var('game_count',     $game_count);
 
   .fm-card {
     position: relative;
-    aspect-ratio: 1 / 1;
+    /*aspect-ratio: 1 / 1;*/
     border-radius: 12px;
     overflow: hidden;
     background: var(--fm-card);
     border: 1px solid var(--fm-card-br);
     text-decoration: none;
     display: block;
-    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+    transition: transform .3s ease, box-shadow .3s ease;
   }
 
   .fm-card:hover {
-    transform: translateY(-4px);
-    border-color: rgba(247, 29, 194, .5);
-    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
+    transform: translateY(-5px);
+    /*box-shadow: 0 10px 30px rgba(247, 29, 194, .18);*/
   }
 
   .fm-card__img {
