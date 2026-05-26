@@ -141,17 +141,17 @@ if ( $primary_cat ) {
   }
 
   .fm-bc a {
-    color: #FFFFFF;
+    color: rgba(255, 255, 255, .55);
     text-decoration: none;
     transition: color .2s;
   }
 
   .fm-bc a:hover {
-    color: var(--color-primary);
+    color: #fff;
   }
 
   .fm-bc svg {
-    color: #FFFFFF;
+    color: rgba(255, 255, 255, .25);
     flex-shrink: 0;
   }
 
@@ -395,8 +395,8 @@ if ( $primary_cat ) {
   }
 
   .sg-rcard:hover {
-    transform: translateY(-5px);
-    /*box-shadow: 0 10px 30px rgba(247, 29, 194, .18);*/
+    transform: translateY(-6px);
+    border-color: rgba(247, 29, 194, .4);
   }
 
   .sg-rcard__img-wrap {
@@ -406,7 +406,14 @@ if ( $primary_cat ) {
   .sg-rcard__img {
     width: 190px;
     height: 190px;
+    transition: transform .3s ease, box-shadow .3s ease;
     display: block;
+  }
+
+  .sg-rcard:hover{
+    /*transform: scale(1.07);*/
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
   }
 
   /* ============ TWO-COLUMN: ABOUT + RULES ============ */

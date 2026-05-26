@@ -305,8 +305,7 @@
   background-color: var(--bg-dark-4, #13131a);
   border: 1px solid rgba(255,255,255,0.06);
   scroll-snap-align: start;
-  /*transition: transform 0.25s ease, border-color 0.25s ease;*/
-  transition: transform .3s ease, box-shadow .3s ease;
+  transition: transform 0.25s ease, border-color 0.25s ease;
   cursor: pointer;
   aspect-ratio: 3 / 4;
   flex-shrink: 0;
@@ -315,11 +314,9 @@
 }
 
 .game-card:hover {
-  /*transform: translateY(-4px) scale(1.015);
+  transform: translateY(-4px) scale(1.015);
   border-color: rgba(247, 29, 194, 0.3);
-  z-index: 2;*/
-  transform: translateY(-5px);
-  /*box-shadow: 0 10px 30px rgba(247, 29, 194, .18);*/
+  z-index: 2;
 }
 
 .game-card__image-wrap {
@@ -334,9 +331,9 @@
   transition: transform 0.5s ease;
 }
 
-/*.game-card:hover .game-card__image {
+.game-card:hover .game-card__image {
   transform: scale(1.05);
-}*/
+}
 
 .game-card__image-placeholder {
   width: 100%;
