@@ -336,7 +336,7 @@ set_query_var( 'game_count',     $game_count );
     </div>
   </section>
 
-  <!-- NEED HELP -->
+  <!-- CTA SECTION -->
   <section class="fm-help">
     <?php echo do_shortcode('[fnlmx_cta]'); ?>
   </section>

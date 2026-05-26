@@ -15,6 +15,7 @@
   --color-secondary-hover: #e01a2a;
   --color-funalomax-gradient: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%);
   --color-nav-active: #FF36C9;
+  --color-amber-gradient: linear-gradient(90deg, #936000 0%, #E9C349 100%);
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
