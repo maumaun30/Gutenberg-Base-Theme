@@ -347,7 +347,7 @@ if ( $primary_cat ) {
   .sg-slider {
     display: flex;
     gap: 1rem;
-    overflow-x: auto;
+    /*overflow-x: auto;*/
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -401,20 +401,19 @@ if ( $primary_cat ) {
 
   .sg-rcard__img-wrap {
     position: relative;
-    aspect-ratio: 3/4;
-    overflow: hidden;
   }
 
   .sg-rcard__img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform .5s;
+    width: 190px;
+    height: 190px;
+    transition: transform .3s ease, box-shadow .3s ease;
     display: block;
   }
 
-  .sg-rcard:hover .sg-rcard__img {
-    transform: scale(1.07);
+  .sg-rcard:hover{
+    /*transform: scale(1.07);*/
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
   }
 
   /* ============ TWO-COLUMN: ABOUT + RULES ============ */
@@ -663,7 +662,7 @@ if ( $primary_cat ) {
   }
 
   .sg-main {
-    padding-bottom: 0;
+    padding-bottom: 60px;
   }
 </style>
 
@@ -720,7 +719,7 @@ if ( $primary_cat ) {
             <button class="sg-btn-play js-open-modal"
               data-url="<?php echo esc_url($game_url); ?>"
               data-title="<?php echo esc_attr($title); ?>">
-              Play Now
+              Play For Real
             </button>
           <?php endif; ?>
           <?php if ($demo_url) : ?>
