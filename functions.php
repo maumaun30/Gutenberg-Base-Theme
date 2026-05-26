@@ -561,3 +561,38 @@ function fix_svg() {
         </style>';
 }
 add_action( 'admin_head', 'fix_svg' );
+
+/**
+ * On single 'game' page, mark the menu item linking to the game's primary
+ * game_category (parent game category) as current.
+ */
+add_filter( 'nav_menu_css_class', function ( $classes, $item ) {
+    if ( ! is_singular( 'game' ) ) {
+        return $classes;
+    }
+    if ( empty( $item->object ) || $item->object !== 'game_category' ) {
+        return $classes;
+    }
+
+    $terms = get_the_terms( get_queried_object_id(), 'game_category' );
+    if ( ! $terms || is_wp_error( $terms ) ) {
+        return $classes;
+    }
+    $primary = $terms[0];
+
+    $matched_ids = array_merge(
+        [ (int) $primary->term_id ],
+        array_map( 'intval', get_ancestors( $primary->term_id, 'game_category', 'taxonomy' ) )
+    );
+
+    $menu_term_id = (int) $item->object_id;
+    if ( in_array( $menu_term_id, $matched_ids, true ) ) {
+        $classes[] = 'current-menu-item';
+        $classes[] = 'current_page_item';
+        if ( $menu_term_id !== (int) $primary->term_id ) {
+            $classes[] = 'current-menu-ancestor';
+            $classes[] = 'current-menu-parent';
+        }
+    }
+    return array_unique( $classes );
+}, 10, 2 );
