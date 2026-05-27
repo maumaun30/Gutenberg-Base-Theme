@@ -51,8 +51,10 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
       Play <?php echo esc_html( $term_name ); ?> Games on<br><span style="color:#F71DC2;">FUNaloMAX</span>
     </h1>
 
-    <?php if ( $term && ! empty( $term->description ) ) : ?>
-      <div class="fm-hero__desc"><?php echo wp_kses_post( wpautop( $term->description ) ); ?></div>
-    <?php endif; ?>
+    <p class="fm-hero__desc">
+      <?php echo $term_desc
+        ? wp_kses_post( $term_desc )
+        : 'Step into the excitement of ' . esc_html( $term_name ) . ' games online. Play everything from iconic classics to fast-paced live action.'; ?>
+    </p>
   </div>
 </section>
