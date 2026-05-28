@@ -6,7 +6,7 @@
  *
  * Layout (matches Single Game Page mockup):
  *  1. Hero       — blurred backdrop + thumbnail, title, short description, Play Now + Try Demo
- *  2. Related    — "More {Provider} Games" horizontal slider with "View All" link
+ *  2. Related    — "More {Provider} Games" static grid (6 desktop / 3 mobile) with "View All" link
  *  3. Two-col    — About the Game (with Read More) | Game Rules (ACF repeater)
  *  4. CTA        — handled via shortcode inside post content
  */
@@ -32,14 +32,14 @@ function gc_acf($key, $id)
   return function_exists('get_field') ? get_field($key, $id) : get_post_meta($id, $key, true);
 }
 
-$game_url     = gc_acf('game_url',      $post_id);
-$demo_url     = gc_acf('demo_url',      $post_id);
-$provider     = gc_acf('provider',      $post_id);
-$short_desc   = gc_acf('short_description', $post_id);
-$game_rules   = gc_acf('game_rules',    $post_id); // ACF repeater: rule_title, rule_desc
+$game_url     = gc_acf('game_url',               $post_id);
+$demo_url     = gc_acf('demo_url',               $post_id);
+$provider     = gc_acf('provider',               $post_id);
+$short_desc   = gc_acf('short_description',      $post_id);
+$game_rules   = gc_acf('fnlmx_game_rules',       $post_id); // ACF repeater: fnlmx_game_rules_title, fnlmx_game_rules_desription
 
-/* Hero subtitle: prefer short_description ACF, then excerpt, then trimmed content */
-$hero_desc = gc_acf('fnlmx_game_short_description', $post_id);;
+/* Hero subtitle */
+$hero_desc = gc_acf('fnlmx_game_short_description', $post_id);
 
 /* Taxonomy */
 $game_cats   = get_the_terms($post_id, 'game_category');
@@ -68,7 +68,7 @@ if ($primary_cat) {
       'terms'            => $parent_id,
       'include_children' => true,
     ]],
-    'posts_per_page' => 12,
+    'posts_per_page' => 6,
     'post__not_in'   => [$post_id],
     'orderby'        => 'rand',
   ]);
@@ -88,17 +88,32 @@ if ($primary_cat) {
 
 /* Heading label for related strip — top-level parent of the primary game_category */
 $related_label = 'Similar';
-if ( $primary_cat ) {
-  $cat_ancestors = get_ancestors( $primary_cat->term_id, 'game_category', 'taxonomy' );
-  $top_id        = ! empty( $cat_ancestors ) ? end( $cat_ancestors ) : $primary_cat->term_id;
-  $top_term      = get_term( $top_id, 'game_category' );
-  if ( $top_term && ! is_wp_error( $top_term ) ) {
+if ($primary_cat) {
+  $cat_ancestors = get_ancestors($primary_cat->term_id, 'game_category', 'taxonomy');
+  $top_id        = ! empty($cat_ancestors) ? end($cat_ancestors) : $primary_cat->term_id;
+  $top_term      = get_term($top_id, 'game_category');
+  if ($top_term && ! is_wp_error($top_term)) {
     $related_label = $top_term->name;
   }
 }
+
+/* Check if rules have any valid entries */
+$has_rules = false;
+if (is_array($game_rules) && ! empty($game_rules)) {
+  foreach ($game_rules as $rule) {
+    $t = isset($rule['fnlmx_game_rules_title'])      ? trim($rule['fnlmx_game_rules_title'])      : '';
+    $d = isset($rule['fnlmx_game_rules_desription']) ? trim($rule['fnlmx_game_rules_desription']) : '';
+    if ($t || $d) { $has_rules = true; break; }
+  }
+}
+
+/* Determine if the two-col section should render at all */
+$has_about = ! empty(trim($content));
+$show_main = $has_about || $has_rules;
 ?>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
+
   :root {
     --color-primary: #f71dc2;
     --color-primary-hover: #fb11c1;
@@ -180,15 +195,6 @@ if ( $primary_cat ) {
     border: 1px solid transparent;
   }
 
-  @media(min-width:900px) {
-    .sg-hero__inner {
-      flex-direction: row;
-      align-items: center;
-      gap: 2rem;
-      padding: 1.75rem 2rem;
-    }
-  }
-
   .sg-thumb-wrap {
     flex-shrink: 0;
     align-self: center;
@@ -197,18 +203,11 @@ if ( $primary_cat ) {
     position: relative;
   }
 
-  @media(min-width:900px) {
-    .sg-thumb-wrap {
-      width: 200px;
-    }
-  }
-
   .sg-thumb {
     width: 230px;
     height: 230px;
     border-radius: var(--radius-md);
     display: block;
-    /*object-fit: cover;*/
     box-shadow: 0 24px 60px rgba(0, 0, 0, .7), 0 0 0 1px var(--border-strong);
   }
 
@@ -235,6 +234,7 @@ if ( $primary_cat ) {
     color: #E5E2E1;
     line-height: 24px;
     margin: 0 0 1rem;
+    text-transform: uppercase;
   }
 
   .sg-hero__desc {
@@ -250,6 +250,10 @@ if ( $primary_cat ) {
     display: flex;
     flex-wrap: wrap;
     gap: .875rem;
+  }
+
+  a.sg-btn-play:hover {
+    color: unset;
   }
 
   .sg-btn-play {
@@ -302,7 +306,7 @@ if ( $primary_cat ) {
     filter: brightness(1.08);
   }
 
-  /* ============ RELATED SLIDER ============ */
+  /* ============ RELATED GRID ============ */
   .sg-related {
     max-width: 80rem;
     margin: 0 auto;
@@ -317,21 +321,21 @@ if ( $primary_cat ) {
     gap: 1rem;
   }
 
-  .sg-related-hd h2 {
+  .sg-related-hd span {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.25rem;
+    font-size: 16px;
     color: #fff;
-    letter-spacing: .08em;
+    letter-spacing: -0.4px;
     margin: 0;
     text-transform: uppercase;
+    font-weight: 400;
   }
 
   .sg-viewall {
     font-family: 'Montserrat', sans-serif;
-    font-size: .78rem;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: .1em;
     color: var(--color-primary);
     text-decoration: none;
   }
@@ -340,62 +344,31 @@ if ( $primary_cat ) {
     color: #fff;
   }
 
-  .sg-slider-wrap {
-    position: relative;
-  }
-
-  .sg-slider {
-    display: flex;
+  .sg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    /*overflow-x: auto;*/
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: .5rem;
-    cursor: grab;
   }
 
-  .sg-slider:active {
-    cursor: grabbing;
-  }
-
-  .sg-slider::-webkit-scrollbar {
-    display: none;
+  @media(min-width: 768px) {
+    .sg-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
   }
 
   .sg-rcard {
-    scroll-snap-align: start;
-    flex: 0 0 calc(50% - .5rem);
     border-radius: var(--radius-md);
     overflow: hidden;
     background: var(--bg-dark-4);
     border: 1px solid var(--border);
     text-decoration: none;
     display: block;
-    position: relative;
     transition: transform .35s, box-shadow .35s, border-color .35s;
   }
 
-  @media(min-width:480px) {
-    .sg-rcard {
-      flex: 0 0 calc(33.333% - .75rem);
-    }
-  }
-
-  @media(min-width:768px) {
-    .sg-rcard {
-      flex: 0 0 calc(20% - .8rem);
-    }
-  }
-
-  @media(min-width:1280px) {
-    .sg-rcard {
-      flex: 0 0 calc(14.2857% - .858rem);
-    }
-  }
-
   .sg-rcard:hover {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
     border-color: rgba(247, 29, 194, .4);
   }
 
@@ -404,16 +377,10 @@ if ( $primary_cat ) {
   }
 
   .sg-rcard__img {
-    width: 190px;
-    height: 190px;
-    transition: transform .3s ease, box-shadow .3s ease;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
     display: block;
-  }
-
-  .sg-rcard:hover{
-    /*transform: scale(1.07);*/
-    transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
   }
 
   /* ============ TWO-COLUMN: ABOUT + RULES ============ */
@@ -426,8 +393,69 @@ if ( $primary_cat ) {
   }
 
   @media(min-width:900px) {
+    .sg-hero__inner {
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.75rem 2rem;
+    }
+
     .sg-main {
       grid-template-columns: 1.4fr 1fr;
+    }
+
+    .sg-thumb-wrap {
+      width: 200px;
+    }
+  }
+
+  @media(max-width: 768px) {
+    .sg-title {
+      text-align: center;
+    }
+
+    .sg-hero__desc {
+      text-align: center;
+    }
+
+    .sg-cta {
+      justify-content: center;
+    }
+  }
+
+  @media(max-width: 600px) {
+    .sg-thumb-wrap {
+      width: 180px;
+      height: 180px;
+    }
+
+    .sg-thumb {
+      width: 180px;
+      height: 180px;
+    }
+
+    .sg-title {
+      font-size: 20px;
+    }
+
+    .sg-hero__desc {
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .sg-btn-play, .sg-btn-demo {
+      font-size: 12px;
+      padding: 15px 20px;
+      width: 135px;
+      justify-content: center;
+    }
+
+    .sg-related-hd span {
+      font-size: 14px;
+    }
+
+    .sg-viewall {
+      font-size: 14px;
     }
   }
 
@@ -456,8 +484,8 @@ if ( $primary_cat ) {
 
   .sg-panel__hd h2 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 1.05rem;
-    letter-spacing: .1em;
+    font-size: 16px;
+    font-weight: 400;
     color: #fff;
     margin: 0;
     text-transform: uppercase;
@@ -491,40 +519,54 @@ if ( $primary_cat ) {
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--color-primary);
+    color: #FFFFFF;
     font-family: 'Montserrat', sans-serif;
-    font-size: .78rem;
-    font-weight: 700;
+    font-size: 15px;
+    font-weight: 400;
     padding: 0;
-    text-transform: uppercase;
-    letter-spacing: .08em;
   }
 
   .sg-about__toggle:hover {
     color: #fff;
   }
 
-  /* Rules list */
+  /* ============ RULES LIST — numbered circles ============ */
   .sg-rules {
     display: flex;
     flex-direction: column;
     gap: 1.1rem;
+    counter-reset: rule-counter;
   }
 
   .sg-rule {
     display: flex;
     gap: .85rem;
     align-items: flex-start;
+    counter-increment: rule-counter;
   }
 
-  .sg-rule__dot {
+  /* Pseudo-element number badge */
+  .sg-rule__num {
     flex-shrink: 0;
-    width: .55rem;
-    height: .55rem;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    background: var(--color-primary);
-    margin-top: .55rem;
-    box-shadow: 0 0 12px rgba(247, 29, 194, .6);
+    background: #393939;
+    border: 1px solid #d946ef4d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin-top: .1rem;
+    position: relative;
+  }
+
+  .sg-rule__num::before {
+    content: counter(rule-counter);
   }
 
   .sg-rule__body {
@@ -534,20 +576,20 @@ if ( $primary_cat ) {
 
   .sg-rule__title {
     font-family: 'Montserrat', sans-serif;
-    font-size: .85rem;
-    font-weight: 700;
+    font-size: 16px;
+    font-weight: 400;
     color: #fff;
-    margin: 0 0 .25rem;
+    line-height: 24px;
     text-transform: uppercase;
-    letter-spacing: .06em;
   }
 
   .sg-rule__desc {
     font-family: 'Montserrat', sans-serif;
-    font-size: .82rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, .55);
+    font-size: 14px;
+    line-height: 20px;
+    color: #DCBED4;
     margin: 0;
+    max-width: 380px;
   }
 
   /* ============ IFRAME MODAL ============ */
@@ -555,7 +597,7 @@ if ( $primary_cat ) {
     display: none;
     position: fixed;
     inset: 0;
-    z-index: 9999;
+    z-index: 9997; /* below mobile nav drawer overlay (9998) */
     align-items: center;
     justify-content: center;
     background: rgba(0, 0, 0, .88);
@@ -716,11 +758,10 @@ if ( $primary_cat ) {
 
         <div class="sg-cta">
           <?php if ($game_url) : ?>
-            <button class="sg-btn-play js-open-modal"
-              data-url="<?php echo esc_url($game_url); ?>"
-              data-title="<?php echo esc_attr($title); ?>">
+            <a class="sg-btn-play"
+              href="<?php echo esc_url($game_url); ?>">
               Play For Real
-            </button>
+            </a>
           <?php endif; ?>
           <?php if ($demo_url) : ?>
             <button class="sg-btn-demo js-open-modal"
@@ -734,11 +775,11 @@ if ( $primary_cat ) {
     </div>
   </section>
 
-  <!-- ════════════ RELATED SLIDER ════════════ -->
+  <!-- ════════════ RELATED GRID ════════════ -->
   <?php if (! empty($related_games)) : ?>
     <section class="sg-related">
       <div class="sg-related-hd">
-        <h2>More <?php echo esc_html($related_label); ?> Games</h2>
+        <span>More <?php echo esc_html($related_label); ?> Games</span>
         <?php if ($primary_cat) : ?>
           <a href="<?php echo esc_url(get_term_link($primary_cat)); ?>" class="sg-viewall">
             View All →
@@ -746,95 +787,83 @@ if ( $primary_cat ) {
         <?php endif; ?>
       </div>
 
-      <div class="sg-slider-wrap">
-        <div class="sg-slider" id="sg-rel-slider">
-          <?php foreach ($related_games as $rg) : ?>
-            <a href="<?php echo esc_url($rg['permalink']); ?>" class="sg-rcard">
-              <div class="sg-rcard__img-wrap">
-                <?php if ($rg['thumb']) : ?>
-                  <img src="<?php echo esc_url($rg['thumb']); ?>"
-                    alt="<?php echo esc_attr($rg['title']); ?>"
-                    class="sg-rcard__img" loading="lazy">
-                <?php endif; ?>
-              </div>
-            </a>
-          <?php endforeach; ?>
-        </div>
+      <div class="sg-grid">
+        <?php foreach ($related_games as $rg) : ?>
+          <a href="<?php echo esc_url($rg['permalink']); ?>" class="sg-rcard">
+            <div class="sg-rcard__img-wrap">
+              <?php if ($rg['thumb']) : ?>
+                <img src="<?php echo esc_url($rg['thumb']); ?>"
+                  alt="<?php echo esc_attr($rg['title']); ?>"
+                  class="sg-rcard__img" loading="lazy">
+              <?php endif; ?>
+            </div>
+          </a>
+        <?php endforeach; ?>
       </div>
     </section>
   <?php endif; ?>
 
-  <!-- ════════════ ABOUT + RULES ════════════ -->
-  <div class="sg-main">
+  <!-- ════════════ ABOUT + RULES — only renders if at least one panel has content ════════════ -->
+  <?php if ($show_main) : ?>
+    <div class="sg-main">
 
-    <!-- About -->
-    <div class="sg-panel">
-      <div class="sg-panel__hd">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="12 6 12 12 16 14" />
-        </svg>
-        <h2>About the Game</h2>
-      </div>
+      <!-- About — only renders if post content exists -->
+      <?php if ($has_about) : ?>
+        <div class="sg-panel">
+          <div class="sg-panel__hd">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <h2>About the Game</h2>
+          </div>
 
-      <?php if ($content) : ?>
-        <div class="sg-about__content" id="sg-about-body">
-          <?php echo apply_filters('the_content', $content); ?>
-        </div>
-        <button type="button" class="sg-about__toggle" id="sg-about-toggle"
-          data-more="Read More" data-less="Read Less">
-          Read More
-        </button>
-      <?php else : ?>
-        <div class="sg-about__content is-open">
-          <p style="color:rgba(255,255,255,.35);font-style:italic;">
-            No description has been added for this game yet.
-          </p>
+          <div class="sg-about__content" id="sg-about-body">
+            <?php echo apply_filters('the_content', $content); ?>
+          </div>
+          <button type="button" class="sg-about__toggle" id="sg-about-toggle"
+            data-more="Read More" data-less="Read Less">
+            Read More
+          </button>
         </div>
       <?php endif; ?>
-    </div>
 
-    <!-- Rules -->
-    <div class="sg-panel">
-      <div class="sg-panel__hd">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="16" rx="2" />
-          <line x1="8" y1="9" x2="16" y2="9" />
-          <line x1="8" y1="13" x2="16" y2="13" />
-          <line x1="8" y1="17" x2="12" y2="17" />
-        </svg>
-        <h2>Game Rules</h2>
-      </div>
+      <!-- Rules — only renders if repeater has at least one valid entry -->
+      <?php if ($has_rules) : ?>
+        <div class="sg-panel">
+          <div class="sg-panel__hd">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <h2>Game Rules</h2>
+          </div>
 
-      <div class="sg-rules">
-        <?php if (is_array($game_rules) && ! empty($game_rules)) : ?>
-          <?php foreach ($game_rules as $rule) :
-            $r_title = isset($rule['rule_title']) ? $rule['rule_title'] : '';
-            $r_desc  = isset($rule['rule_desc'])  ? $rule['rule_desc']  : '';
-            if (! $r_title && ! $r_desc) continue; ?>
-            <div class="sg-rule">
-              <span class="sg-rule__dot"></span>
-              <div class="sg-rule__body">
-                <?php if ($r_title) : ?>
-                  <h3 class="sg-rule__title"><?php echo esc_html($r_title); ?></h3>
-                <?php endif; ?>
-                <?php if ($r_desc) : ?>
-                  <p class="sg-rule__desc"><?php echo esc_html($r_desc); ?></p>
-                <?php endif; ?>
+          <div class="sg-rules">
+            <?php foreach ($game_rules as $rule) :
+              $r_title = isset($rule['fnlmx_game_rules_title'])      ? $rule['fnlmx_game_rules_title']      : '';
+              $r_desc  = isset($rule['fnlmx_game_rules_desription']) ? $rule['fnlmx_game_rules_desription'] : '';
+              if (! $r_title && ! $r_desc) continue; ?>
+              <div class="sg-rule">
+                <span class="sg-rule__num"></span>
+                <div class="sg-rule__body">
+                  <?php if ($r_title) : ?>
+                    <h3 class="sg-rule__title"><?php echo esc_html($r_title); ?></h3>
+                  <?php endif; ?>
+                  <?php if ($r_desc) : ?>
+                    <p class="sg-rule__desc"><?php echo esc_html($r_desc); ?></p>
+                  <?php endif; ?>
+                </div>
               </div>
-            </div>
-          <?php endforeach; ?>
-        <?php else : ?>
-          <p style="color:rgba(255,255,255,.35);font-style:italic;font-family: 'Montserrat', sans-serif;font-size:.85rem;">
-            No rules have been added for this game yet.
-          </p>
-        <?php endif; ?>
-      </div>
-    </div>
+            <?php endforeach; ?>
+          </div>
+        </div>
+      <?php endif; ?>
 
-  </div><!-- /.sg-main -->
+    </div><!-- /.sg-main -->
+  <?php endif; ?>
 
   <!-- CTA SECTION -->
   <?php echo do_shortcode('[fnlmx_cta]'); ?>
@@ -895,11 +924,13 @@ if ( $primary_cat ) {
       modalIframe.src = '';
       document.body.style.overflow = '';
     }
+
     document.querySelectorAll('.js-open-modal').forEach(function(btn) {
       btn.addEventListener('click', function() {
         openModal(this.dataset.url, this.dataset.title);
       });
     });
+
     if (modalClose) modalClose.addEventListener('click', closeModal);
     modal.addEventListener('click', function(e) {
       if (e.target === modal) closeModal();
@@ -910,9 +941,8 @@ if ( $primary_cat ) {
 
     /* About: Read More toggle */
     var aboutBody = document.getElementById('sg-about-body');
-    var aboutBtn = document.getElementById('sg-about-toggle');
+    var aboutBtn  = document.getElementById('sg-about-toggle');
     if (aboutBody && aboutBtn) {
-      // Hide toggle if content is short enough to fit
       if (aboutBody.scrollHeight <= aboutBody.clientHeight + 4) {
         aboutBtn.style.display = 'none';
         aboutBody.classList.add('is-open');
@@ -923,32 +953,6 @@ if ( $primary_cat ) {
       });
     }
 
-    /* Slider drag */
-    document.querySelectorAll('.sg-slider').forEach(function(slider) {
-      var isDown = false,
-        startX, scrollLeft, moved = false;
-      slider.addEventListener('mousedown', function(e) {
-        isDown = true;
-        moved = false;
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-      });
-      document.addEventListener('mouseup', function() {
-        isDown = false;
-      });
-      slider.addEventListener('mousemove', function(e) {
-        if (!isDown) return;
-        e.preventDefault();
-        moved = true;
-        slider.scrollLeft = scrollLeft - (e.pageX - slider.offsetLeft - startX) * 1.5;
-      });
-      slider.addEventListener('click', function(e) {
-        if (moved) {
-          e.preventDefault();
-          moved = false;
-        }
-      }, true);
-    });
   })();
 </script>
 

@@ -8,19 +8,19 @@
    ============================================================ */
 :root {
   /* Brand */
-  --color-primary: #F71DC2;
+  --color-primary: #F71DC2*/*#BA001D*/;
   --color-primary-hover: #fb11c1;
   --color-primary-light: #fb64d6;
   --color-secondary: #d63d4a;
   --color-secondary-hover: #e01a2a;
-  --color-funalomax-gradient: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%);
-  --color-nav-active: #FF36C9;
+  --color-funalomax-gradient: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%)/*#BA001D*/;
+  --color-nav-active: #FF36C9 /*#BA001D*/;
   --color-amber-gradient: linear-gradient(90deg, #936000 0%, #E9C349 100%);
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
   --bg-dark-2: #231F33;
-  --bg-dark-3: #100E1B; /* main page bg */
+  --bg-dark-3: /*#000000;*/#100E1B; /* main page bg */
   --bg-dark-4: #1f1f25;
   --bg-dark-5: #26262e;
 
@@ -52,7 +52,7 @@
   --section-py: clamp(2.5rem, 6vw, 6rem);
 
   /* ── Nav ── */
-  --nav-bg: #0F0D1E;
+  --nav-bg: #0F0D1E /*#000000*/;
   --nav-gradient-bg: linear-gradient(180deg,rgba(0, 0, 0, 0.2) 0%,#0F0D1E 100%);
   --nav-border: rgba(247, 29, 194, 0.25);
   --nav-text: #ffffff;
