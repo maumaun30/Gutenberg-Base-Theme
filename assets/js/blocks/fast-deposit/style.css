@@ -31,8 +31,8 @@
 	padding: 0 24px;
 	border: 2px solid transparent;
 	background:
-		linear-gradient(#0F0D1E, #0F0D1E) padding-box,
-		linear-gradient(90deg, #F71DC2, #FEBB3C) border-box;
+		linear-gradient(#000000, #000000) padding-box,
+		linear-gradient(90deg, #BA001D, #FEBB3C) border-box;/*#0F0D1E*/ /*#F71DC2*/
 	background-origin: border-box;
 	background-clip: padding-box, border-box;
 }
@@ -55,8 +55,8 @@
 	width: 40px;
 	height: 40px;
 	border-radius: 10px;
-	background: #2A2A2A;
-	color: #F71DC2;
+	background: /*#2A2A2A*/ #1E1E1E;
+	color: /*#F71DC2*/ #BA001D;
 	flex-shrink: 0;
 }
 
@@ -169,7 +169,7 @@
 	width: 36px;
 	height: 36px;
 	border-radius: 8px;
-	background: #2A2A2A;
+	background: /*#2A2A2A*/ #1E1E1E;
 	flex-shrink: 0;
 }
 

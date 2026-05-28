@@ -202,7 +202,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-card {
     position: relative;
-    aspect-ratio: 1 / 1;
+    /*aspect-ratio: 1 / 1;*/
     border-radius: 12px;
     overflow: hidden;
     background: var(--fm-card);

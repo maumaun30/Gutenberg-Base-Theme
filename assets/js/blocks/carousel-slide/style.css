@@ -141,7 +141,7 @@
 }
 
 .highlight-text {
-  color: #F71DC2;
+  color: /*#F71DC2*/#BA001D;
 }
 
 .mytheme-carousel-slide__subtitle {
@@ -193,7 +193,7 @@ a.mytheme-carousel-slide__btn:hover {
 }
 
 .mytheme-carousel-slide__btn--primary {
-  background: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%);
+  background: /*linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%)*/#BA001D;
   color: #FFFFFF;
   width: 200px;
   text-align: center;

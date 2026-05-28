@@ -697,15 +697,16 @@ $show_main = $has_about || $has_rules;
     animation: spin .8s linear infinite;
   }
 
+  .cta-global {
+    margin-top: 60px;
+  }
+
   @keyframes spin {
     to {
       transform: rotate(360deg);
     }
   }
 
-  .sg-main {
-    padding-bottom: 60px;
-  }
 </style>
 
 
@@ -866,7 +867,9 @@ $show_main = $has_about || $has_rules;
   <?php endif; ?>
 
   <!-- CTA SECTION -->
-  <?php echo do_shortcode('[fnlmx_cta]'); ?>
+  <div class="cta-global">
+    <?php echo do_shortcode('[fnlmx_cta]'); ?>
+  </div>
 
 </div><!-- /.sg-page -->
 

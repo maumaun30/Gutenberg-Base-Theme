@@ -190,7 +190,7 @@
 .games-listing__cat-divider {
   width: 100%;
   height: 1px;
-  background-color: #EC48994D;
+  background-color: /*#EC48994D*/ #ba001c4d;
   margin: 0.75rem 0;
 }
 
@@ -263,8 +263,12 @@
 
 .game-card:hover {
   transform: translateY(-4px) scale(1.015);
-  border-color: rgba(247, 29, 194, 0.3);
+  border-color: /*rgba(247, 29, 194, 0.3)*/ #ba001c4d;
   z-index: 2;
+}
+
+a.game-card:hover {
+  color: #ba001c4d;
 }
 
 .game-card__image-wrap {
