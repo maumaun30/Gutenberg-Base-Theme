@@ -193,7 +193,9 @@ set_query_var('game_count',     $game_count);
       font-size: 12px;
     }
 
-    .fm-info__title, .fm-info__sub, .fm-faq-title {
+    .fm-info__title,
+    .fm-info__sub,
+    .fm-faq-title {
       text-align: center;
     }
   }
@@ -220,15 +222,15 @@ set_query_var('game_count',     $game_count);
     /*inset: 1px;
     width: 190px;
     height: 190px;
-    display: block;*/
+    display: block;
 
-    position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  object-position: center;
+    position: absolute;*/
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
   }
 
   .fm-card__fallback {
@@ -638,97 +640,98 @@ set_query_var('game_count',     $game_count);
 
   <!-- WHY PLAY / QUICK GUIDE -->
   <?php if ($has_left || $has_right) : ?>
-  <section class="fm-info">
-    <div class="fm-container">
+    <section class="fm-info">
+      <div class="fm-container">
 
-      <?php
-      $grid_class = 'fm-info__grid';
-      if ($has_left xor $has_right) $grid_class .= ' fm-info__grid--full';
-      ?>
-      <div class="<?php echo esc_attr($grid_class); ?>">
+        <?php
+        $grid_class = 'fm-info__grid';
+        if ($has_left xor $has_right) $grid_class .= ' fm-info__grid--full';
+        ?>
+        <div class="<?php echo esc_attr($grid_class); ?>">
 
-        <!-- LEFT: Why Play -->
-        <?php if ($has_left) : ?>
-        <div>
-          <h2 class="fm-info__title">
-            Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
-            On <span class="fm-pink">FunaloMAX?</span>
-          </h2>
+          <!-- LEFT: Why Play -->
+          <?php if ($has_left) : ?>
+            <div>
+              <h2 class="fm-info__title">
+                Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
+                On <span class="fm-pink">FunaloMAX?</span>
+              </h2>
 
-          <?php if ($sub_para) : ?>
-            <p class="fm-info__sub"><?php echo esc_html($sub_para); ?></p>
+              <?php if ($sub_para) : ?>
+                <p class="fm-info__sub"><?php echo esc_html($sub_para); ?></p>
+              <?php endif; ?>
+
+              <div class="fm-feat">
+                <?php foreach ($icon_rows as $row) :
+                  $icon_img = $row['fnlmx_game_category_content_icon'] ?? [];
+                  $icon_url = $icon_img['url'] ?? '';
+                  $subtitle = $row['fnlmx_game_category_content_subtitle'] ?? '';
+                  $supara   = $row['fnlmx_game_category_content_suparagraph'] ?? '';
+                ?>
+                  <div class="fm-feat__row">
+                    <div class="fm-feat__icon"
+                      <?php if ($icon_url) : ?>
+                      style="background-image:url('<?php echo esc_url($icon_url); ?>');"
+                      <?php endif; ?>>
+                    </div>
+                    <div class="fm-feat__txt">
+                      <?php if ($subtitle) : ?><h3><?php echo esc_html($subtitle); ?></h3><?php endif; ?>
+                      <?php if ($supara) : ?><p><?php echo esc_html($supara); ?></p><?php endif; ?>
+                    </div>
+                  </div>
+                <?php endforeach; ?>
+              </div>
+            </div>
           <?php endif; ?>
 
-          <div class="fm-feat">
-            <?php foreach ($icon_rows as $row) :
-              $icon_img = $row['fnlmx_game_category_content_icon'] ?? [];
-              $icon_url = $icon_img['url'] ?? '';
-              $subtitle = $row['fnlmx_game_category_content_subtitle'] ?? '';
-              $supara   = $row['fnlmx_game_category_content_suparagraph'] ?? '';
-            ?>
-              <div class="fm-feat__row">
-                <div class="fm-feat__icon"
-                  <?php if ($icon_url) : ?>
-                    style="background-image:url('<?php echo esc_url($icon_url); ?>');"
-                  <?php endif; ?>>
-                </div>
-                <div class="fm-feat__txt">
-                  <?php if ($subtitle) : ?><h3><?php echo esc_html($subtitle); ?></h3><?php endif; ?>
-                  <?php if ($supara) : ?><p><?php echo esc_html($supara); ?></p><?php endif; ?>
-                </div>
-              </div>
-            <?php endforeach; ?>
-          </div>
-        </div>
-        <?php endif; ?>
+          <?php if ($has_left && $has_right) : ?>
+            <div class="fm-info__divider"></div>
+          <?php endif; ?>
 
-        <?php if ($has_left && $has_right) : ?>
-        <div class="fm-info__divider"></div>
-        <?php endif; ?>
+          <!-- RIGHT: Quick Guide FAQ -->
+          <?php if ($has_right) : ?>
+            <div>
+              <h2 class="fm-faq-title">Quick Guide To<br><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> GAMES</span></h2>
 
-        <!-- RIGHT: Quick Guide FAQ -->
-        <?php if ($has_right) : ?>
-        <div>
-          <h2 class="fm-faq-title">Quick Guide To<br><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> GAMES</span></h2>
-
-          <div class="fm-faq">
-            <?php foreach ($faq_rows as $idx => $faq) :
-              $faq_icon_img = $faq['fnlmx_game_category_faq_icon'] ?? [];
-              $faq_icon_url = $faq_icon_img['url'] ?? '';
-              $question     = $faq['fnlmx_game_category_faq_question'] ?? '';
-              $answer       = $faq['fnlmx_game_category_faq_answer'] ?? '';
-            ?>
-              <details <?php echo $idx === 0 ? 'open' : ''; ?>>
-                <summary>
-                  <span class="fm-faq__ico"
-                    <?php if ($faq_icon_url) : ?>
-                      style="background-image:url('<?php echo esc_url($faq_icon_url); ?>');"
-                    <?php endif; ?>>
-                    <?php if (!$faq_icon_url) : ?>
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+              <div class="fm-faq">
+                <?php foreach ($faq_rows as $idx => $faq) :
+                  $faq_icon_img = $faq['fnlmx_game_category_faq_icon'] ?? [];
+                  $faq_icon_url = $faq_icon_img['url'] ?? '';
+                  $question     = $faq['fnlmx_game_category_faq_question'] ?? '';
+                  $answer       = $faq['fnlmx_game_category_faq_answer'] ?? '';
+                ?>
+                  <details <?php echo $idx === 0 ? 'open' : ''; ?>>
+                    <summary>
+                      <span class="fm-faq__ico"
+                        <?php if ($faq_icon_url) : ?>
+                        style="background-image:url('<?php echo esc_url($faq_icon_url); ?>');"
+                        <?php endif; ?>>
+                        <?php if (!$faq_icon_url) : ?>
+                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 8v4m0 4h.01" />
+                          </svg>
+                        <?php endif; ?>
+                      </span>
+                      <?php echo esc_html($question); ?>
+                      <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6" />
                       </svg>
-                    <?php endif; ?>
-                  </span>
-                  <?php echo esc_html($question); ?>
-                  <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"/>
-                  </svg>
-                </summary>
-                <div class="fm-faq__body">
-                  <div class="fm-faq__body-inner">
-                    <?php echo wp_kses_post($answer); ?>
-                  </div>
-                </div>
-              </details>
-            <?php endforeach; ?>
-          </div>
-        </div>
-        <?php endif; ?>
+                    </summary>
+                    <div class="fm-faq__body">
+                      <div class="fm-faq__body-inner">
+                        <?php echo wp_kses_post($answer); ?>
+                      </div>
+                    </div>
+                  </details>
+                <?php endforeach; ?>
+              </div>
+            </div>
+          <?php endif; ?>
 
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
   <?php endif; ?>
 
   <!-- CTA SECTION -->
@@ -739,25 +742,25 @@ set_query_var('game_count',     $game_count);
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.fm-faq').forEach(faq => {
-    const items = faq.querySelectorAll('details');
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.fm-faq').forEach(faq => {
+      const items = faq.querySelectorAll('details');
 
-    items.forEach(detail => {
-      detail.querySelector('summary').addEventListener('click', e => {
-        e.preventDefault();
+      items.forEach(detail => {
+        detail.querySelector('summary').addEventListener('click', e => {
+          e.preventDefault();
 
-        const isOpen = detail.hasAttribute('open');
+          const isOpen = detail.hasAttribute('open');
 
-        // Close all siblings first
-        items.forEach(d => d.removeAttribute('open'));
+          // Close all siblings first
+          items.forEach(d => d.removeAttribute('open'));
 
-        // If it wasn't open, open it
-        if (!isOpen) detail.setAttribute('open', '');
+          // If it wasn't open, open it
+          if (!isOpen) detail.setAttribute('open', '');
+        });
       });
     });
   });
-});
 </script>
 
 <?php get_footer(); ?>
