@@ -44,13 +44,13 @@ $grid_q = new WP_Query([
   'order'          => 'DESC',
 ]);
 
-$assets_url = get_template_directory_uri() . '/assets/images/category-template';
-$help_bg    = $assets_url . '/ce643052fadd.png';
-$icon_fast  = $assets_url . '/3e7742d8c6a2.png';
-$icon_live  = $assets_url . '/e511fe448018.png';
-$icon_safe  = $assets_url . '/e0b724fc2859.png';
-$icon_vip   = $assets_url . '/4ef55b3479fa.png';
-$icon_pad   = $assets_url . '/470715bf4e55.png';
+/* ACF fields */
+$sub_para  = function_exists('get_field') ? get_field('fnlmx_game_category_contents_subparagraph', $current_term) : '';
+$icon_rows = function_exists('get_field') ? (get_field('fnlmx_game_category_icon_details_wrapper', $current_term) ?: []) : [];
+$faq_rows  = function_exists('get_field') ? (get_field('fnlmx_game_category_faq_wrapper', $current_term) ?: []) : [];
+
+$has_left  = !empty($icon_rows);
+$has_right = !empty($faq_rows);
 
 /* Pass to hero partial */
 set_query_var('term',           $current_term);
@@ -179,6 +179,23 @@ set_query_var('game_count',     $game_count);
       grid-template-columns: repeat(2, 1fr);
       gap: 12px;
     }
+
+    .fm-bc {
+      justify-content: center;
+    }
+
+    .fm-hero__title {
+      text-align: center;
+    }
+
+    .fm-hero__desc {
+      text-align: center;
+      font-size: 12px;
+    }
+
+    .fm-info__title, .fm-info__sub, .fm-faq-title {
+      text-align: center;
+    }
   }
 
   .fm-card {
@@ -200,11 +217,18 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-card__img {
-    /*position: absolute;*/
-    inset: 1px;
-    width: 190px;/*calc(100% - 2px)*/
+    /*inset: 1px;
+    width: 190px;
     height: 190px;
-    display: block;
+    display: block;*/
+
+    position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  object-position: center;
   }
 
   .fm-card__fallback {
@@ -288,6 +312,15 @@ set_query_var('game_count',     $game_count);
     align-items: start;
   }
 
+  /* one side only → single column full width */
+  .fm-info__grid--full {
+    grid-template-columns: 1fr;
+  }
+
+  .fm-info__grid--full .fm-info__divider {
+    display: none;
+  }
+
   @media (max-width: 900px) {
     .fm-info__grid {
       grid-template-columns: 1fr;
@@ -365,6 +398,7 @@ set_query_var('game_count',     $game_count);
     margin: 0;
   }
 
+  /* FAQ */
   .fm-faq {
     display: flex;
     flex-direction: column;
@@ -376,11 +410,12 @@ set_query_var('game_count',     $game_count);
     background: rgb(11, 4, 24);
     border: 1px solid rgb(28, 16, 43);
     border-radius: 8px;
-    padding: 22px 24px;
+    overflow: hidden;
     transition: border-color .2s;
   }
 
   .fm-faq details[open] {
+    border-color: rgba(247, 29, 194, .25);
     border-radius: 13px 10px 6px 7px;
   }
 
@@ -394,10 +429,12 @@ set_query_var('game_count',     $game_count);
     display: flex;
     align-items: center;
     gap: 18px;
+    padding: 22px 24px;
     font-family: 'Inter', system-ui, sans-serif;
     font-weight: 700;
     font-size: 19px;
     color: rgb(202, 202, 203);
+    user-select: none;
   }
 
   .fm-faq summary::-webkit-details-marker {
@@ -419,7 +456,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-faq summary .fm-faq__chev {
     margin-left: auto;
-    transition: transform .25s;
+    transition: transform .3s ease;
     color: var(--fm-muted-2);
   }
 
@@ -428,12 +465,24 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-faq__body {
-    margin-top: 16px;
     font-family: 'Inter', system-ui, sans-serif;
     font-size: 15px;
     line-height: 1.55;
     color: var(--fm-muted-2);
-    padding-left: 50px;
+    padding: 0 24px 0 74px;
+    /* smooth open/close via grid trick */
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows .3s ease, padding-bottom .3s ease;
+  }
+
+  .fm-faq__body-inner {
+    overflow: hidden;
+  }
+
+  details[open] .fm-faq__body {
+    grid-template-rows: 1fr;
+    padding-bottom: 22px;
   }
 
   /* NEED HELP */
@@ -559,7 +608,7 @@ set_query_var('game_count',     $game_count);
           <?php $i = 0;
           while ($grid_q->have_posts()) : $grid_q->the_post();
             $i++;
-            $thumb = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
+            $thumb  = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
             $is_hot = function_exists('get_field') ? (bool) get_field('is_hot') : false;
           ?>
             <a href="<?php the_permalink(); ?>" class="fm-card" aria-label="<?php the_title_attribute(); ?>">
@@ -588,123 +637,127 @@ set_query_var('game_count',     $game_count);
   </section>
 
   <!-- WHY PLAY / QUICK GUIDE -->
+  <?php if ($has_left || $has_right) : ?>
   <section class="fm-info">
     <div class="fm-container">
-      <div class="fm-info__grid">
+
+      <?php
+      $grid_class = 'fm-info__grid';
+      if ($has_left xor $has_right) $grid_class .= ' fm-info__grid--full';
+      ?>
+      <div class="<?php echo esc_attr($grid_class); ?>">
 
         <!-- LEFT: Why Play -->
+        <?php if ($has_left) : ?>
         <div>
-          <h2>
+          <h2 class="fm-info__title">
             Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
             On <span class="fm-pink">FunaloMAX?</span>
           </h2>
-          <p class="fm-info__sub">Enjoy the best <?php echo esc_html($term_name); ?> games with a secure platform, fast payouts, and exciting rewards.</p>
+
+          <?php if ($sub_para) : ?>
+            <p class="fm-info__sub"><?php echo esc_html($sub_para); ?></p>
+          <?php endif; ?>
 
           <div class="fm-feat">
-            <div class="fm-feat__row">
-              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url($icon_fast); ?>');"></div>
-              <div class="fm-feat__txt">
-                <h3>Fast Payouts</h3>
-                <p>Quick deposits and withdrawals</p>
+            <?php foreach ($icon_rows as $row) :
+              $icon_img = $row['fnlmx_game_category_content_icon'] ?? [];
+              $icon_url = $icon_img['url'] ?? '';
+              $subtitle = $row['fnlmx_game_category_content_subtitle'] ?? '';
+              $supara   = $row['fnlmx_game_category_content_suparagraph'] ?? '';
+            ?>
+              <div class="fm-feat__row">
+                <div class="fm-feat__icon"
+                  <?php if ($icon_url) : ?>
+                    style="background-image:url('<?php echo esc_url($icon_url); ?>');"
+                  <?php endif; ?>>
+                </div>
+                <div class="fm-feat__txt">
+                  <?php if ($subtitle) : ?><h3><?php echo esc_html($subtitle); ?></h3><?php endif; ?>
+                  <?php if ($supara) : ?><p><?php echo esc_html($supara); ?></p><?php endif; ?>
+                </div>
               </div>
-            </div>
-            <div class="fm-feat__row">
-              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url($icon_live); ?>');"></div>
-              <div class="fm-feat__txt">
-                <h3>Live Dealer Games</h3>
-                <p>Real dealers, real excitement</p>
-              </div>
-            </div>
-            <div class="fm-feat__row">
-              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url($icon_safe); ?>');"></div>
-              <div class="fm-feat__txt">
-                <h3>Secure &amp; Fair Play</h3>
-                <p>Advanced security and provably fair games</p>
-              </div>
-            </div>
-            <div class="fm-feat__row">
-              <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url($icon_vip); ?>');"></div>
-              <div class="fm-feat__txt">
-                <h3>VIP Rewards</h3>
-                <p>Exclusive bonuses and promotions</p>
-              </div>
-            </div>
+            <?php endforeach; ?>
           </div>
         </div>
+        <?php endif; ?>
 
+        <?php if ($has_left && $has_right) : ?>
         <div class="fm-info__divider"></div>
+        <?php endif; ?>
 
         <!-- RIGHT: Quick Guide FAQ -->
+        <?php if ($has_right) : ?>
         <div>
-          <h2>Quick Guide To<br><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> Games</span></h2>
+          <h2 class="fm-faq-title">Quick Guide To<br><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> GAMES</span></h2>
 
           <div class="fm-faq">
-            <details open>
-              <summary>
-                <span class="fm-faq__ico" style="background-image:url('<?php echo esc_url($icon_pad); ?>');"></span>
-                How to play the <?php echo esc_html($term_name); ?> Games?
-                <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </summary>
-              <div class="fm-faq__body">
-                Log in to your FUNaloMAX account, go to the <?php echo esc_html($term_name); ?> section, and select a game. Choose a table, place your bets, and wait for the roll.
-              </div>
-            </details>
-
-            <details>
-              <summary>
-                <span class="fm-faq__ico">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
-                    <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
-                    <path d="M18 12a2 2 0 0 0 0 4h4v-4Z" />
+            <?php foreach ($faq_rows as $idx => $faq) :
+              $faq_icon_img = $faq['fnlmx_game_category_faq_icon'] ?? [];
+              $faq_icon_url = $faq_icon_img['url'] ?? '';
+              $question     = $faq['fnlmx_game_category_faq_question'] ?? '';
+              $answer       = $faq['fnlmx_game_category_faq_answer'] ?? '';
+            ?>
+              <details <?php echo $idx === 0 ? 'open' : ''; ?>>
+                <summary>
+                  <span class="fm-faq__ico"
+                    <?php if ($faq_icon_url) : ?>
+                      style="background-image:url('<?php echo esc_url($faq_icon_url); ?>');"
+                    <?php endif; ?>>
+                    <?php if (!$faq_icon_url) : ?>
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/>
+                      </svg>
+                    <?php endif; ?>
+                  </span>
+                  <?php echo esc_html($question); ?>
+                  <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"/>
                   </svg>
-                </span>
-                What is the minimum deposit?
-                <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </summary>
-              <div class="fm-faq__body">
-                The minimum deposit on FUNaloMAX is set low so anyone can start playing. Check the cashier page for the current amount and supported payment methods.
-              </div>
-            </details>
-
-            <details>
-              <summary>
-                <span class="fm-faq__ico">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 12 20 22 4 22 4 12" />
-                    <rect x="2" y="7" width="20" height="5" />
-                    <line x1="12" y1="22" x2="12" y2="7" />
-                    <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7Z" />
-                    <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7Z" />
-                  </svg>
-                </span>
-                Are there bonuses for new players?
-                <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="9 18 15 12 9 6" />
-                </svg>
-              </summary>
-              <div class="fm-faq__body">
-                Yes — new players get a welcome bonus on their first deposit, plus access to ongoing promos and a loyalty program.
-              </div>
-            </details>
+                </summary>
+                <div class="fm-faq__body">
+                  <div class="fm-faq__body-inner">
+                    <?php echo wp_kses_post($answer); ?>
+                  </div>
+                </div>
+              </details>
+            <?php endforeach; ?>
           </div>
         </div>
+        <?php endif; ?>
 
       </div>
     </div>
   </section>
+  <?php endif; ?>
 
   <!-- CTA SECTION -->
   <section class="fm-help">
     <?php echo do_shortcode('[fnlmx_cta]'); ?>
   </section>
 
-
-
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.fm-faq').forEach(faq => {
+    const items = faq.querySelectorAll('details');
+
+    items.forEach(detail => {
+      detail.querySelector('summary').addEventListener('click', e => {
+        e.preventDefault();
+
+        const isOpen = detail.hasAttribute('open');
+
+        // Close all siblings first
+        items.forEach(d => d.removeAttribute('open'));
+
+        // If it wasn't open, open it
+        if (!isOpen) detail.setAttribute('open', '');
+      });
+    });
+  });
+});
+</script>
 
 <?php get_footer(); ?>
