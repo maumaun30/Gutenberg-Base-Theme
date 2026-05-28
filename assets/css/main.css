@@ -8,19 +8,19 @@
    ============================================================ */
 :root {
   /* Brand */
-  --color-primary: #F71DC2*/*#BA001D*/;
+  --color-primary: /*#F71DC2*/#BA001D;
   --color-primary-hover: #fb11c1;
   --color-primary-light: #fb64d6;
   --color-secondary: #d63d4a;
   --color-secondary-hover: #e01a2a;
-  --color-funalomax-gradient: linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%)/*#BA001D*/;
-  --color-nav-active: #FF36C9 /*#BA001D*/;
+  --color-funalomax-gradient: /*linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%)*/#BA001D;
+  --color-nav-active: /*#FF36C9*/ #BA001D;
   --color-amber-gradient: linear-gradient(90deg, #936000 0%, #E9C349 100%);
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
   --bg-dark-2: #231F33;
-  --bg-dark-3: /*#000000;*/#100E1B; /* main page bg */
+  --bg-dark-3: #000000;/*#100E1B;*/ /* main page bg */
   --bg-dark-4: #1f1f25;
   --bg-dark-5: #26262e;
 
@@ -51,8 +51,10 @@
   /* Section spacing */
   --section-py: clamp(2.5rem, 6vw, 6rem);
 
+--footer-bg: /*#110F20*/ #000000;
+
   /* ── Nav ── */
-  --nav-bg: #0F0D1E /*#000000*/;
+  --nav-bg: /*#0F0D1E*/ #000000;
   --nav-gradient-bg: linear-gradient(180deg,rgba(0, 0, 0, 0.2) 0%,#0F0D1E 100%);
   --nav-border: rgba(247, 29, 194, 0.25);
   --nav-text: #ffffff;
@@ -623,7 +625,7 @@ body.funalo-drawer-open {
 
 /* ── Shell ──────────────────────────────────────────────────────── */
 .fnlmx-footer {
-  background-color: #110F20;
+  background: var(--footer-bg);
   color: #fff;
   font-family: 'Montserrat', sans-serif;
 }
@@ -638,14 +640,14 @@ body.funalo-drawer-open {
 /* ── Divider ────────────────────────────────────────────────────── */
 .fnlmx-footer__divider {
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: /*rgba(255, 255, 255, 0.08)*/ #1E1E1E;
   margin: 2.5rem 0;
 }
 
 .fnlmx-footer__divider-mobile {
   display: none;
   height: 1px;
-  background: rgba(255, 255, 255, 0.08);
+  background: /*rgba(255, 255, 255, 0.08)*/ #1E1E1E;
   margin: 20px 0 0 0;
 }
 
@@ -729,7 +731,7 @@ body.funalo-drawer-open {
   flex-shrink: 0;
   justify-content: center;
   padding: 0.3rem 2rem 0.3rem;
-  background: #181528;
+  background: /*#181528*/#1E1E1E;
   border-radius: 8px;
 }
 .fnlmx-rg-badge:last-child {
@@ -765,7 +767,7 @@ body.funalo-drawer-open {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2rem;
-  background: #181528;
+  background: /*#181528*/ #1E1E1E;
   border-radius: 8px;
   padding: 20px;
 }
@@ -806,7 +808,7 @@ body.funalo-drawer-open {
 
 /* ── Trust column: Payments + Social stacked ────────────────── */
 .fnlmx-footer__trust-col {
-  background: #181528;
+  background: /*#181528*/ #1E1E1E;
   border-radius: 8px;
   padding: 20px;
   width: 425px;
