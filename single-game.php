@@ -115,13 +115,13 @@ $show_main = $has_about || $has_rules;
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap');
 
   :root {
-    --color-primary: #f71dc2;
+    --color-primary: /*#f71dc2*/ #BA001D;
     --color-primary-hover: #fb11c1;
     --color-secondary: #d63d4a;
     --color-amber: #f5a623;
     --bg-dark-1: #0a0a0b;
     --bg-dark-2: #111114;
-    --bg-dark-3: #100E1B;
+    --bg-dark-3: /*#100E1B*/ #000000;
     --bg-dark-4: #1f1f25;
     --bg-dark-5: #26262e;
     --border: rgba(255, 255, 255, .08);
@@ -189,10 +189,12 @@ $show_main = $has_about || $has_rules;
     flex-direction: column;
     gap: 1.5rem;
     border-radius: var(--radius-lg);
-    background:
+    /*background:
       linear-gradient(var(--bg-dark-2), var(--bg-dark-2)) padding-box,
       linear-gradient(135deg, var(--color-primary) 0%, var(--color-amber) 100%) border-box;
-    border: 1px solid transparent;
+    border: 1px solid transparent;*/
+    background: linear-gradient(#000000, #000000) padding-box,
+		linear-gradient(90deg, #BA001D, #FEBB3C) border-box;
   }
 
   .sg-thumb-wrap {
@@ -358,6 +360,7 @@ $show_main = $has_about || $has_rules;
 
   .sg-rcard {
     border-radius: var(--radius-md);
+    aspect-ratio: 1 / 1;
     overflow: hidden;
     background: var(--bg-dark-4);
     border: 1px solid var(--border);
