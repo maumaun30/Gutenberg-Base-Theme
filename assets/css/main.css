@@ -522,11 +522,11 @@
 .funalo-nav__mobile ul li a {
   display: block;
   font-family: 'Montserrat', sans-serif;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 15px;
-  letter-spacing: 0.1em;
+  letter-spacing: -.8px;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
+  color: /*rgba(255, 255, 255, 0.72)*/ var(--nav-text-muted);
   text-decoration: none;
   padding: 17px 28px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);

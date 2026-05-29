@@ -69,7 +69,7 @@ set_query_var('game_count',     $game_count);
     --fm-text: #fff;
     --fm-muted: rgb(161, 161, 170);
     --fm-muted-2: rgb(126, 121, 132);
-    --fm-pink: rgb(247, 29, 194);
+    --fm-pink: /*rgb(247, 29, 194)*/ #ba001d;
     --fm-pink-2: rgb(214, 61, 74);
     --fm-hot: rgb(147, 0, 10);
     --fm-red: #ba001d;
@@ -655,7 +655,7 @@ set_query_var('game_count',     $game_count);
             <div>
               <h2 class="fm-info__title">
                 Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
-                On <span class="fm-red">FunaloMAX?</span>
+                On <span class="fm-pink">FunaloMAX?</span>
               </h2>
 
               <?php if ($sub_para) : ?>
