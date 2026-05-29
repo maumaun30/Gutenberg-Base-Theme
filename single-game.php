@@ -120,7 +120,7 @@ $show_main = $has_about || $has_rules;
     --color-secondary: #d63d4a;
     --color-amber: #f5a623;
     --bg-dark-1: #0a0a0b;
-    --bg-dark-2: #111114;
+    --bg-dark-2: /*#111114*/ #1E1E1E;
     --bg-dark-3: /*#100E1B*/ #000000;
     --bg-dark-4: #1f1f25;
     --bg-dark-5: #26262e;
@@ -189,12 +189,10 @@ $show_main = $has_about || $has_rules;
     flex-direction: column;
     gap: 1.5rem;
     border-radius: var(--radius-lg);
-    /*background:
+    background:
       linear-gradient(var(--bg-dark-2), var(--bg-dark-2)) padding-box,
       linear-gradient(135deg, var(--color-primary) 0%, var(--color-amber) 100%) border-box;
-    border: 1px solid transparent;*/
-    background: linear-gradient(#000000, #000000) padding-box,
-		linear-gradient(90deg, #BA001D, #FEBB3C) border-box;
+    border: 1px solid transparent;
   }
 
   .sg-thumb-wrap {
@@ -371,8 +369,8 @@ $show_main = $has_about || $has_rules;
 
   .sg-rcard:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
-    border-color: rgba(247, 29, 194, .4);
+    /*box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
+    border-color: rgba(247, 29, 194, .4);*/
   }
 
   .sg-rcard__img-wrap {

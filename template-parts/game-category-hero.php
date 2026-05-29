@@ -48,7 +48,7 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
     </nav>
 
     <h1 class="fm-hero__title">
-      Play <?php echo esc_html( $term_name ); ?> Games on<br><span style="color:#F71DC2;">FUNaloMAX</span>
+      Play <?php echo esc_html( $term_name ); ?> Games on<br><span style="color:#ba001d;">FUNaloMAX</span>
     </h1>
 
     <p class="fm-hero__desc">

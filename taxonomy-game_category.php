@@ -72,6 +72,7 @@ set_query_var('game_count',     $game_count);
     --fm-pink: rgb(247, 29, 194);
     --fm-pink-2: rgb(214, 61, 74);
     --fm-hot: rgb(147, 0, 10);
+    --fm-red: #ba001d;
   }
 
   .fm-page {
@@ -214,8 +215,8 @@ set_query_var('game_count',     $game_count);
 
   .fm-card:hover {
     transform: translateY(-4px);
-    border-color: rgba(247, 29, 194, .5);
-    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);
+    /*border-color: rgba(247, 29, 194, .5);
+    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);*/
   }
 
   .fm-card__img {
@@ -654,7 +655,7 @@ set_query_var('game_count',     $game_count);
             <div>
               <h2 class="fm-info__title">
                 Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
-                On <span class="color-primary">FunaloMAX?</span>
+                On <span class="fm-red">FunaloMAX?</span>
               </h2>
 
               <?php if ($sub_para) : ?>
