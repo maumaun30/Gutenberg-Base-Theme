@@ -75,7 +75,7 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-page {
-    background: var(--fm-bg);
+    background: /*var(--fm-bg)*/ var(--bg-dark-3);
     color: var(--fm-text);
     font-family: 'Montserrat', system-ui, sans-serif;
   }
@@ -130,13 +130,13 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-bc a:hover {
-    color: var(--fm-pink);
+    color: var(--color-primary);
     opacity: 1;
   }
 
   .fm-bc__cur {
     font-weight: 700;
-    color: var(--fm-pink);
+    color: var(--color-primary);
   }
 
   .fm-hero__title {
@@ -202,7 +202,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-card {
     position: relative;
-    /*aspect-ratio: 1 / 1;*/
+    aspect-ratio: 1 / 1;
     border-radius: 12px;
     overflow: hidden;
     background: var(--fm-card);
@@ -654,7 +654,7 @@ set_query_var('game_count',     $game_count);
             <div>
               <h2 class="fm-info__title">
                 Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
-                On <span class="fm-pink">FunaloMAX?</span>
+                On <span class="color-primary">FunaloMAX?</span>
               </h2>
 
               <?php if ($sub_para) : ?>

@@ -444,7 +444,7 @@
   width: 100%;
   max-width: 420px;
   height: 100vh;
-  background: #0F0D1E;
+  background: var(--bg-dark-3);
   z-index: 999;
   transform: translateX(110%);
   transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
@@ -465,7 +465,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 18px 24px;
-  border-bottom: 1px solid rgba(255, 45, 120, 0.14);
+  border-bottom: 1px solid /*rgba(255, 45, 120, 0.14)*/ #ba001c4d;
   flex-shrink: 0;
 }
 
@@ -536,7 +536,7 @@
 .funalo-nav__mobile ul li a:hover,
 .funalo-nav__mobile ul li.current-menu-item > a {
   color: #fff;
-  background: rgba(255, 45, 120, 0.07);
+  background: /*rgba(255, 45, 120, 0.07)*/ #1E1E1E;
   padding-left: 36px;
 }
 
@@ -1127,7 +1127,7 @@ body.funalo-drawer-open {
   position: relative;
   width: 100%;
   max-width: 520px;
-  background: #1a1730;
+  background: /*#1a1730*/ #000000;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 32px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.07);
@@ -1210,7 +1210,7 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup__badges {
   display: flex;
   align-items: center;
-  background: rgba(255,255,255,0.04);
+  background: /*rgba(255,255,255,0.04)*/ #1E1E1E;
   border: 1px solid rgba(255,255,255,0.1);
   border-radius: 10px;
   overflow: hidden;
