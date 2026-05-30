@@ -156,17 +156,18 @@ $show_main = $has_about || $has_rules;
   }
 
   .fm-bc a {
-    color: rgba(255, 255, 255, .55);
+    color: #FFFFFF;
     text-decoration: none;
     transition: color .2s;
+    font-weight: 400;
   }
 
   .fm-bc a:hover {
-    color: #fff;
+    color: var(--color-primary);
   }
 
   .fm-bc svg {
-    color: rgba(255, 255, 255, .25);
+    color: #FFFFFF;
     flex-shrink: 0;
   }
 
@@ -270,7 +271,6 @@ $show_main = $has_about || $has_rules;
     border: none;
     cursor: pointer;
     text-decoration: none;
-    box-shadow: var(--shadow-glow);
     transition: all .25s;
     letter-spacing: -0.6px;
     text-transform: uppercase;
@@ -552,8 +552,8 @@ $show_main = $has_about || $has_rules;
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: #393939;
-    border: 1px solid #d946ef4d;
+    background: #1E1E1E;
+    border: 1px solid #ba001d;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -561,7 +561,7 @@ $show_main = $has_about || $has_rules;
     font-size: 16px;
     line-height: 24px;
     font-weight: 700;
-    color: var(--color-primary);
+    color: #FFFFFF;
     margin-top: .1rem;
     position: relative;
   }

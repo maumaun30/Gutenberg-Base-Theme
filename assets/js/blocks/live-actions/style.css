@@ -120,8 +120,7 @@
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    border: 1.5px solid var(--color-primary, #F71DC2);
-    background: rgba(247, 29, 194, 0.06);
+    border: 1.5px solid var(--color-primary, #ba001d);
     overflow: hidden;
 }
 

@@ -284,7 +284,7 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  background: rgba(10, 8, 22, 0.97);
+  background: /*rgba(10, 8, 22, 0.97)*/ rgb(0 0 0 / 98%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -875,8 +875,7 @@ body.funalo-drawer-open {
 .fnlmx-social-icon:hover {
   background: var(--color-primary);
   border-color: var(--color-primary);
-  box-shadow: 0 0 16px rgba(247, 29, 194, .45);
-  transform: translateY(-3px) scale(1.08);
+  transform: translateY(-4px);
 }
 .fnlmx-social-icon img {
   width: 1.25rem;
@@ -1118,7 +1117,7 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(5, 4, 18, 0.85);
+  background: rgb(0 0 0 / 50%);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -1196,7 +1195,6 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup__wysiwyg ol li a,
 .fnlmx-rg-popup__wysiwyg a {
   color: var(--color-primary);
-  text-decoration: underline;
   font-weight: 500;
   transition: color 0.2s;
 }
@@ -1204,7 +1202,7 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup__wysiwyg ul li a:hover,
 .fnlmx-rg-popup__wysiwyg ol li a:hover,
 .fnlmx-rg-popup__wysiwyg a:hover {
-  color: var(--color-primary-light);
+  color: hsla(0,0%,100%,.8);
 }
 
 .fnlmx-rg-popup__badges {
@@ -1259,7 +1257,7 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup__disclaimer {
   font-family: 'Montserrat', sans-serif;
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.45);
+  color: hsla(0,0%,100%,.8);
   line-height: 1.7;
   margin: 0;
 }
