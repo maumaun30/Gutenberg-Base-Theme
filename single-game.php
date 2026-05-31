@@ -338,9 +338,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-main__wrap--both {
     grid-template-columns: 1.4fr 1fr;
   }
-  .sg-main__wrap--both .sg-panel:first-child {
-    border-right: 1px solid var(--border);
-  }
 
   /* Single column: one panel fills everything */
   .sg-main__wrap--single {
@@ -349,10 +346,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
   @media(max-width:899px) {
     .sg-main__wrap--both { grid-template-columns: 1fr; }
-    .sg-main__wrap--both .sg-panel:first-child {
-      border-right: none;
-      border-bottom: 1px solid var(--border);
-    }
   }
 
   /* Panels are transparent — bg/border come from the parent wrap */
@@ -420,7 +413,10 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   @media(max-width:768px) {
     .sg-title      { text-align: center; }
     .sg-hero__desc { text-align: center; }
-    .sg-stats      { align-self: center; }
+    .sg-stats      { align-self: center; display: flex;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;}
     .sg-cta        { justify-content: center; }
   }
 
@@ -431,9 +427,22 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     .sg-hero__desc { font-size: 12px; line-height: 14px; }
     .sg-btn-play, .sg-btn-demo { font-size: 12px; padding: 15px 20px; width: 135px; justify-content: center; }
     .sg-related-hd span, .sg-viewall { font-size: 14px; }
-    .sg-stats      { flex-direction: column; width: 100%; border-radius: 8px; }
-    .sg-stat       { width: 100%; padding: .7rem 1rem; }
-    .sg-stat + .sg-stat::before { top: 0; left: 10%; width: 80%; height: 1px; }
+    .sg-stats      { width: 100%; border-radius: 8px; flex-wrap: wrap;}
+    .sg-stat       { width: calc(100% / 3 - ((3 - 1) * 15px) / 3); padding: .7rem 1rem; gap: 5px;}
+    .sg-stat__label { font-size: 9px; }
+    .sg-stat__value { font-size: 10px; }
+    .sg-stat__icon svg {
+      width: 15px;
+      height: 15px;
+    }
+  }
+
+  @media(max-width:399px) {
+    .sg-stats { justify-content: center;}
+    .sg-stat { width: calc(100% / 2 - ((2 - 1) * 15px) / 2);}
+    .sg-stat + .sg-stat::before {
+      background: unset;
+    }
   }
 
   /* ── IFRAME MODAL ── */

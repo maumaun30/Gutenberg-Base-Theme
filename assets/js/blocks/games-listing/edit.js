@@ -23,7 +23,6 @@ function SortableList({ items, onReorder }) {
     setDraggingId(id);
     dragNode.current = e.currentTarget;
     e.dataTransfer.effectAllowed = 'move';
-    // Slight delay so the ghost image renders before the style change
     setTimeout(() => { if (dragNode.current) dragNode.current.style.opacity = '0.4'; }, 0);
   }
 
@@ -34,7 +33,6 @@ function SortableList({ items, onReorder }) {
   function handleDragEnd() {
     if (dragNode.current) dragNode.current.style.opacity = '1';
     dragNode.current = null;
-
     if (draggingId !== null && overId !== null && draggingId !== overId) {
       const from = items.findIndex((i) => i.id === draggingId);
       const to   = items.findIndex((i) => i.id === overId);
@@ -43,7 +41,6 @@ function SortableList({ items, onReorder }) {
       next.splice(to, 0, moved);
       onReorder(next.map((i) => i.id));
     }
-
     setDraggingId(null);
     setOverId(null);
   }
@@ -56,7 +53,7 @@ function SortableList({ items, onReorder }) {
   if (items.length === 0) {
     return (
       <p style={{ fontSize: 12, color: '#aaa', margin: '8px 0' }}>
-        No categories to order yet. Check categories in "Filter Categories" above, or leave all unchecked to show every category here.
+        No categories to order yet. Check at least one category in "Filter Categories" first.
       </p>
     );
   }
@@ -66,7 +63,6 @@ function SortableList({ items, onReorder }) {
       {items.map((cat) => {
         const isDragging = cat.id === draggingId;
         const isOver     = cat.id === overId;
-
         return (
           <div
             key={cat.id}
@@ -81,41 +77,19 @@ function SortableList({ items, onReorder }) {
               gap: 8,
               padding: '7px 10px',
               borderRadius: 6,
-              background: isDragging
-                ? 'rgba(247,29,194,0.08)'
-                : isOver
-                  ? 'rgba(247,29,194,0.15)'
-                  : 'rgba(255,255,255,0.05)',
-              border: isOver
-                ? '1.5px dashed rgba(247,29,194,0.7)'
-                : '1.5px solid rgba(255,255,255,0.08)',
+              background: isDragging ? 'rgba(247,29,194,0.08)' : isOver ? 'rgba(247,29,194,0.15)' : 'rgba(255,255,255,0.05)',
+              border: isOver ? '1.5px dashed rgba(247,29,194,0.7)' : '1.5px solid rgba(255,255,255,0.08)',
               cursor: 'grab',
               userSelect: 'none',
               transition: 'background 0.15s, border-color 0.15s',
             }}
           >
-            {/* Drag handle dots */}
-            <span style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: 2,
-              opacity: 0.4,
-              flexShrink: 0,
-            }}>
+            <span style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, opacity: 0.4, flexShrink: 0 }}>
               {[0,1,2,3,4,5].map((d) => (
-                <span key={d} style={{
-                  width: 3,
-                  height: 3,
-                  borderRadius: '50%',
-                  background: '#fff',
-                  display: 'block',
-                }} />
+                <span key={d} style={{ width: 3, height: 3, borderRadius: '50%', background: '#fff', display: 'block' }} />
               ))}
             </span>
-            <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#fff' }}>
-              {cat.name}
-            </span>
-            {/* drag hint */}
+            <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: '#000' }}>{cat.name}</span>
             <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>⠿</span>
           </div>
         );
@@ -124,11 +98,20 @@ function SortableList({ items, onReorder }) {
   );
 }
 
+/* ── Main Edit component ── */
 export default function Edit({ attributes, setAttributes }) {
-  const { postsPerCategory, showViewAll, selectedCategories, categoryOrder } = attributes;
+  const {
+    postsPerCategory,
+    showViewAll,
+    selectedCategories,
+    categoryOrder,
+    showRecommended,
+    recommendedPerPage,
+  } = attributes;
 
   const [categories, setCategories]           = useState([]);
   const [gamesByCategory, setGamesByCategory] = useState({});
+  const [recGames, setRecGames]               = useState([]);
   const [loading, setLoading]                 = useState(true);
   const [activeFilter, setActiveFilter]       = useState('all');
 
@@ -137,6 +120,20 @@ export default function Edit({ attributes, setAttributes }) {
       .then((terms) => setCategories(terms))
       .catch(console.error);
   }, []);
+
+  // Fetch Recommended games via game-tag slug
+  useEffect(() => {
+    if (!showRecommended) return;
+    apiFetch({ path: '/wp/v2/game-tag?slug=recommended-games&_fields=id' })
+      .then((tags) => {
+        if (!tags.length) return;
+        return apiFetch({
+          path: `/wp/v2/game?game-tag=${tags[0].id}&per_page=${recommendedPerPage}&_fields=id,title,meta,_links&_embed=1`,
+        });
+      })
+      .then((games) => games && setRecGames(games))
+      .catch(console.error);
+  }, [showRecommended, recommendedPerPage]);
 
   useEffect(() => {
     if (categories.length === 0) return;
@@ -161,13 +158,9 @@ export default function Edit({ attributes, setAttributes }) {
       .catch((err) => { console.error(err); setLoading(false); });
   }, [categories, selectedCategories, postsPerCategory]);
 
-  // Base cats = all if none selected, else just the selected ones
-  const baseCats = selectedCategories.length > 0
-    ? categories.filter((c) => selectedCategories.includes(c.id))
-    : categories;
+  // Only show explicitly checked categories. Empty selection = show nothing.
+  const baseCats = categories.filter((c) => selectedCategories.includes(c.id));
 
-  // Merge saved order with baseCats so newly-checked items always appear
-  // in the sortable list even before they have been manually reordered.
   const orderedCats = (() => {
     if (baseCats.length === 0) return [];
     if (categoryOrder.length === 0) return baseCats;
@@ -179,7 +172,6 @@ export default function Edit({ attributes, setAttributes }) {
   function toggleCategory(id, checked) {
     if (checked) {
       const newSelected = [...selectedCategories, id];
-      // Append to categoryOrder immediately so the item shows in the sortable list
       const newOrder = categoryOrder.length > 0
         ? [...categoryOrder, id]
         : [...baseCats.map((c) => c.id), id];
@@ -192,24 +184,56 @@ export default function Edit({ attributes, setAttributes }) {
     }
   }
 
-  function handleReorder(newOrderIds) {
-    setAttributes({ categoryOrder: newOrderIds });
-  }
-
   const displayedCats = activeFilter === 'all'
     ? orderedCats
     : orderedCats.filter((c) => c.slug === activeFilter);
 
+  /* ── Shared card renderer ── */
+  function renderCard(game) {
+    const thumb = game._embedded?.['wp:featuredmedia']?.[0]?.source_url ?? '';
+    return (
+      <div key={game.id} className="game-card">
+        <div className="game-card__image-wrap">
+          {thumb
+            ? <img src={thumb} alt={game.title?.rendered ?? ''} className="game-card__image" />
+            : <div className="game-card__image-placeholder">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <rect x="10" y="3" width="10" height="12" rx="2"/>
+                  <rect x="3" y="8" width="12" height="12" rx="2"/>
+                  <circle cx="6.5" cy="11.5" r="0.7" fill="currentColor"/>
+                  <circle cx="11.5" cy="11.5" r="0.7" fill="currentColor"/>
+                  <circle cx="6.5" cy="16.5" r="0.7" fill="currentColor"/>
+                  <circle cx="11.5" cy="16.5" r="0.7" fill="currentColor"/>
+                </svg>
+              </div>
+          }
+          <div className="game-card__overlay" aria-hidden="true" />
+        </div>
+      </div>
+    );
+  }
+
+  const NavBtns = () => (
+    <div className="games-listing__nav-btns">
+      <button className="games-listing__nav-btn" aria-label="Previous">
+        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
+      </button>
+      <button className="games-listing__nav-btn" aria-label="Next">
+        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
+      </button>
+    </div>
+  );
+
   return (
     <>
       <InspectorControls>
+
         <PanelBody title="Display Settings" initialOpen={true}>
           <RangeControl
             label="Games per category"
             value={postsPerCategory}
             onChange={(v) => setAttributes({ postsPerCategory: v })}
-            min={1}
-            max={12}
+            min={1} max={12}
           />
           <ToggleControl
             label='Show "View All" button'
@@ -220,7 +244,7 @@ export default function Edit({ attributes, setAttributes }) {
 
         <PanelBody title="Filter Categories" initialOpen={false}>
           <p style={{ fontSize: 12, color: '#aaa', marginBottom: 8 }}>
-            Leave all unchecked to show every category.
+            Check the categories you want to display. Nothing will show until at least one is selected.
           </p>
           {categories.map((cat) => (
             <CheckboxControl
@@ -236,11 +260,36 @@ export default function Edit({ attributes, setAttributes }) {
           <p style={{ fontSize: 12, color: '#aaa', marginBottom: 10 }}>
             Drag the category boxes to reorder how they appear on the page.
           </p>
-          <SortableList items={orderedCats} onReorder={handleReorder} />
+          <SortableList items={orderedCats} onReorder={(ids) => setAttributes({ categoryOrder: ids })} />
         </PanelBody>
+
+        <PanelBody title="Recommended Games" initialOpen={false}>
+          <p style={{ fontSize: 12, color: '#aaa', marginBottom: 8 }}>
+            Games tagged <strong>Recommended Games</strong> via the Game Tags taxonomy are shown automatically in this section.
+          </p>
+          <ToggleControl
+            label="Show Recommended Games section"
+            checked={showRecommended}
+            onChange={(v) => setAttributes({ showRecommended: v })}
+          />
+          {showRecommended && (
+            <RangeControl
+              label="Max recommended games"
+              value={recommendedPerPage}
+              onChange={(v) => setAttributes({ recommendedPerPage: v })}
+              min={1} max={24}
+            />
+          )}
+          {showRecommended && (
+            <p style={{ fontSize: 11, color: '#aaa', marginTop: 8 }}>
+              To add or remove games from this section, assign or remove the <em>Recommended Games</em> tag in the Game editor.
+            </p>
+          )}
+        </PanelBody>
+
       </InspectorControls>
 
-      <section {...useBlockProps({ className: 'games-listing bg-dark-2 section' })}>
+      <section {...useBlockProps({ className: 'games-listing bg-dark-3 section' })}>
         <div className="games-listing__glow" aria-hidden="true" />
         <div className="games-listing__container">
 
@@ -268,88 +317,80 @@ export default function Edit({ attributes, setAttributes }) {
             </nav>
           )}
 
-          {/* Game rows */}
           {loading ? (
             <div style={{ textAlign: 'center', padding: '3rem' }}>
               <Spinner />
-              <p style={{ color: 'rgba(255,255,255,0.4)', marginTop: 12, fontFamily: 'Montserrat,sans-serif', fontSize: '0.85rem' }}>
-                Loading games…
-              </p>
             </div>
-          ) : displayedCats.length === 0 ? (
-            <p style={{ color: 'rgba(255,255,255,0.4)', textAlign: 'center', fontFamily: 'Montserrat,sans-serif' }}>
-              No categories found.
-            </p>
+          ) : baseCats.length === 0 ? (
+            <div style={{
+              padding: '2.5rem 1.5rem',
+              border: '1px dashed rgba(247,29,194,0.3)',
+              borderRadius: '0.625rem',
+              textAlign: 'center',
+              color: 'rgba(255,255,255,0.35)',
+              fontFamily: 'Montserrat,sans-serif',
+              fontSize: '0.82rem',
+              lineHeight: 1.6,
+            }}>
+              No categories selected. Open <strong style={{ color: 'rgba(247,29,194,0.7)' }}>Filter Categories</strong> in the sidebar and check at least one category to display games.
+            </div>
           ) : (
-            <div className="games-listing__categories">
-              {displayedCats.map((cat) => {
-                const entry = gamesByCategory[cat.id];
-                const games = entry?.games ?? [];
-
-                return (
-                  <div key={cat.id} className="games-listing__category" data-category={cat.slug}>
-
-                    <div className="games-listing__cat-header">
-                      <div className="games-listing__cat-header-left">
-                        <h3 className="games-listing__cat-name">{cat.name}</h3>
-                      </div>
-                      {showViewAll && (
-                        <div className="games-listing__cat-header-right">
-                          <span className="games-listing__view-all-link">ALL</span>
-                          <div className="games-listing__nav-btns">
-                            <button className="games-listing__nav-btn" aria-label="Previous">
-                              <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
-                            </button>
-                            <button className="games-listing__nav-btn" aria-label="Next">
-                              <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
-                            </button>
-                          </div>
+            <>
+              {/* Category rows */}
+              <div className="games-listing__categories">
+                {displayedCats.map((cat) => {
+                  const games = gamesByCategory[cat.id]?.games ?? [];
+                  return (
+                    <div key={cat.id} className="games-listing__category" data-category={cat.slug}>
+                      <div className="games-listing__cat-header">
+                        <div className="games-listing__cat-header-left">
+                          <h3 className="games-listing__cat-name">{cat.name}</h3>
                         </div>
-                      )}
+                        {showViewAll && (
+                          <div className="games-listing__cat-header-right">
+                            <span className="games-listing__view-all-link">ALL</span>
+                            <NavBtns />
+                          </div>
+                        )}
+                      </div>
+                      <div className="games-listing__cat-divider" />
+                      <div className="games-listing__grid">
+                        {games.length === 0
+                          ? <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.8rem' }}>No games yet.</p>
+                          : games.map(renderCard)
+                        }
+                      </div>
                     </div>
+                  );
+                })}
+              </div>
 
-                    {/* Separator line */}
-                    <div className="games-listing__cat-divider" />
-
-                    <div className="games-listing__grid">
-                      {games.length === 0 ? (
-                        <p style={{ color: 'rgba(255,255,255,0.3)', fontFamily: 'Montserrat,sans-serif', fontSize: '0.8rem' }}>
-                          No games in this category yet.
-                        </p>
-                      ) : (
-                        games.map((game) => {
-                          const thumb = game._embedded?.['wp:featuredmedia']?.[0]?.source_url ?? '';
-                          const price = game.meta?.game_price ?? '';
-
-                          return (
-                            <div key={game.id} className="game-card">
-                              <div className="game-card__image-wrap">
-                                {thumb
-                                  ? <img src={thumb} alt={game.title.rendered} className="game-card__image" />
-                                  : <div className="game-card__image-placeholder">
-                                      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                        <rect x="10" y="3" width="10" height="12" rx="2"/>
-                                        <rect x="3" y="8" width="12" height="12" rx="2"/>
-                                        <circle cx="6.5" cy="11.5" r="0.7" fill="currentColor"/>
-                                        <circle cx="11.5" cy="11.5" r="0.7" fill="currentColor"/>
-                                        <circle cx="6.5" cy="16.5" r="0.7" fill="currentColor"/>
-                                        <circle cx="11.5" cy="16.5" r="0.7" fill="currentColor"/>
-                                      </svg>
-                                    </div>
-                                }
-                                <div className="game-card__overlay" aria-hidden="true" />
-                                {price && <span className="game-card__price">{price}</span>}
-                              </div>
-                            </div>
-                          );
-                        })
-                      )}
+              {/* Recommended Games row */}
+              {showRecommended && recGames.length > 0 && (
+                <div className="games-listing__category games-listing__recommended">
+                  <div className="games-listing__cat-header">
+                    <div className="games-listing__cat-header-left">
+                      <h3 className="games-listing__cat-name">Recommended Games</h3>
                     </div>
-
+                    <div className="games-listing__cat-header-right"><NavBtns /></div>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="games-listing__cat-divider" />
+                  <div className="games-listing__grid">{recGames.map(renderCard)}</div>
+                </div>
+              )}
+
+              {/* Recommended empty hint */}
+              {showRecommended && recGames.length === 0 && (
+                <div style={{
+                  marginTop: '2rem', padding: '1.5rem',
+                  border: '1px dashed rgba(247,29,194,0.3)',
+                  borderRadius: '0.625rem', textAlign: 'center',
+                  color: 'rgba(255,255,255,0.3)', fontFamily: 'Montserrat,sans-serif', fontSize: '0.8rem',
+                }}>
+                  No games tagged <em>Recommended Games</em> yet. Assign the tag in the Game editor to populate this section.
+                </div>
+              )}
+            </>
           )}
 
         </div>
