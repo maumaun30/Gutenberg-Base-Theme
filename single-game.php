@@ -47,7 +47,7 @@ if (! empty($fnlmx_rtp)) {
     'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
   ];
 }
-if (! empty($fnlmx_volatility)) {
+if (! empty($fnlmx_volatility) && $fnlmx_volatility !== 'Select Volatility') {
   $stats[] = [
     'label' => 'Volatility',
     'value' => esc_html($fnlmx_volatility),
@@ -279,7 +279,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   a.sg-btn-play:hover { color: unset; }
   .sg-btn-play {
     display: inline-flex; align-items: center; gap: .5rem;
-    padding: 10px 32px; border-radius: 8px;
+    padding: 16px 32px; border-radius: 8px;
     background: var(--color-funalomax-gradient); color: #fff;
     font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 600;
     border: none; cursor: pointer; text-decoration: none; transition: all .25s;
@@ -289,7 +289,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
   .sg-btn-demo {
     display: inline-flex; align-items: center; gap: .5rem;
-    padding: 10px 32px; border-radius: 8px;
+    padding: 16px 32px; border-radius: 8px;
     background: var(--color-amber-gradient); color: #fff;
     font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 600;
     border: none; cursor: pointer; text-decoration: none; transition: all .25s;
@@ -323,19 +323,40 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-main {
     max-width: 80rem; margin: 0 auto;
     padding: var(--section-py) 1.5rem;
-    display: grid; gap: 1.5rem;
   }
 
-  /* Default: side-by-side two columns */
-  .sg-main--both    { grid-template-columns: 1.4fr 1fr; }
-  /* Single panel: full width — no extra rule needed, single child fills the 1-col grid */
-  .sg-main--single  { grid-template-columns: 1fr; }
+  /* Shared container wrapping both panels */
+  .sg-main__wrap {
+    background: var(--bg-dark-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    display: grid;
+    gap: 0;
+  }
+
+  /* Two columns: vertical divider on first panel's right edge */
+  .sg-main__wrap--both {
+    grid-template-columns: 1.4fr 1fr;
+  }
+  .sg-main__wrap--both .sg-panel:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  /* Single column: one panel fills everything */
+  .sg-main__wrap--single {
+    grid-template-columns: 1fr;
+  }
 
   @media(max-width:899px) {
-    .sg-main--both  { grid-template-columns: 1fr; }
+    .sg-main__wrap--both { grid-template-columns: 1fr; }
+    .sg-main__wrap--both .sg-panel:first-child {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+    }
   }
 
-  .sg-panel { background: var(--bg-dark-2); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.75rem 2rem; }
+  /* Panels are transparent — bg/border come from the parent wrap */
+  .sg-panel { padding: 1.75rem 2rem; }
 
   .sg-panel__hd {
     display: flex; align-items: center; gap: .65rem;
@@ -352,9 +373,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-about__content {
     font-family: 'Montserrat', sans-serif; font-size: .9rem; line-height: 1.8;
     color: rgba(255,255,255,.7); overflow: hidden; max-height: 8.5em;
-    transition: max-height .4s ease;
+    transition: max-height .45s ease;
   }
-  .sg-about__content.is-open { max-height: 300em; }
   .sg-about__content p { margin: 0 0 1rem; }
   .sg-about__content p:last-child { margin-bottom: 0; }
 
@@ -397,27 +417,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     .sg-thumb-wrap  { width: 200px; }
   }
 
-  @media (max-width: 899px) {
-    .sg-hero__info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-    .sg-title, .sg-hero__desc {
-      text-align: center;
-    }
-
-    .sg-stats {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .sg-cta {
-      justify-content: center;
-    }
-  }
-
   @media(max-width:768px) {
     .sg-title      { text-align: center; }
     .sg-hero__desc { text-align: center; }
@@ -432,14 +431,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     .sg-hero__desc { font-size: 12px; line-height: 14px; }
     .sg-btn-play, .sg-btn-demo { font-size: 12px; padding: 15px 20px; width: 135px; justify-content: center; }
     .sg-related-hd span, .sg-viewall { font-size: 14px; }
-    .sg-stats      { flex-direction: row; width: 100%; border-radius: 8px; }
+    .sg-stats      { flex-direction: column; width: 100%; border-radius: 8px; }
     .sg-stat       { width: 100%; padding: .7rem 1rem; }
-    .sg-stat__label { font-size: 9px;}
-    .sg-stat__value { font-size: 10px;}
-  }
-
-  @media (max-width:424px) {
-    .sg-stats      { flex-direction: row; width: 100%; border-radius: 8px; flex-wrap: wrap;}
     .sg-stat + .sg-stat::before { top: 0; left: 10%; width: 80%; height: 1px; }
   }
 
@@ -582,7 +575,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
          sg-main--single     → 1-column (whichever panel is present stretches full width)
   -->
   <?php if ($show_main) : ?>
-    <div class="sg-main <?php echo ($main_layout === 'both') ? 'sg-main--both' : 'sg-main--single'; ?>">
+    <div class="sg-main">
+      <div class="sg-main__wrap <?php echo ($main_layout === 'both') ? 'sg-main__wrap--both' : 'sg-main__wrap--single'; ?>">
 
       <?php if ($has_about) : ?>
         <div class="sg-panel">
@@ -628,7 +622,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         </div>
       <?php endif; ?>
 
-    </div>
+      </div><!-- /.sg-main__wrap -->
+    </div><!-- /.sg-main -->
   <?php endif; ?>
 
   <!-- CTA -->
@@ -693,18 +688,39 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
 
-  /* Read More toggle */
+  /* Read More toggle — animates at the same speed in both directions
+     by always transitioning between two explicit px values               */
   var aboutBody = document.getElementById('sg-about-body');
   var aboutBtn  = document.getElementById('sg-about-toggle');
   if (aboutBody && aboutBtn) {
+    /* Content fits without truncation — hide button, show everything */
     if (aboutBody.scrollHeight <= aboutBody.clientHeight + 4) {
       aboutBtn.style.display = 'none';
-      aboutBody.classList.add('is-open');
+      aboutBody.style.maxHeight = 'none';
+    } else {
+      var isOpen = false;
+
+      aboutBtn.addEventListener('click', function () {
+        if (!isOpen) {
+          /* EXPAND: transition from collapsed height to full content height */
+          aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
+          aboutBtn.textContent = aboutBtn.dataset.less;
+          isOpen = true;
+        } else {
+          /* COLLAPSE: pin to current rendered height first, then on the
+             next two frames shrink — this gives the browser a clear
+             start-point so the transition fires cleanly */
+          aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              aboutBody.style.maxHeight = '8.5em';
+            });
+          });
+          aboutBtn.textContent = aboutBtn.dataset.more;
+          isOpen = false;
+        }
+      });
     }
-    aboutBtn.addEventListener('click', function () {
-      var open = aboutBody.classList.toggle('is-open');
-      aboutBtn.textContent = open ? aboutBtn.dataset.less : aboutBtn.dataset.more;
-    });
   }
 })();
 </script>
