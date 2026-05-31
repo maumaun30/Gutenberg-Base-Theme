@@ -57,16 +57,17 @@
   border-radius: 0.5rem;
   border: 1px solid transparent;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.78rem;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.5);
-  /*background-color: rgba(255, 255, 255, 0.04);*/
+  color: #FFFFFF;
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.2s, background-color 0.2s, border-color 0.2s;
   text-decoration: none;
+  background: none;
+  border: none;
 }
 
 .games-listing__tab:hover {
@@ -81,8 +82,8 @@
 }
 
 .games-listing__tab-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 25px;
+  height: 25px;
   flex-shrink: 0;
 }
 
@@ -104,12 +105,16 @@
   gap: 12px;
 }
 
+.games-listing__recommended {
+  margin-top: 2.5rem;
+}
+
 /* ── Category row header ── */
 .games-listing__cat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0; /* line sits between header and grid */
+  margin-bottom: 0;
 }
 
 .games-listing__cat-header-left {
@@ -122,7 +127,6 @@
   font-size: 1rem !important;
   font-weight: 800 !important;
   color: var(--color-primary, #f71dc2) !important;
-  letter-spacing: 0.1em !important;
   text-transform: uppercase !important;
   margin: 0 !important;
 }
@@ -166,6 +170,7 @@
   transition: background 0.2s, color 0.2s, border-color 0.2s;
   font-size: 0.7rem;
   font-family: 'Montserrat', sans-serif;
+  border: none;
 }
 
 .games-listing__nav-btn svg {
@@ -190,59 +195,115 @@
 .games-listing__cat-divider {
   width: 100%;
   height: 1px;
-  background-color: /*#EC48994D*/ #ba001c4d;
+  background-color: #EC48994D;
   margin: 0.75rem 0;
 }
 
-/* ── Scroll wrapper — handles overflow-x so the inner grid stays unclipped ── */
+/* ── Scroll wrapper ──
+   overflow-x: auto here — NOT on the grid itself.
+   The negative margin trick is removed; we use clip-path on
+   the category instead so hover-lift isn't cut off.          */
+.games-listing__category {
+  /* allow cards to lift on hover without being clipped */
+  padding: 0 0 8px 0;
+}
+
 .games-listing__scroll-wrap {
   overflow-x: auto;
   overflow-y: visible;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  /* Extra padding lets cards lift on hover without being clipped */
-  padding: 10px 4px 14px 4px;
-  margin: -10px -4px -14px -4px;
+  /* Small top padding so translateY(-5px) hover isn't clipped */
+  padding-top: 6px;
+  margin-top: -6px;
 }
 
 .games-listing__scroll-wrap::-webkit-scrollbar { display: none; }
 
-/* ── Horizontal scroll grid — overflow: visible so hover transforms show ── */
+/* ── Horizontal scroll grid ──
+   KEY FIXES:
+   1. Removed `width: 100%`      — fought with min-width and collapsed the grid
+   2. Removed `min-width: max-content` — not needed; grid-auto-flow:column
+      already makes the grid as wide as its columns
+   3. grid-auto-columns uses vw-based calc so `100%` never
+      resolves to the clipped scroll-wrap width                */
 .games-listing__grid {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: calc((100% - 5 * 0.625rem) / 6);
+  /* Desktop default: 6 cards visible inside 1280px container with 1.25rem side padding */
+  grid-auto-columns: calc((min(1280px, 100vw) - 2.5rem - 5 * 0.625rem) / 6);
   gap: 0.625rem;
   overflow: visible;
-  /* min-width forces the grid wider than the wrapper when cards overflow */
-  min-width: max-content;
-  width: 100%;
 }
 
+/* ── Responsive card column widths ── */
 @media (max-width: 1279px) {
-  .games-listing__grid { grid-auto-columns: calc((100% - 4 * 0.625rem) / 5); }
-}
-@media (max-width: 1023px) {
-  .games-listing__grid { 
-    grid-auto-columns: calc((100% - 3 * 0.625rem) / 4); 
+  .games-listing__grid {
+    grid-auto-columns: calc((100vw - 2.5rem - 4 * 0.625rem) / 5);
   }
-
   .games-listing__tabs {
     gap: 2rem;
   }
 }
-@media (max-width: 767px) {
-  .games-listing__grid { 
-    grid-auto-columns: calc((100% - 2 * 0.625rem) / 3); 
-  }
 
-  .games-listing__tabs {
-    gap: 5px;
+@media (max-width: 1023px) {
+  .games-listing__grid {
+    grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 4);
+  }
+  .games-listing__tab {
+    font-size: 12px;
+  }
+  .games-listing__tab-icon {
+    width: 20px;
+    height: 20px;
   }
 }
+
+@media (max-width: 767px) {
+  .games-listing__grid {
+    grid-auto-columns: calc((100vw - 2.5rem - 2 * 0.625rem) / 3);
+  }
+  .games-listing__tabs {
+    gap: 5px;
+    flex-wrap: nowrap;
+  }
+  .games-listing__tab-icon {
+    width: 15px;
+    height: 15px;
+  }
+  .games-listing__tab {
+    padding: 0.25rem 0.20rem;
+    flex-direction: row;
+    gap: 2px;
+  }
+}
+
 @media (max-width: 479px) {
-  .games-listing__grid { grid-auto-columns: calc((100% - 1 * 0.625rem) / 2.3); }
+  .games-listing__grid {
+    grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 3);
+  }
+}
+
+@media (max-width: 410px) {
+  .games-listing__grid {
+    grid-auto-columns: calc((100vw - 2rem - 1 * 0.625rem) / 2.3);
+  }
+  .games-listing__tabs {
+    gap: 8px;
+  }
+  .games-listing__tab {
+    padding: 0.25rem 0.20rem;
+    flex-direction: row; /* was: column — caused icon to stack over text */
+    gap: 2px;
+    font-size: 10px;
+  }
+}
+
+@media (max-width: 364px) {
+  .games-listing__tabs {
+    justify-content: flex-start;
+  }
 }
 
 /* ── Game card ── */
@@ -253,7 +314,7 @@
   background-color: var(--bg-dark-4, #13131a);
   border: 1px solid rgba(255,255,255,0.06);
   scroll-snap-align: start;
-  transition: transform 0.25s ease, border-color 0.25s ease;
+  transition: transform .3s ease, box-shadow .3s ease;
   cursor: pointer;
   aspect-ratio: 3 / 4;
   flex-shrink: 0;
@@ -262,13 +323,7 @@
 }
 
 .game-card:hover {
-  transform: translateY(-4px) scale(1.015);
-  border-color: /*rgba(247, 29, 194, 0.3)*/ #ba001c4d;
-  z-index: 2;
-}
-
-a.game-card:hover {
-  color: #ba001c4d;
+  transform: translateY(-5px);
 }
 
 .game-card__image-wrap {
@@ -279,12 +334,7 @@ a.game-card:hover {
 .game-card__image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   transition: transform 0.5s ease;
-}
-
-.game-card:hover .game-card__image {
-  transform: scale(1.05);
 }
 
 .game-card__image-placeholder {
@@ -296,20 +346,6 @@ a.game-card:hover {
   background: linear-gradient(145deg, #1a1a2e, #0d0d1a);
   color: rgba(255, 255, 255, 0.12);
 }
-
-/* Game Card Overlay 
-.game-card__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to top,
-    rgba(20, 17, 36, 0.95) 0%,
-    rgba(20, 17, 36, 0.6)  40%,
-    rgba(20, 17, 36, 0)    100%
-  );
-  background: radial-gradient(circle, transparent 70%, #000000 100%);
-  z-index: 1;
-}*/
 
 .game-card__price {
   position: absolute;

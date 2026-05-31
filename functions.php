@@ -596,3 +596,6 @@ add_filter( 'nav_menu_css_class', function ( $classes, $item ) {
     }
     return array_unique( $classes );
 }, 10, 2 );
+
+// Post Archive Block helpers (AJAX handler + card template + asset enqueue)
+require_once get_template_directory() . '/assets/js/blocks/post-archive/functions-helpers.php';

@@ -1,19 +1,79 @@
 <?php
-$posts_per_category  = (int) ( $attributes['postsPerCategory'] ?? 6 );
-$show_view_all       = (bool) ( $attributes['showViewAll']     ?? true );
-$selected_categories = $attributes['selectedCategories']  ?? [];
-$category_order      = $attributes['categoryOrder']       ?? [];
+$posts_per_category  = (int)  ( $attributes['postsPerCategory']   ?? 6  );
+$show_view_all       = (bool) ( $attributes['showViewAll']         ?? true );
+$selected_categories = $attributes['selectedCategories']           ?? [];
+$category_order      = $attributes['categoryOrder']                ?? [];
+$show_recommended    = (bool) ( $attributes['showRecommended']     ?? true );
+$recommended_per_page = (int) ( $attributes['recommendedPerPage']  ?? 12 );
 
-// Build term args — parent terms only
+/* ── Helper: render a single game card ── */
+if ( ! function_exists( 'gl_game_card' ) ) :
+function gl_game_card( $button_url, $thumb, $title_attr, $price ) { ?>
+  <a href="<?php echo esc_url( $button_url ); ?>"
+     class="game-card"
+     title="<?php echo esc_attr( $title_attr ); ?>">
+    <div class="game-card__image-wrap">
+      <?php if ( $thumb ) : ?>
+        <img src="<?php echo esc_url( $thumb ); ?>"
+             alt="<?php echo esc_attr( $title_attr ); ?>"
+             class="game-card__image"
+             loading="lazy" />
+      <?php else : ?>
+        <div class="game-card__image-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+            fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5">
+            <rect x="10" y="3" width="10" height="12" rx="2"/>
+            <rect x="3"  y="8" width="12" height="12" rx="2"/>
+            <circle cx="6.5"  cy="11.5" r="0.7"/>
+            <circle cx="11.5" cy="11.5" r="0.7"/>
+            <circle cx="6.5"  cy="16.5" r="0.7"/>
+            <circle cx="11.5" cy="16.5" r="0.7"/>
+            <circle cx="9"    cy="14"   r="0.7"/>
+          </svg>
+        </div>
+      <?php endif; ?>
+      <div class="game-card__overlay" aria-hidden="true"></div>
+      <?php if ( $price ) : ?>
+        <span class="game-card__price"><?php echo esc_html( $price ); ?></span>
+      <?php endif; ?>
+    </div>
+  </a>
+<?php }
+endif;
+
+/* ── Helper: render nav buttons ── */
+if ( ! function_exists( 'gl_nav_btns' ) ) :
+function gl_nav_btns( $target_id, $label = '' ) { ?>
+  <div class="games-listing__nav-btns">
+    <button class="games-listing__nav-btn"
+            aria-label="Scroll <?php echo esc_attr( $label ); ?> left"
+            data-scroll-target="<?php echo esc_attr( $target_id ); ?>"
+            data-scroll-dir="-1">
+      <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
+    </button>
+    <button class="games-listing__nav-btn"
+            aria-label="Scroll <?php echo esc_attr( $label ); ?> right"
+            data-scroll-target="<?php echo esc_attr( $target_id ); ?>"
+            data-scroll-dir="1">
+      <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
+    </button>
+  </div>
+<?php }
+endif;
+
+/* ── Build category list ── */
+// Only show categories explicitly checked in the block settings.
+// If none are checked, render nothing — no fallback to all categories.
+if ( empty( $selected_categories ) ) {
+    return;
+}
+
 $term_args = [
     'taxonomy'   => 'game_category',
     'hide_empty' => true,
     'parent'     => 0,
+    'include'    => array_map( 'absint', $selected_categories ),
 ];
-
-if ( ! empty( $selected_categories ) ) {
-    $term_args['include'] = array_map( 'absint', $selected_categories );
-}
 
 $categories = get_terms( $term_args );
 
@@ -21,15 +81,16 @@ if ( is_wp_error( $categories ) || empty( $categories ) ) {
     return;
 }
 
-// Apply saved category order if present
+/* Apply saved category order */
 if ( ! empty( $category_order ) ) {
     $order_map = array_flip( array_map( 'intval', $category_order ) );
     usort( $categories, function( $a, $b ) use ( $order_map ) {
-        $pos_a = isset( $order_map[ $a->term_id ] ) ? $order_map[ $a->term_id ] : 9999;
-        $pos_b = isset( $order_map[ $b->term_id ] ) ? $order_map[ $b->term_id ] : 9999;
-        return $pos_a - $pos_b;
+        $pa = $order_map[ $a->term_id ] ?? 9999;
+        $pb = $order_map[ $b->term_id ] ?? 9999;
+        return $pa - $pb;
     } );
 }
+
 ?>
 
 <section <?php echo get_block_wrapper_attributes( [ 'class' => 'games-listing bg-dark-3 section' ] ); ?>>
@@ -38,7 +99,7 @@ if ( ! empty( $category_order ) ) {
 
   <div class="games-listing__container">
 
-    <!-- Category Tabs — HOT = show all, others filter by slug -->
+    <!-- ── Category Tabs ── -->
     <nav class="games-listing__tabs" aria-label="Game categories">
       <button class="games-listing__tab is-hot is-active" data-filter="all">
         <svg class="games-listing__tab-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -58,20 +119,19 @@ if ( ! empty( $category_order ) ) {
       <?php endforeach; ?>
     </nav>
 
-    <!-- Game rows by category -->
+    <!-- ── Game rows by category ── -->
     <div class="games-listing__categories">
       <?php foreach ( $categories as $cat ) :
 
-        $child_terms = get_terms( [
+        $child_ids = get_terms( [
             'taxonomy'   => 'game_category',
             'child_of'   => $cat->term_id,
             'hide_empty' => false,
             'fields'     => 'ids',
         ] );
-
         $all_term_ids = array_merge(
             [ $cat->term_id ],
-            is_wp_error( $child_terms ) ? [] : $child_terms
+            is_wp_error( $child_ids ) ? [] : $child_ids
         );
 
         $games = new WP_Query( [
@@ -94,87 +154,82 @@ if ( ! empty( $category_order ) ) {
 
         <div class="games-listing__category" data-category="<?php echo esc_attr( $cat->slug ); ?>">
 
-          <!-- Header: category name (left) + ALL link & nav (right) -->
           <div class="games-listing__cat-header">
             <div class="games-listing__cat-header-left">
               <h3 class="games-listing__cat-name"><?php echo esc_html( $cat->name ); ?></h3>
             </div>
-
             <?php if ( $show_view_all ) : ?>
               <div class="games-listing__cat-header-right">
                 <a href="<?php echo esc_url( is_wp_error( $cat_link ) ? '#' : $cat_link ); ?>"
                    class="games-listing__view-all-link">ALL</a>
-                <div class="games-listing__nav-btns">
-                  <button class="games-listing__nav-btn"
-                          aria-label="Scroll left"
-                          data-scroll-target="<?php echo $cat_id; ?>"
-                          data-scroll-dir="-1">
-                    <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
-                  </button>
-                  <button class="games-listing__nav-btn"
-                          aria-label="Scroll right"
-                          data-scroll-target="<?php echo $cat_id; ?>"
-                          data-scroll-dir="1">
-                    <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
-                  </button>
-                </div>
+                <?php gl_nav_btns( $cat_id, $cat->name ); ?>
               </div>
             <?php endif; ?>
           </div>
 
-          <!-- Thin separator line -->
           <div class="games-listing__cat-divider"></div>
 
-          <!-- Horizontal scroll grid -->
           <div class="games-listing__scroll-wrap">
-          <div class="games-listing__grid" id="<?php echo $cat_id; ?>">
-            <?php while ( $games->have_posts() ) : $games->the_post();
-              $price      = get_post_meta( get_the_ID(), 'game_price', true );
-              $button_url = get_post_meta( get_the_ID(), 'game_button_url', true ) ?: get_permalink();
-              $thumb      = get_the_post_thumbnail_url( get_the_ID(), 'large' );
-            ?>
-              <a href="<?php echo esc_url( $button_url ); ?>"
-                 class="game-card"
-                 title="<?php the_title_attribute(); ?>">
-                <div class="game-card__image-wrap">
-                  <?php if ( $thumb ) : ?>
-                    <img
-                      src="<?php echo esc_url( $thumb ); ?>"
-                      alt="<?php the_title_attribute(); ?>"
-                      class="game-card__image"
-                      loading="lazy"
-                    />
-                  <?php else : ?>
-                    <div class="game-card__image-placeholder">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-                        fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5">
-                        <rect x="10" y="3" width="10" height="12" rx="2"/>
-                        <rect x="3" y="8" width="12" height="12" rx="2"/>
-                        <circle cx="6.5" cy="11.5" r="0.7"/>
-                        <circle cx="11.5" cy="11.5" r="0.7"/>
-                        <circle cx="6.5" cy="16.5" r="0.7"/>
-                        <circle cx="11.5" cy="16.5" r="0.7"/>
-                        <circle cx="9" cy="14" r="0.7"/>
-                      </svg>
-                    </div>
-                  <?php endif; ?>
-                  <!-- Permanent overlay matching Figma: #141124 95% → 0% -->
-                  <div class="game-card__overlay" aria-hidden="true"></div>
-                  <?php if ( $price ) : ?>
-                    <span class="game-card__price"><?php echo esc_html( $price ); ?></span>
-                  <?php endif; ?>
-                </div>
-              </a>
-            <?php endwhile; wp_reset_postdata(); ?>
-          </div><!-- /.games-listing__grid -->
-          </div><!-- /.games-listing__scroll-wrap -->
+            <div class="games-listing__grid" id="<?php echo $cat_id; ?>">
+              <?php while ( $games->have_posts() ) : $games->the_post();
+                gl_game_card(
+                  get_post_meta( get_the_ID(), 'game_button_url', true ) ?: get_permalink(),
+                  get_the_post_thumbnail_url( get_the_ID(), 'large' ),
+                  get_the_title(),
+                  get_post_meta( get_the_ID(), 'game_price', true )
+                );
+              endwhile; wp_reset_postdata(); ?>
+            </div>
+          </div>
 
         </div>
 
       <?php endforeach; ?>
     </div>
 
-  </div>
+    <!-- ── Recommended Games — auto-queried via game-tag: recommended-games ── -->
+    <?php if ( $show_recommended ) :
+      $rec_tag = get_term_by( 'slug', 'recommended-games', 'game-tag' );
+      if ( $rec_tag ) :
+        $rec_query = new WP_Query( [
+            'post_type'      => 'game',
+            'post_status'    => 'publish',
+            'posts_per_page' => $recommended_per_page,
+            'tax_query'      => [ [
+                'taxonomy' => 'game-tag',
+                'field'    => 'term_id',
+                'terms'    => $rec_tag->term_id,
+            ] ],
+        ] );
+        if ( $rec_query->have_posts() ) :
+          $rec_id = 'gl-recommended';
+    ?>
+        <div class="games-listing__category games-listing__recommended" data-category="__recommended__">
+          <div class="games-listing__cat-header">
+            <div class="games-listing__cat-header-left">
+              <h3 class="games-listing__cat-name">Recommended Games</h3>
+            </div>
+            <div class="games-listing__cat-header-right">
+              <?php gl_nav_btns( $rec_id, 'recommended' ); ?>
+            </div>
+          </div>
+          <div class="games-listing__cat-divider"></div>
+          <div class="games-listing__scroll-wrap">
+            <div class="games-listing__grid" id="<?php echo $rec_id; ?>">
+              <?php while ( $rec_query->have_posts() ) : $rec_query->the_post();
+                gl_game_card(
+                  get_post_meta( get_the_ID(), 'game_button_url', true ) ?: get_permalink(),
+                  get_the_post_thumbnail_url( get_the_ID(), 'large' ),
+                  get_the_title(),
+                  get_post_meta( get_the_ID(), 'game_price', true )
+                );
+              endwhile; wp_reset_postdata(); ?>
+            </div>
+          </div>
+        </div>
+    <?php endif; endif; endif; ?>
+
+  </div><!-- /.games-listing__container -->
 
 </section>
 
@@ -184,38 +239,38 @@ if ( ! empty( $category_order ) ) {
   /* ── Scroll buttons ── */
   document.querySelectorAll('.games-listing__nav-btn').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var grid    = document.getElementById( btn.getAttribute('data-scroll-target') );
+      var grid = document.getElementById( btn.getAttribute('data-scroll-target') );
       if ( ! grid ) return;
-      var wrap    = grid.closest('.games-listing__scroll-wrap') || grid;
+      var wrap = grid.closest('.games-listing__scroll-wrap') || grid;
       var cardWidth = ( grid.querySelector('.game-card')?.offsetWidth ?? 160 ) + 10;
-      wrap.scrollBy({ left: parseInt( btn.getAttribute('data-scroll-dir'), 10 ) * cardWidth * 3, behavior: 'smooth' });
+      wrap.scrollBy({ left: parseInt( btn.getAttribute('data-scroll-dir'), 10 ) * cardWidth * 1, behavior: 'smooth' });/*3*/
     });
   });
 
   /* ── Category tab filtering ── */
-  var tabs       = document.querySelectorAll('.games-listing__tab');
-  var categories = document.querySelectorAll('.games-listing__category');
+  var tabs    = document.querySelectorAll('.games-listing__tab');
+  var catRows = document.querySelectorAll('.games-listing__category[data-category]');
 
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
 
-      // Update active tab
-      tabs.forEach(function (t) {
-        t.classList.remove('is-active');
-        // keep HOT always styled with is-hot but remove active from others
-      });
+      tabs.forEach(function (t) { t.classList.remove('is-active'); });
       tab.classList.add('is-active');
 
       var filter = tab.getAttribute('data-filter');
 
-      categories.forEach(function (cat) {
+      catRows.forEach(function (row) {
+        var rowCat = row.getAttribute('data-category');
+
         if ( filter === 'all' ) {
-          cat.classList.remove('is-hidden');
+          // HOT tab — show all category rows AND recommended
+          row.classList.remove('is-hidden');
         } else {
-          if ( cat.getAttribute('data-category') === filter ) {
-            cat.classList.remove('is-hidden');
+          // Specific category tab — show only that category, hide recommended
+          if ( rowCat === filter ) {
+            row.classList.remove('is-hidden');
           } else {
-            cat.classList.add('is-hidden');
+            row.classList.add('is-hidden');
           }
         }
       });
