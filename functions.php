@@ -144,8 +144,46 @@ function mytheme_enqueue_carousel_assets() {
         wp_get_theme()->get( 'Version' ),
         true
     );
+
 }
 add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_carousel_assets' );
+
+/**
+ * Enqueue Swiper + the Featured Games initializer on single blog posts.
+ *
+ * mytheme_enqueue_carousel_assets() above short-circuits unless the page has
+ * the mytheme/carousel block, so on single.php Swiper is otherwise missing.
+ * This handler runs independently and only on single posts.
+ */
+function fnlmx_enqueue_single_post_slider() {
+    if ( ! is_singular( array( 'post', 'promo' ) ) ) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'swiper',
+        'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+        [],
+        '11'
+    );
+    wp_enqueue_script(
+        'swiper',
+        'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+        [],
+        '11',
+        true
+    );
+
+    $fg_js = get_template_directory() . '/assets/js/single-featured-games.js';
+    wp_enqueue_script(
+        'sp-featured-games',
+        get_template_directory_uri() . '/assets/js/single-featured-games.js',
+        [ 'swiper' ],
+        file_exists( $fg_js ) ? filemtime( $fg_js ) : wp_get_theme()->get( 'Version' ),
+        true
+    );
+}
+add_action( 'wp_enqueue_scripts', 'fnlmx_enqueue_single_post_slider' );
 
 // Responsible Gaming Popup
 function fnlmx_responsible_gaming_popup() {
@@ -599,3 +637,21 @@ add_filter( 'nav_menu_css_class', function ( $classes, $item ) {
 
 // Post Archive Block helpers (AJAX handler + card template + asset enqueue)
 require_once get_template_directory() . '/assets/js/blocks/post-archive/functions-helpers.php';
+
+//Hero Slider
+function mytheme_enqueue_hero_slider() {
+    $js_path = get_theme_file_path( '/assets/js/blocks/hero/hero-slider.js' );
+
+    if ( ! file_exists( $js_path ) ) {
+        return;
+    }
+
+    wp_enqueue_script(
+        'mytheme-hero-slider',
+        get_theme_file_uri( '/assets/js/blocks/hero/hero-slider.js' ),
+        [],
+        filemtime( $js_path ),
+        [ 'strategy' => 'defer', 'in_footer' => true ]
+    );
+}
+add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_hero_slider' );

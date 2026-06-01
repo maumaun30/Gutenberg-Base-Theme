@@ -7,7 +7,7 @@
 
 /* ── Wrapper ── */
 .fnlmx-post-archive {
-  padding: 48px 0;
+  padding: 40px 0;
   font-family: 'Montserrat', sans-serif;
 }
 
@@ -15,9 +15,9 @@
 .fnlmx-post-archive__label {
   display: inline-block;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 28.8px;
   text-transform: uppercase;
   color: var(--color-primary, #ba001d);
   margin: 0 0 16px;
@@ -124,19 +124,17 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 10px;
-  padding: 20px 20px 24px;
+  gap: 20px;
+  padding: 30px 30px 34px;
   flex: 1;
-  background: #1f1f25;
 }
 
 /* ── Title ── */
 .fnlmx-archive-card__title {
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
+  font-size: 25px;
+  font-weight: 800;
+  line-height: 28.8px;
   text-transform: uppercase;
   color: #ffffff;
   margin: 0;
@@ -144,11 +142,12 @@
 
 /* ── Excerpt ── */
 .fnlmx-archive-card__excerpt {
-  font-size: 0.78rem;
-  line-height: 1.65;
-  color: rgba(255, 255, 255, 0.52);
+  font-size: 16px;
+  line-height: 24px;
+  color: #94A3B8;
   margin: 0;
   flex: 1;
+  max-width: 465px;
 }
 
 /* ── Read More Button ── */
@@ -156,16 +155,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 9px 22px;
+  padding: 10px 34px;
   background: var(--color-funalomax-gradient, var(--color-primary, #ba001d));
   color: #ffffff !important;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 600;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 6px;
   margin-top: 4px;
   transition: opacity 0.2s ease, transform 0.2s ease;
   white-space: nowrap;
@@ -194,21 +191,18 @@
   justify-content: center;
   padding: 14px 56px;
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  border: 1px solid var(--color-primary);
   border-radius: 4px;
   color: #ffffff;
   font-family: 'Montserrat', sans-serif;
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
+  font-size: 16px;
+  font-weight: 400;
   text-transform: uppercase;
   cursor: pointer;
   transition: background 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
 }
 
 .fnlmx-post-archive__load-more:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.4);
   transform: translateY(-2px);
 }
 

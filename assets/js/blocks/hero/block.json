@@ -1,61 +1,37 @@
 {
   "apiVersion": 3,
   "name": "mytheme/hero",
-  "title": "Hero",
+  "title": "Hero Slider",
   "category": "design",
-  "icon": "block-default",
-  "description": "Hero banner block with dynamic breadcrumbs and post type image grid.",
+  "icon": "slides",
+  "description": "Full-width hero image slider from a chosen post type. Shows breadcrumb only.",
   "editorScript": "file:./build/index.js",
   "style": "file:./style.css",
   "render": "file:./render.php",
   "attributes": {
-    "title": {
+    "selectedPostType": {
       "type": "string",
-      "default": "Hero Title"
+      "default": "post"
     },
-    "subtitle": {
-      "type": "string",
-      "default": ""
+    "slideCount": {
+      "type": "number",
+      "default": 5
     },
     "breadcrumbLabel": {
       "type": "string",
       "default": ""
     },
-    "ctaText": {
-      "type": "string",
-      "default": "Register Now"
-    },
-    "ctaUrl": {
-      "type": "string",
-      "default": "#"
-    },
-    "selectedPostType": {
-      "type": "string",
-      "default": "post"
-    },
-    "imageCount": {
+    "autoplayDelay": {
       "type": "number",
-      "default": 3
+      "default": 5000
     },
-    "backgroundColor": {
+    "sliderHeight": {
       "type": "string",
-      "default": "#7B1FA2"
+      "default": "420px"
     },
-    "accentColor": {
-      "type": "string",
-      "default": "#F5C518"
-    },
-    "showBreadcrumb": {
-      "type": "boolean",
-      "default": true
-    },
-    "showCta": {
-      "type": "boolean",
-      "default": true
-    },
-    "showPostImages": {
-      "type": "boolean",
-      "default": true
+    "overlayOpacity": {
+      "type": "number",
+      "default": 35
     }
   }
 }

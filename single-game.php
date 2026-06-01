@@ -312,12 +312,34 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   @media(min-width:768px) { .sg-grid { grid-template-columns: repeat(6, 1fr); } }
 
   .sg-rcard {
-    border-radius: var(--radius-md); aspect-ratio: 1/1; overflow: hidden;
+    position: relative;
+    border-radius: var(--radius-md);
+    aspect-ratio: 3/4;
+    overflow: hidden;
     background: var(--bg-dark-4); border: 1px solid var(--border);
-    text-decoration: none; display: block; transition: transform .35s, box-shadow .35s, border-color .35s;
+    text-decoration: none; display: block;
+    transition: transform .35s, box-shadow .35s, border-color .35s;
   }
   .sg-rcard:hover { transform: translateY(-4px); }
   .sg-rcard__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* Play pill — bottom-right corner */
+  .sg-rcard__play {
+    position: absolute;
+    right: 0; bottom: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: .4rem .9rem;
+    border-radius: 8px 0 8px 0;
+    background: var(--color-primary);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem; font-weight: 700;
+    letter-spacing: .02em;
+    pointer-events: none;
+  }
+  @media (max-width: 480px) {
+    .sg-rcard__play { font-size: .7rem; padding: .35rem .7rem; }
+  }
 
   /* ── ABOUT + RULES SECTION ── */
   .sg-main {
@@ -572,6 +594,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
             <?php if ($rg['thumb']) : ?>
               <img src="<?php echo esc_url($rg['thumb']); ?>" alt="<?php echo esc_attr($rg['title']); ?>" class="sg-rcard__img" loading="lazy">
             <?php endif; ?>
+            <span class="sg-rcard__play">Play</span>
           </a>
         <?php endforeach; ?>
       </div>
