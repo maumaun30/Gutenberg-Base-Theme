@@ -211,6 +211,7 @@ $share_title = rawurlencode($title);
     max-width: 720px;
     text-shadow: 0 4px 28px rgba(0, 0, 0, .45);
     letter-spacing: -.01em;
+    display: none;
   }
 
   /* ── MAIN GRID (content + sidebar) ── */
