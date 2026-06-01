@@ -304,7 +304,7 @@ set_query_var('game_count',     $game_count);
 
   /* WHY / QUICK GUIDE */
   .fm-info {
-    background: var(--fm-bg-2);
+    background: rgb(30 30 30 / 50%);
     padding: 80px 0;
   }
 
@@ -410,7 +410,7 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-faq details {
-    background: rgb(11, 4, 24);
+    background: #1E1E1E;
     border: 1px solid rgb(28, 16, 43);
     border-radius: 8px;
     overflow: hidden;
@@ -418,12 +418,12 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-faq details[open] {
-    border-color: rgba(247, 29, 194, .25);
+    border-color: #ba001d5e;
     border-radius: 13px 10px 6px 7px;
   }
 
   .fm-faq details:hover {
-    border-color: rgba(247, 29, 194, .35);
+    border-color: #ba001d5e;
   }
 
   .fm-faq summary {

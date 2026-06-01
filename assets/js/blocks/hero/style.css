@@ -1,244 +1,226 @@
-/* ─────────────────────────────────────────────────────────────
-   Hero Block – style.css
-   Font: Montserrat (loaded via functions.php or theme.json)
-   CSS variables injected inline by render.php / edit.js:
-     --hero-bg      (default #7B1FA2)
-     --hero-accent  (default #F5C518)
-───────────────────────────────────────────────────────────── */
-
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400&display=swap');
 
-/* ── Root defaults ────────────────────────────────────────── */
-.wp-block-mytheme-hero {
-    --hero-bg:       #7B1FA2;
-    --hero-accent:   #F5C518;
-    --hero-text:     #ffffff;
-    --hero-crumb-fg: rgba(255, 255, 255, 0.75);
-    --hero-radius:   14px;
-    --hero-font:     'Montserrat', sans-serif;
+/* ══════════════════════════════════════════════════════════════
+   Hero Slider Block — style.css
+   Inherits main.css :root tokens:
+     --color-nav-active  (#BA001D)  breadcrumb current label
+     --nav-text-muted    (#A1A1AA)  breadcrumb home label
+     --color-primary     (#BA001D)  active dot fill
+   Block CSS vars set inline by render.php:
+     --slider-height     default 420px
+     --overlay-opacity   default 0.35
+══════════════════════════════════════════════════════════════ */
 
-    font-family:     var(--hero-font);
-    background-color: var(--hero-bg);
-    position:        relative;
-    overflow:        hidden;
-    padding:         0;
-    width:           100%;
-}
+/* ── Shell ───────────────────────────────────────────────────── */
+.wp-block-mytheme-hero.hero-slider {
+    --slider-height:   400px;
+    --overlay-opacity: 0.35;
 
-/* Purple noise/grain overlay for depth */
-.wp-block-mytheme-hero::before {
-    content:          '';
-    position:         absolute;
-    inset:            0;
-    background-image: radial-gradient(ellipse at 30% 50%, rgba(255,255,255,0.08) 0%, transparent 70%),
-                      radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.05) 0%, transparent 60%);
-    pointer-events:   none;
-    z-index:          0;
-}
-
-/* ── Breadcrumb ───────────────────────────────────────────── */
-.wp-block-mytheme-hero .hero-breadcrumb {
-    position:    relative;
-    z-index:     2;
-    padding:     10px 28px 0;
-    font-size:   clamp(11px, 1.2vw, 13px);
-    font-weight: 500;
-    letter-spacing: 0.03em;
-    color:       var(--hero-crumb-fg);
-}
-
-.wp-block-mytheme-hero .hero-breadcrumb a.breadcrumb-home {
-    color:           var(--hero-crumb-fg);
-    text-decoration: none;
-    transition:      color 0.2s;
-}
-
-.wp-block-mytheme-hero .hero-breadcrumb a.breadcrumb-home:hover {
-    color: #fff;
-}
-
-.wp-block-mytheme-hero .hero-breadcrumb .breadcrumb-sep {
-    margin:  0 4px;
-    opacity: 0.6;
-}
-
-.wp-block-mytheme-hero .hero-breadcrumb .breadcrumb-current {
-    color:       var(--hero-accent);
-    font-weight: 700;
-}
-
-/* ── Inner layout ─────────────────────────────────────────── */
-.wp-block-mytheme-hero .hero-inner {
-    position:        relative;
-    z-index:         1;
-    display:         flex;
-    align-items:     center;
-    justify-content: space-between;
-    gap:             24px;
-    padding:         28px 28px 32px;
-    min-height:      180px;
-}
-
-/* ── Content (left column) ───────────────────────────────── */
-.wp-block-mytheme-hero .hero-content {
-    flex:      1 1 0;
-    min-width: 0;
-}
-
-.wp-block-mytheme-hero .hero-title {
-    font-family:    var(--hero-font);
-    font-size:      clamp(28px, 5vw, 56px);
-    font-weight:    900;
-    line-height:    1.05;
-    letter-spacing: -0.02em;
-    color:          var(--hero-text);
-    margin:         0 0 6px;
-    text-transform: uppercase;
-}
-
-/* Accent color on even lines (matches "FUNaloMAX!" gold styling) */
-.wp-block-mytheme-hero .hero-title em,
-.wp-block-mytheme-hero .hero-title strong {
-    color:          var(--hero-accent);
-    font-style:     normal;
-    font-weight:    900;
-}
-
-.wp-block-mytheme-hero .hero-subtitle {
-    font-size:   clamp(13px, 1.6vw, 16px);
-    font-weight: 500;
-    color:       rgba(255, 255, 255, 0.85);
-    margin:      0 0 20px;
-    line-height: 1.5;
-}
-
-/* ── CTA Button ───────────────────────────────────────────── */
-.wp-block-mytheme-hero .hero-cta {
-    display:          inline-block;
-    background-color: rgba(30, 20, 60, 0.85);
-    color:            #fff;
-    font-family:      var(--hero-font);
-    font-size:        clamp(12px, 1.4vw, 15px);
-    font-weight:      800;
-    text-transform:   uppercase;
-    letter-spacing:   0.08em;
-    padding:          12px 30px;
-    border-radius:    999px;
-    text-decoration:  none;
-    border:           2px solid rgba(255, 255, 255, 0.15);
-    transition:       background 0.2s, transform 0.15s, box-shadow 0.2s;
-    box-shadow:       0 4px 18px rgba(0,0,0,0.3);
-}
-
-.wp-block-mytheme-hero .hero-cta:hover {
-    background-color: rgba(50, 30, 90, 0.95);
-    transform:        translateY(-2px);
-    box-shadow:       0 8px 28px rgba(0,0,0,0.4);
-}
-
-/* ── Post Images (right column) ──────────────────────────── */
-.wp-block-mytheme-hero .hero-images {
-    display:         flex;
-    align-items:     center;
-    gap:             -12px; /* overlap handled via translate */
-    flex-shrink:     0;
-    position:        relative;
-}
-
-.wp-block-mytheme-hero .hero-image-item {
-    width:         90px;
-    height:        90px;
-    border-radius: var(--hero-radius);
-    overflow:      hidden;
-    border:        3px solid rgba(255,255,255,0.25);
-    box-shadow:    0 6px 20px rgba(0,0,0,0.35);
-    flex-shrink:   0;
-    background:    rgba(255,255,255,0.1);
-    transition:    transform 0.25s, box-shadow 0.25s;
-}
-
-/* Stagger / fan effect */
-.wp-block-mytheme-hero .hero-image-item:nth-child(1) { transform: rotate(-6deg) translateY(10px); z-index: 1; }
-.wp-block-mytheme-hero .hero-image-item:nth-child(2) { transform: rotate(0deg)  translateY(0px);  z-index: 2; }
-.wp-block-mytheme-hero .hero-image-item:nth-child(3) { transform: rotate(6deg)  translateY(10px); z-index: 1; }
-.wp-block-mytheme-hero .hero-image-item:nth-child(4) { transform: rotate(-4deg) translateY(5px);  z-index: 1; }
-.wp-block-mytheme-hero .hero-image-item:nth-child(5) { transform: rotate(4deg)  translateY(5px);  z-index: 1; }
-.wp-block-mytheme-hero .hero-image-item:nth-child(6) { transform: rotate(-2deg) translateY(2px);  z-index: 1; }
-
-.wp-block-mytheme-hero .hero-image-item:hover {
-    transform:  rotate(0) translateY(-6px) scale(1.08) !important;
-    z-index:    10 !important;
-    box-shadow: 0 14px 36px rgba(0,0,0,0.5);
-}
-
-.wp-block-mytheme-hero .hero-image-item img {
+    position:   relative;
     width:      100%;
-    height:     100%;
-    object-fit: cover;
+    height:     var(--slider-height);
+    overflow:   hidden;
+    background: #111;
     display:    block;
 }
 
-/* Placeholder when no featured image */
-.wp-block-mytheme-hero .hero-image-placeholder {
+/* ── Track ───────────────────────────────────────────────────── */
+.hero-slider__track {
+    position: absolute;
+    inset:    0;
+    width:    100%;
+    height:   100%;
+}
+
+/* ── Slide — stacked, opacity crossfade ──────────────────────── */
+.hero-slider__slide {
+    position:    absolute;
+    inset:       0;
+    opacity:     0;
+    transition:  opacity 0.85s ease;
+    will-change: opacity;
+    z-index:     0;
+}
+
+.hero-slider__slide.is-active {
+    opacity: 1;
+    z-index: 1;
+}
+
+/* ── Featured image — full bleed ─────────────────────────────── */
+.hero-slider__img {
+    position:        absolute;
+    inset:           0;
     width:           100%;
     height:          100%;
+    object-fit:      cover;
+    object-position: center center;
+    display:         block;
+    pointer-events:  none;
+    user-select:     none;
+}
+
+/* ── Per-slide dark overlay ──────────────────────────────────── */
+.hero-slider__overlay {
+    position:       absolute;
+    inset:          0;
+    background:     rgba(0, 0, 0, var(--overlay-opacity));
+    z-index:        1;
+    pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   BREADCRUMB CONTAINER
+   Mirrors .funalo-nav__inner exactly:
+     max-width 1280px · margin 0 auto · padding 0 24px
+   Positioned absolute at top of slider, above all slides.
+══════════════════════════════════════════════════════════════ */
+.hero-slider__nav-container {
+    position:    absolute;
+    top:         0;
+    left:        0;
+    right:       0;
+    z-index:     10;
+    /* Centre the inner container just like .funalo-nav__inner */
+    display:     flex;
+    align-items: center;
+    width:       100%;
+    padding-top: 14px;
+}
+
+/* Inner breadcrumb — max-width container matching nav */
+.hero-slider__breadcrumb {
+    display:        flex;
+    align-items:    center;
+    flex-wrap:      wrap;
+    gap:            9px;
+    width:          100%;
+    max-width:      1280px;
+    margin:         0 auto;
+    padding:        0 24px;
+
+    /* Typography — matches .funalo-nav__primary li a */
+    font-family:    'Montserrat', sans-serif;
+    font-size:      clamp(11px, 1.05vw, 13px);
+    font-weight:    400;
+    line-height:    28.8px;
+}
+
+.hero-slider__breadcrumb .breadcrumb-home {
+    color:          #FFFFFF;
+    text-decoration: none;
+    transition:      color 0.2s ease;
+}
+
+.hero-slider__breadcrumb .breadcrumb-home:hover {
+    color: var(--color-primary);
+}
+
+.hero-slider__breadcrumb .breadcrumb-sep {
+    color:   #FFFFFF;
+    padding: 0 2px;
+}
+
+.hero-slider__breadcrumb .breadcrumb-current {
+    color:       var(--color-nav-active, #BA001D);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DOT NAVIGATION
+   Matches the screenshot: small grey circles, active = larger red filled
+══════════════════════════════════════════════════════════════ */
+.hero-slider__dots {
+    position:        absolute;
+    bottom:          20px;
+    left:            50%;
+    transform:       translateX(-50%);
+    z-index:         10;
+    display:         flex;
+    align-items:     center;
+    gap:             8px;
+}
+
+.hero-slider__dot {
+    /* Inactive: small grey circle */
+    width:         10px;
+    height:        10px;
+    border-radius: 6px;
+    background:    rgba(255, 255, 255, 0.35);
+    border:        none;
+    cursor:        pointer;
+    padding:       0;
+    flex-shrink:   0;
+    transition:    background 0.3s ease, transform 0.3s ease, width 0.3s ease;
+}
+
+.hero-slider__dot:hover {
+    background: rgba(255, 255, 255, 0.65);
+}
+
+/* Active: larger, solid brand red */
+.hero-slider__dot.is-active {
+    background:    var(--color-primary, #BA001D);
+    width:         38px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════════════════════════════════ */
+.hero-slider--empty {
     display:         flex;
     align-items:     center;
     justify-content: center;
-    font-size:       11px;
-    font-weight:     600;
-    color:           rgba(255,255,255,0.6);
-    background:      rgba(255,255,255,0.08);
+    min-height:      160px;
+    background:      #1a1a1a;
 }
 
-/* Editor-only empty state */
-.wp-block-mytheme-hero .hero-images-empty {
-    display:         flex;
-    flex-direction:  column;
-    align-items:     center;
-    justify-content: center;
-    gap:             6px;
-    padding:         20px 24px;
-    background:      rgba(255,255,255,0.08);
-    border:          2px dashed rgba(255,255,255,0.25);
-    border-radius:   var(--hero-radius);
-    color:           rgba(255,255,255,0.7);
-    font-size:       13px;
-    font-weight:     600;
-    text-align:      center;
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE — mirrors main.css breakpoints
+══════════════════════════════════════════════════════════════ */
+@media (max-width: 1023px) {
+    .wp-block-mytheme-hero.hero-slider {
+        --slider-height: 320px;
+    }
 }
 
-.wp-block-mytheme-hero .hero-images-empty small {
-    font-size:   11px;
-    font-weight: 400;
-    opacity:     0.7;
-}
-
-/* ── Responsive ───────────────────────────────────────────── */
-@media (max-width: 768px) {
-    .wp-block-mytheme-hero .hero-inner {
-        flex-direction: column-reverse;
-        align-items:    flex-start;
-        padding:        20px 18px 26px;
+@media (max-width: 767px) {
+    .wp-block-mytheme-hero.hero-slider {
+        --slider-height: 200px !important;
     }
 
-    .wp-block-mytheme-hero .hero-images {
-        align-self: center;
+    /* Match .funalo-nav__inner at ≤480px: padding 0 16px */
+    .hero-slider__breadcrumb {
+        padding-left:  16px;
+        padding-right: 16px;
     }
 
-    .wp-block-mytheme-hero .hero-image-item {
-        width:  70px;
-        height: 70px;
+    .hero-slider__dots {
+        bottom: 12px;
+        gap:    6px;
     }
 
-    .wp-block-mytheme-hero .hero-title {
-        font-size: clamp(26px, 8vw, 40px);
+    .hero-slider__dot {
+        width:  8px;
+        height: 8px;
     }
 }
 
 @media (max-width: 480px) {
-    .wp-block-mytheme-hero .hero-image-item {
-        width:  56px;
-        height: 56px;
+    .wp-block-mytheme-hero.hero-slider {
+        --slider-height: 125px !important;
+    }
+
+    .hero-slider__dot.is-active {
+        width: 28px;
+    }
+
+    .hero-slider__breadcrumb {
+        padding-left:  16px;
+        padding-right: 16px;
+    }
+
+    .hero-slider__breadcrumb {
+        gap: 5px;
+        font-size: 10px;
     }
 }

@@ -40,26 +40,26 @@ $total_games = (int) $games_q->found_posts;
   .fm-search-hero {
     position: relative;
     padding: 70px 0 50px;
-    background:
+    /*background:
       radial-gradient(ellipse at 20% 0%, rgba(247,29,194,.18), transparent 55%),
       radial-gradient(ellipse at 80% 100%, rgba(214,61,74,.14), transparent 60%),
-      var(--fm-bg);
-    border-bottom: 1px solid var(--fm-card-br);
+      var(--fm-bg);*/
+    background: radial-gradient(ellipse at 20% 0%, #ba001d52, transparent 55%), radial-gradient(ellipse at 80% 100%, rgba(214, 61, 74, .14), transparent 60%), #ba001d00;
   }
 
   .fm-search-hero__eyebrow {
     text-transform: uppercase; letter-spacing: .15em;
-    font-size: 12px; color: var(--fm-pink); font-weight: 700;
+    font-size: 12px; color: #FFFFFF; font-weight: 700;
     margin-bottom: 12px;
   }
   .fm-search-hero h1 {
     font-weight: 700; font-size: clamp(28px, 4vw, 44px); line-height: 1.15;
     letter-spacing: -.02em; margin: 0 0 8px; color: #fff;
   }
-  .fm-search-hero h1 .fm-q { color: var(--fm-pink); }
+  .fm-search-hero h1 .fm-q { color: var(--color-primary); }
 
   /* RESULTS */
-  .fm-results { padding: 56px 0 80px; }
+  .fm-results { padding: 56px 0 80px; background: #000000;}
 
   .fm-grid {
     display: grid;
@@ -118,7 +118,7 @@ $total_games = (int) $games_q->found_posts;
     text-align: center; padding: 80px 24px;
     border: 1px dashed var(--fm-card-br);
     border-radius: 16px;
-    background: rgba(11,4,24,.4);
+    background: #1E1E1E;
     color: var(--fm-muted);
   }
   .fm-empty h3 { font-size: 22px; margin: 0 0 8px; color: #fff; }
