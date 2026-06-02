@@ -307,6 +307,45 @@ function fnlmx_responsible_gaming_popup() {
 }
 add_action( 'wp_body_open', 'fnlmx_responsible_gaming_popup' );
 
+/**
+ * Back to Top button.
+ *
+ * Fixed button on the lower-right of the page. Hidden until the visitor
+ * scrolls down, then smooth-scrolls back to the top of the page on click.
+ */
+function fnlmx_back_to_top_button() {
+  ?>
+  <button class="fnlmx-back-to-top" id="fnlmx-back-to-top" type="button" aria-label="<?php esc_attr_e( 'Back to top', 'luxe' ); ?>">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <path d="M12 19V5M12 5l-7 7M12 5l7 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const backToTop = document.getElementById('fnlmx-back-to-top');
+      if (!backToTop) return;
+
+      const toggleBackToTop = function () {
+        if (window.pageYOffset > 300) {
+          backToTop.classList.add('is-visible');
+        } else {
+          backToTop.classList.remove('is-visible');
+        }
+      };
+
+      toggleBackToTop();
+      window.addEventListener('scroll', toggleBackToTop, { passive: true });
+
+      backToTop.addEventListener('click', function () {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
+  </script>
+  <?php
+}
+add_action( 'wp_footer', 'fnlmx_back_to_top_button' );
+
 // CTA SECTION
 
 function fnlmx_cta_section() {

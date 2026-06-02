@@ -73,6 +73,13 @@
 .funalo-nav {
   background-color: var(--nav-bg);
   height: 100px;
+  /* Freeze the header so it (and the mobile hamburger) stays visible
+     while scrolling. Sticky keeps it in flow, so no body spacer is needed.
+     z-index sits above page content but below the drawer/search overlays. */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 990;
 }
 
 .funalo-nav__inner {
@@ -595,6 +602,16 @@
 }
 
 /* ── Responsive Breakpoint ── */
+@media (max-width: 1279px) {
+  .funalo-nav__primary {
+    gap: 20px;
+  }
+
+  .funalo-nav__primary li a {
+    font-size: 12px;
+  }
+}
+
 @media (max-width: 1023px) {
   /* Hide primary nav links and secondary nav only */
   .funalo-nav__primary,
@@ -641,6 +658,60 @@
 /* Prevent body scroll when drawer open */
 body.funalo-drawer-open {
   overflow: hidden;
+}
+
+/* ---- Back to Top Button --------------------------------- */
+.fnlmx-back-to-top {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 1.5rem;
+  z-index: 980;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-funalomax-gradient);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  /* Hidden until the page is scrolled (toggled via .is-visible in JS) */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease,
+    visibility 0.25s ease,
+    box-shadow 0.2s ease;
+}
+
+.fnlmx-back-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.fnlmx-back-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55);
+}
+
+.fnlmx-back-to-top:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+@media (max-width: 560px) {
+  .fnlmx-back-to-top {
+    right: 1rem;
+    bottom: 1rem;
+    width: 42px;
+    height: 42px;
+  }
 }
 
 /* ---- Footer --------------------------------------------- */
@@ -1162,6 +1233,7 @@ body.funalo-drawer-open {
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+  max-height: 90dvh;
   border: 2px solid #1e1e1e;
 }
 
@@ -1244,10 +1316,9 @@ body.funalo-drawer-open {
   display: flex;
   flex-direction: column;
   background: /*rgba(255,255,255,0.04)*/ #1e1e1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
   overflow: hidden;
-  margin-bottom: 1rem;
+  /*margin-bottom: 1rem;*/
 }
 
 .fnlmx-rg-popup__badges-row {
@@ -1301,7 +1372,7 @@ body.funalo-drawer-open {
   line-height: 1.6;
   margin: 0;
   padding: 1rem 1.25rem 1.25rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .fnlmx-rg-popup__actions {
@@ -1313,45 +1384,47 @@ body.funalo-drawer-open {
 }
 
 .fnlmx-rg-popup__btn {
-  position: relative;
   flex: 1;
   padding: 1rem 1rem;
-  border-radius: 6px;
   border: none;
+  border-radius: 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   font-size: 0.9375rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   cursor: pointer;
-  overflow: hidden;
+  /* Chamfer the top-left and bottom-right corners */
+  -webkit-clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
   transition:
     opacity 0.2s ease,
     transform 0.15s ease;
 }
 .fnlmx-rg-popup__btn:hover {
   opacity: 0.88;
-  transform: translateY(-1px);
-}
-
-/* Decorative corner accent (bottom-right triangle) */
-.fnlmx-rg-popup__btn::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  border-style: solid;
-  border-width: 0 0 10px 10px;
-  border-color: transparent transparent rgba(255, 255, 255, 0.85) transparent;
+  /*transform: translateY(-4px);*/
 }
 
 .fnlmx-rg-popup__btn--exit {
-  background: #161618;
+  background: #282828;
   color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 .fnlmx-rg-popup__btn--exit:hover {
-  background: #1f1f22;
   color: #fff;
 }
 
@@ -1361,35 +1434,51 @@ body.funalo-drawer-open {
 }
 
 @media (max-width: 560px) {
+  .fnlmx-rg-popup {
+    padding: 0.5rem;
+  }
   .fnlmx-rg-popup__panel {
     border-radius: 12px;
+    /* Fit the *visible* viewport. `dvh` accounts for the mobile browser's
+       address bar, so the panel (and the buttons) are never pushed off
+       screen the way `vh` does. The `vh` line is a fallback for old browsers. */
     max-height: 95vh;
+    max-height: calc(100dvh - 1rem);
   }
   .fnlmx-rg-popup__title {
-    font-size: 1rem;
-    padding: 1.25rem 1.25rem 1rem;
+    font-size: 0.9375rem;
+    padding: 1rem 1.25rem 0.75rem;
   }
   .fnlmx-rg-popup__body {
-    padding: 1rem 1.25rem;
+    padding: 0.875rem 1.25rem;
   }
   .fnlmx-rg-popup__actions {
-    padding: 1rem 1.25rem 1.25rem;
+    padding: 0.875rem 1.25rem 1rem;
   }
 
   .fnlmx-rg-popup__list,
   .fnlmx-rg-popup__wysiwyg ul,
   .fnlmx-rg-popup__wysiwyg ol {
     gap: 6px;
+    margin-bottom: 0.875rem;
   }
 
   .fnlmx-rg-popup__list li,
   .fnlmx-rg-popup__wysiwyg ul li,
   .fnlmx-rg-popup__wysiwyg ol li {
-    line-height: 1.2;
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .fnlmx-rg-popup__badge-item {
+    min-height: 48px;
+    padding: 0.625rem 1rem;
   }
 
   .fnlmx-rg-popup__disclaimer {
-    line-height: 1.2;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    padding: 0.75rem 1rem 0.875rem;
   }
 }
 
