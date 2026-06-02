@@ -29,12 +29,12 @@
 	border-radius: 12px;
 	min-height: 73px;
 	padding: 0 24px;
-	border: 2px solid transparent;
-	background:
+	border: 2px solid #BA001D;
+	/*background:
 		linear-gradient(#000000, #000000) padding-box,
-		linear-gradient(90deg, #BA001D, #FEBB3C) border-box;/*#0F0D1E*/ /*#F71DC2*/
+		linear-gradient(90deg, #BA001D, #FEBB3C) border-box;
 	background-origin: border-box;
-	background-clip: padding-box, border-box;
+	background-clip: padding-box, border-box;*/
 }
 
 /* ═══════════════════════════════════════════════════════════
