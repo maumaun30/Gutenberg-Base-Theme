@@ -211,47 +211,49 @@ function fnlmx_responsible_gaming_popup() {
           </div>
         <?php endif; ?>
 
-        <?php if ( ! empty( $images_wrapper ) ) : ?>
-          <div class="fnlmx-rg-popup__badges">
-            <?php foreach ( $images_wrapper as $index => $row ) :
-              $img = $row['fnlmx_gaming_guidelines_img'] ?? null;
-              if ( $index > 0 ) : ?>
-                <div class="fnlmx-rg-popup__badge-divider"></div>
-              <?php endif; ?>
-              <div class="fnlmx-rg-popup__badge-item">
-                <?php if ( $img && is_array($img) ) : ?>
-                  <img
-                    src="<?php echo esc_url( $img['url'] ); ?>"
-                    alt="<?php echo esc_attr( $img['alt'] ?? '' ); ?>"
-                    width="<?php echo esc_attr( $img['width'] ?? '' ); ?>"
-                    height="<?php echo esc_attr( $img['height'] ?? '' ); ?>"
-                    loading="lazy"
-                  >
+        <div class="fnlmx-rg-popup__badges">
+          <?php if ( ! empty( $images_wrapper ) ) : ?>
+            <div class="fnlmx-rg-popup__badges-row">
+              <?php foreach ( $images_wrapper as $index => $row ) :
+                $img = $row['fnlmx_gaming_guidelines_img'] ?? null;
+                if ( $index > 0 ) : ?>
+                  <div class="fnlmx-rg-popup__badge-divider"></div>
                 <?php endif; ?>
+                <div class="fnlmx-rg-popup__badge-item">
+                  <?php if ( $img && is_array($img) ) : ?>
+                    <img
+                      src="<?php echo esc_url( $img['url'] ); ?>"
+                      alt="<?php echo esc_attr( $img['alt'] ?? '' ); ?>"
+                      width="<?php echo esc_attr( $img['width'] ?? '' ); ?>"
+                      height="<?php echo esc_attr( $img['height'] ?? '' ); ?>"
+                      loading="lazy"
+                    >
+                  <?php endif; ?>
+                </div>
+              <?php endforeach; ?>
+            </div>
+          <?php else : ?>
+            <!-- Fallback badges when no ACF images are set -->
+            <div class="fnlmx-rg-popup__badges-row">
+              <div class="fnlmx-rg-popup__badge-item">
+                <span class="fnlmx-rg-popup__badge-fallback">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#F71DC2"><circle cx="12" cy="12" r="10"/></svg>
+                  PAGCOR
+                </span>
               </div>
-            <?php endforeach; ?>
-          </div>
-        <?php else : ?>
-          <!-- Fallback badges when no ACF images are set -->
-          <div class="fnlmx-rg-popup__badges">
-            <div class="fnlmx-rg-popup__badge-item">
-              <span class="fnlmx-rg-popup__badge-fallback">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="#F71DC2"><circle cx="12" cy="12" r="10"/></svg>
-                PAGCOR
-              </span>
+              <div class="fnlmx-rg-popup__badge-divider"></div>
+              <div class="fnlmx-rg-popup__badge-item">
+                <span class="fnlmx-rg-popup__badge-fallback fnlmx-rg-popup__badge-fallback--21">21+</span>
+              </div>
             </div>
-            <div class="fnlmx-rg-popup__badge-divider"></div>
-            <div class="fnlmx-rg-popup__badge-item">
-              <span class="fnlmx-rg-popup__badge-fallback fnlmx-rg-popup__badge-fallback--21">21+</span>
-            </div>
-          </div>
-        <?php endif; ?>
+          <?php endif; ?>
 
-        <?php if ( $subparagraph ) : ?>
-          <p class="fnlmx-rg-popup__disclaimer">
-            <?php echo esc_html( $subparagraph ); ?>
-          </p>
-        <?php endif; ?>
+          <?php if ( $subparagraph ) : ?>
+            <p class="fnlmx-rg-popup__disclaimer">
+              <?php echo esc_html( $subparagraph ); ?>
+            </p>
+          <?php endif; ?>
+        </div>
 
       </div>
 
