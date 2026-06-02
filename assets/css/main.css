@@ -14,7 +14,7 @@
   --color-secondary: #d63d4a;
   --color-secondary-hover: #e01a2a;
   --color-funalomax-gradient: #1E1E1E;
-  --color-nav-active: #1E1E1E;
+  --color-nav-active: #FFFFFF;
   --color-amber-gradient: linear-gradient(90deg, #936000 0%, #e9c349 100%);
 
   /* Background scale */
@@ -275,7 +275,7 @@
   width: 40px;
   height: 40px;
   border-radius: 6px;
-  background: var(--color-nav-active);
+  background: var(--color-funalomax-gradient);
   color: #ffffff;
   cursor: pointer;
   flex-shrink: 0;
