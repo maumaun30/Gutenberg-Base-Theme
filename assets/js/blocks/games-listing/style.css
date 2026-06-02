@@ -195,7 +195,7 @@
 .games-listing__cat-divider {
   width: 100%;
   height: 1px;
-  background-color: #EC48994D;
+  background-color: #BA001D;
   margin: 0.75rem 0;
 }
 
@@ -262,7 +262,7 @@
 
 @media (max-width: 767px) {
   .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2.5rem - 2 * 0.625rem) / 3);
+    grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3.5);
   }
   .games-listing__tabs {
     gap: 5px;
@@ -281,13 +281,13 @@
 
 @media (max-width: 479px) {
   .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 3);
+    grid-auto-columns: calc((100vw - 2rem - 3 * 0.625rem) / 3.3);
   }
 }
 
 @media (max-width: 410px) {
   .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2rem - 1 * 0.625rem) / 2.3);
+    grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 3);
   }
   .games-listing__tabs {
     gap: 8px;

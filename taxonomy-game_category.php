@@ -177,7 +177,7 @@ set_query_var('game_count',     $game_count);
 
   @media (max-width: 640px) {
     .fm-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
 
@@ -203,7 +203,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-card {
     position: relative;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 3 / 4;
     border-radius: 12px;
     overflow: hidden;
     background: var(--fm-card);
