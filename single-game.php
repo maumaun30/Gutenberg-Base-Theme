@@ -25,7 +25,8 @@ $title    = get_the_title();
 $content  = get_the_content();
 $thumb_lg = get_the_post_thumbnail_url($post_id, 'large');
 
-function gc_acf($key, $id) {
+function gc_acf($key, $id)
+{
   return function_exists('get_field') ? get_field($key, $id) : get_post_meta($id, $key, true);
 }
 
@@ -121,7 +122,10 @@ if (is_array($game_rules) && ! empty($game_rules)) {
   foreach ($game_rules as $rule) {
     $t = isset($rule['fnlmx_game_rules_title'])      ? trim($rule['fnlmx_game_rules_title'])      : '';
     $d = isset($rule['fnlmx_game_rules_desription']) ? trim($rule['fnlmx_game_rules_desription']) : '';
-    if ($t || $d) { $has_rules = true; break; }
+    if ($t || $d) {
+      $has_rules = true;
+      break;
+    }
   }
 }
 
@@ -141,57 +145,124 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     --bg-dark-2: #1E1E1E;
     --bg-dark-3: #000000;
     --bg-dark-4: rgb(30 30 30 / 50%);
-    --border: rgba(255,255,255,.08);
-    --border-strong: rgba(255,255,255,.15);
+    --border: rgba(255, 255, 255, .08);
+    --border-strong: rgba(255, 255, 255, .15);
     --radius-lg: 1.25rem;
     --radius-md: .875rem;
     --section-py: clamp(2rem, 5vw, 4rem);
   }
 
-  .sg-page { background: var(--bg-dark-3); min-height: 100vh; color: #fff; }
+  .sg-page {
+    background: var(--bg-dark-3);
+    min-height: 100vh;
+    color: #fff;
+  }
 
   /* ── BREADCRUMB ── */
   .fm-bc {
-    max-width: 80rem; margin: 0 auto; padding: 1.25rem 1.5rem .5rem;
-    display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
-    font-family: 'Montserrat', sans-serif; font-size: .78rem; font-weight: 600; letter-spacing: .04em;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 1.25rem 1.5rem .5rem;
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    flex-wrap: wrap;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .04em;
   }
-  .fm-bc a { color: #fff; text-decoration: none; transition: color .2s; font-weight: 400; }
-  .fm-bc a:hover { color: var(--color-primary); }
-  .fm-bc svg { color: #fff; flex-shrink: 0; }
-  .fm-bc__cur { color: var(--color-primary); }
+
+  .fm-bc a {
+    color: #fff;
+    text-decoration: none;
+    transition: color .2s;
+    font-weight: 400;
+  }
+
+  .fm-bc a:hover {
+    color: var(--color-primary);
+  }
+
+  .fm-bc svg {
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  .fm-bc__cur {
+    color: var(--color-primary);
+  }
 
   /* ── HERO ── */
-  .sg-hero { position: relative; max-width: 80rem; margin: .5rem auto 0; padding: 0 1.5rem; }
+  .sg-hero {
+    position: relative;
+    max-width: 80rem;
+    margin: .5rem auto 0;
+    padding: 0 1.5rem;
+  }
 
   .sg-hero__inner {
-    position: relative; padding: 1.5rem;
-    display: flex; flex-direction: column; gap: 1.5rem;
+    position: relative;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
     border-radius: var(--radius-lg);
-    background:
+    background: linear-gradient(var(--bg-dark-2), var(--bg-dark-2)) padding-box, var(--color-primary) border-box;
+    /*background:
       linear-gradient(var(--bg-dark-2), var(--bg-dark-2)) padding-box,
-      linear-gradient(135deg, var(--color-primary) 0%, var(--color-amber) 100%) border-box;
+      linear-gradient(135deg, var(--color-primary) 0%, var(--color-amber) 100%) border-box;*/
     border: 1px solid transparent;
   }
 
-  .sg-thumb-wrap { flex-shrink: 0; align-self: center; width: 230px; height: 230px; }
-  .sg-thumb { width: 230px; height: 230px; border-radius: var(--radius-md); display: block; box-shadow: 0 24px 60px rgba(0,0,0,.7), 0 0 0 1px var(--border-strong); }
-  .sg-thumb-fallback {
-    width: 100%; aspect-ratio: 1; border-radius: var(--radius-md);
-    background: linear-gradient(135deg, var(--bg-dark-4), #42424f);
-    display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-strong);
+  .sg-thumb-wrap {
+    flex-shrink: 0;
+    align-self: center;
+    width: 230px;
+    height: 230px;
   }
 
-  .sg-hero__info { flex: 1; min-width: 0; }
+  .sg-thumb {
+    width: 230px;
+    height: 230px;
+    border-radius: var(--radius-md);
+    display: block;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, .7), 0 0 0 1px var(--border-strong);
+  }
+
+  .sg-thumb-fallback {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--bg-dark-4), #42424f);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-strong);
+  }
+
+  .sg-hero__info {
+    flex: 1;
+    min-width: 0;
+  }
 
   .sg-title {
-    font-family: 'Montserrat', sans-serif; font-size: 40px; font-weight: 700;
-    color: #E5E2E1; line-height: 1.15; margin: 0 0 .75rem; text-transform: uppercase;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: #E5E2E1;
+    line-height: 1.15;
+    margin: 0 0 .75rem;
+    text-transform: uppercase;
   }
 
   .sg-hero__desc {
-    font-family: 'Montserrat', sans-serif; font-size: 16px; line-height: 24px;
-    color: #DCBED4; margin: 0 0 1.25rem; max-width: 842px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    color: #FFFFFF;
+    margin: 0 0 1.25rem;
+    max-width: 842px;
   }
 
   /* ── STATS BAR ── */
@@ -203,7 +274,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 1.5rem;
-    border: 1px solid rgba(255,255,255,.08);
+    border: 1px solid rgba(255, 255, 255, .08);
   }
 
   .sg-stat {
@@ -216,14 +287,14 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   }
 
   /* vertical divider between stats */
-  .sg-stat + .sg-stat::before {
+  .sg-stat+.sg-stat::before {
     content: '';
     position: absolute;
     left: 0;
     top: 20%;
     height: 60%;
     width: 1px;
-    background: rgba(255,255,255,.12);
+    background: rgba(255, 255, 255, .12);
   }
 
   /* Each stat: icon on the left (vertically centered to the label+value stack),
@@ -246,7 +317,11 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     align-items: center;
     justify-content: center;
   }
-  .sg-stat__icon svg { width: 1.4rem; height: 1.4rem; }
+
+  .sg-stat__icon svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
 
   .sg-stat__top {
     display: flex;
@@ -258,7 +333,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     font-family: 'Montserrat', sans-serif;
     font-size: .72rem;
     font-weight: 400;
-    color: rgba(255,255,255,.5);
+    color: rgba(255, 255, 255, .5);
     white-space: nowrap;
     line-height: 1;
   }
@@ -275,75 +350,184 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   }
 
   /* ── CTA BUTTONS ── */
-  .sg-cta { display: flex; flex-wrap: wrap; gap: .875rem; }
-  a.sg-btn-play:hover { color: unset; }
-  .sg-btn-play {
-    display: inline-flex; align-items: center; gap: .5rem;
-    padding: 16px 32px; border-radius: 8px;
-    background: var(--color-funalomax-gradient); color: #fff;
-    font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 600;
-    border: none; cursor: pointer; text-decoration: none; transition: all .25s;
-    letter-spacing: -0.6px; text-transform: uppercase;
+  .sg-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .875rem;
   }
-  .sg-btn-play:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+  a.sg-btn-play:hover {
+    color: unset;
+  }
+
+  .sg-btn-play {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 16px 32px;
+    border-radius: 8px;
+    background: var(--color-primary);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
+  }
+
+  .sg-btn-play:hover {
+    transform: translateY(-4px);
+    filter: brightness(1.1);
+  }
 
   .sg-btn-demo {
-    display: inline-flex; align-items: center; gap: .5rem;
-    padding: 16px 32px; border-radius: 8px;
-    background: var(--color-amber-gradient); color: #fff;
-    font-family: 'Montserrat', sans-serif; font-size: .95rem; font-weight: 600;
-    border: none; cursor: pointer; text-decoration: none; transition: all .25s;
-    letter-spacing: -0.6px; text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 16px 32px;
+    border-radius: 8px;
+    background: var(--color-amber-gradient);
+    color: #fff;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .95rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .25s;
+    letter-spacing: -0.6px;
+    text-transform: uppercase;
   }
-  .sg-btn-demo:hover { transform: translateY(-2px); filter: brightness(1.08); }
+
+  .sg-btn-demo:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+  }
 
   /* ── RELATED GRID ── */
-  .sg-related { max-width: 80rem; margin: 0 auto; padding: var(--section-py) 1.5rem 0; }
-
-  .sg-related-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; gap: 1rem; }
-  .sg-related-hd span {
-    font-family: 'Montserrat', sans-serif; font-size: 16px; color: #fff;
-    letter-spacing: -0.4px; margin: 0; text-transform: uppercase; font-weight: 400;
+  .sg-related {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: var(--section-py) 1.5rem 0;
   }
-  .sg-viewall { font-family: 'Montserrat', sans-serif; font-size: 16px; font-weight: 400; text-transform: uppercase; color: var(--color-primary); text-decoration: none; }
-  .sg-viewall:hover { color: #fff; }
 
-  .sg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-  @media(min-width:768px) { .sg-grid { grid-template-columns: repeat(6, 1fr); } }
+  .sg-related-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .sg-related-hd span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: -0.4px;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .sg-viewall {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .sg-viewall:hover {
+    color: #fff;
+  }
+
+  .sg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @media(min-width:768px) {
+    .sg-grid {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
 
   .sg-rcard {
     position: relative;
     border-radius: var(--radius-md);
-    aspect-ratio: 3/4;
+    aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: var(--bg-dark-4); border: 1px solid var(--border);
-    text-decoration: none; display: block;
+    background: var(--bg-dark-4);
+    border: 1px solid var(--border);
+    text-decoration: none;
+    display: block;
     transition: transform .35s, box-shadow .35s, border-color .35s;
   }
-  .sg-rcard:hover { transform: translateY(-4px); }
-  .sg-rcard__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .sg-rcard:hover {
+    transform: translateY(-4px);
+  }
+
+  .sg-rcard__img {
+    width: 100%;
+    height: 100%;
+    /*object-fit: contain;*/
+    display: block;
+    position: relative;
+    z-index: 2;
+  }
+
+  .sg-rcard__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    filter: blur(20px);
+    /*transform: scale(1.2);*/
+    opacity: .7;
+
+    z-index: 1;
+}
 
   /* Play pill — bottom-right corner */
   .sg-rcard__play {
     position: absolute;
-    right: 0; bottom: 0;
-    display: inline-flex; align-items: center; justify-content: center;
+    right: 0;
+    bottom: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: .4rem .9rem;
     border-radius: 8px 0 8px 0;
     background: var(--color-primary);
     color: #fff;
     font-family: 'Montserrat', sans-serif;
-    font-size: .8rem; font-weight: 700;
+    font-size: .8rem;
+    font-weight: 700;
     letter-spacing: .02em;
     pointer-events: none;
+    z-index: 3;
   }
+
   @media (max-width: 480px) {
-    .sg-rcard__play { font-size: .7rem; padding: .35rem .7rem; }
+    .sg-rcard__play {
+      font-size: .7rem;
+      padding: .35rem .7rem;
+    }
   }
 
   /* ── ABOUT + RULES SECTION ── */
   .sg-main {
-    max-width: 80rem; margin: 0 auto;
+    max-width: 80rem;
+    margin: 0 auto;
     padding: var(--section-py) 1.5rem;
   }
 
@@ -367,92 +551,229 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   }
 
   @media(max-width:899px) {
-    .sg-main__wrap--both { grid-template-columns: 1fr; }
+    .sg-main__wrap--both {
+      grid-template-columns: 1fr;
+    }
   }
 
   /* Panels are transparent — bg/border come from the parent wrap */
-  .sg-panel { padding: 1.75rem 2rem; }
+  .sg-panel {
+    padding: 1.75rem 2rem;
+  }
 
   .sg-panel__hd {
-    display: flex; align-items: center; gap: .65rem;
-    padding-bottom: 1rem; margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--border);
   }
-  .sg-panel__hd svg { width: 1.1rem; height: 1.1rem; color: var(--color-primary); flex-shrink: 0; }
+
+  .sg-panel__hd svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
   .sg-panel__hd h2 {
-    font-family: 'Montserrat', sans-serif; font-size: .8rem; font-weight: 700;
-    color: #fff; margin: 0; text-transform: uppercase; letter-spacing: .1em;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: .1em;
   }
 
   /* About content */
   .sg-about__content {
-    font-family: 'Montserrat', sans-serif; font-size: .9rem; line-height: 1.8;
-    color: rgba(255,255,255,.7); overflow: hidden; max-height: 8.5em;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .9rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, .7);
+    overflow: hidden;
+    max-height: 8.5em;
     transition: max-height .45s ease;
   }
-  .sg-about__content p { margin: 0 0 1rem; }
-  .sg-about__content p:last-child { margin-bottom: 0; }
+
+  .sg-about__content p {
+    margin: 0 0 1rem;
+  }
+
+  .sg-about__content p:last-child {
+    margin-bottom: 0;
+  }
 
   .sg-about__toggle {
-    margin-top: 1.25rem; background: transparent; border: none; cursor: pointer;
-    color: rgba(255,255,255,.6); font-family: 'Montserrat', sans-serif;
-    font-size: .82rem; font-weight: 600; padding: 0; letter-spacing: .04em;
-    text-transform: uppercase; transition: color .2s;
+    margin-top: 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, .6);
+    font-family: 'Montserrat', sans-serif;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: 0;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    transition: color .2s;
   }
-  .sg-about__toggle:hover { color: #fff; }
+
+  .sg-about__toggle:hover {
+    color: #fff;
+  }
 
   /* Rules list */
-  .sg-rules { display: flex; flex-direction: column; gap: 1.35rem; counter-reset: rule-counter; }
+  .sg-rules {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+    counter-reset: rule-counter;
+  }
 
-  .sg-rule { display: flex; gap: 1rem; align-items: flex-start; counter-increment: rule-counter; }
+  .sg-rule {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    counter-increment: rule-counter;
+  }
 
   .sg-rule__num {
-    flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
-    background: #111; border: 1.5px solid var(--color-primary);
-    display: flex; align-items: center; justify-content: center;
-    font-family: 'Montserrat', sans-serif; font-size: .85rem; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #111;
+    border: 1.5px solid var(--color-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #fff;
     margin-top: .1rem;
   }
-  .sg-rule__num::before { content: counter(rule-counter); }
 
-  .sg-rule__body { flex: 1; min-width: 0; }
+  .sg-rule__num::before {
+    content: counter(rule-counter);
+  }
+
+  .sg-rule__body {
+    flex: 1;
+    min-width: 0;
+  }
+
   .sg-rule__title {
-    font-family: 'Montserrat', sans-serif; font-size: .85rem; font-weight: 700;
-    color: #fff; line-height: 1.4; text-transform: uppercase; letter-spacing: .06em;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .85rem;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+    text-transform: uppercase;
+    letter-spacing: .06em;
     margin: 0 0 .3rem;
   }
+
   .sg-rule__desc {
-    font-family: 'Montserrat', sans-serif; font-size: .82rem; line-height: 1.65;
-    color: rgba(255,255,255,.5); margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .82rem;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, .5);
+    margin: 0;
   }
 
   /* ── RESPONSIVE ── */
   @media(min-width:900px) {
-    .sg-hero__inner { flex-direction: row; align-items: center; gap: 2rem; padding: 1.75rem 2rem; }
-    .sg-thumb-wrap  { width: 200px; }
+    .sg-hero__inner {
+      flex-direction: row;
+      align-items: center;
+      gap: 2rem;
+      padding: 1.75rem 2rem;
+    }
+
+    .sg-thumb-wrap {
+      width: 200px;
+    }
   }
 
   @media(max-width:768px) {
-    .sg-title      { text-align: center; }
-    .sg-hero__desc { text-align: center; }
-    .sg-stats      { align-self: center; display: flex;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;}
-    .sg-cta        { justify-content: center; }
+    .sg-title {
+      text-align: center;
+    }
+
+    .sg-hero__desc {
+      text-align: center;
+    }
+
+    .sg-stats {
+      align-self: center;
+      display: flex;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .sg-cta {
+      justify-content: center;
+    }
   }
 
   @media(max-width:600px) {
-    .sg-thumb-wrap { width: 180px; height: 180px; }
-    .sg-thumb      { width: 180px; height: 180px; }
-    .sg-title      { font-size: 20px; }
-    .sg-hero__desc { font-size: 12px; line-height: 14px; }
-    .sg-btn-play, .sg-btn-demo { font-size: 12px; padding: 15px 20px; width: 135px; justify-content: center; }
-    .sg-related-hd span, .sg-viewall { font-size: 14px; }
-    .sg-stats      { width: 100%; border-radius: 8px; flex-wrap: wrap;}
-    .sg-stat       { width: calc(100% / 3 - ((3 - 1) * 15px) / 3); padding: .7rem 1rem; gap: 5px;}
-    .sg-stat__label { font-size: 9px; }
-    .sg-stat__value { font-size: 10px; }
+    .sg-thumb-wrap {
+      width: 180px;
+      height: 180px;
+    }
+
+    .sg-thumb {
+      width: 180px;
+      height: 180px;
+    }
+
+    .sg-title {
+      font-size: 20px;
+    }
+
+    .sg-hero__desc {
+      font-size: 12px;
+      line-height: 14px;
+    }
+
+    .sg-btn-play,
+    .sg-btn-demo {
+      font-size: 12px;
+      padding: 15px 20px;
+      width: 135px;
+      justify-content: center;
+    }
+
+    .sg-related-hd span,
+    .sg-viewall {
+      font-size: 14px;
+    }
+
+    .sg-stats {
+      width: 100%;
+      border-radius: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sg-stat {
+      width: calc(100% / 3 - ((3 - 1) * 15px) / 3);
+      padding: .7rem 1rem;
+      gap: 5px;
+    }
+
+    .sg-stat__label {
+      font-size: 9px;
+    }
+
+    .sg-stat__value {
+      font-size: 10px;
+    }
+
     .sg-stat__icon svg {
       width: 15px;
       height: 15px;
@@ -460,54 +781,132 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   }
 
   @media(max-width:399px) {
-    .sg-stats { justify-content: center;}
-    .sg-stat { width: calc(100% / 2 - ((2 - 1) * 15px) / 2);}
-    .sg-stat + .sg-stat::before {
+    .sg-stats {
+      justify-content: center;
+    }
+
+    .sg-stat {
+      width: calc(100% / 2 - ((2 - 1) * 15px) / 2);
+    }
+
+    .sg-stat+.sg-stat::before {
       background: unset;
     }
   }
 
   /* ── IFRAME MODAL ── */
   .sg-modal {
-    display: none; position: fixed; inset: 0; z-index: 9997;
-    align-items: center; justify-content: center;
-    background: rgba(0,0,0,.88); backdrop-filter: blur(8px); padding: 1rem;
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9997;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .88);
+    backdrop-filter: blur(8px);
+    padding: 1rem;
   }
-  .sg-modal.is-open { display: flex; }
+
+  .sg-modal.is-open {
+    display: flex;
+  }
 
   .sg-modal__box {
-    position: relative; width: 100%; max-width: 1100px;
-    background: var(--bg-dark-1); border: 1px solid var(--border-strong);
-    border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 40px 100px rgba(0,0,0,.8);
+    position: relative;
+    width: 100%;
+    max-width: 1100px;
+    background: var(--bg-dark-1);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0, 0, 0, .8);
   }
+
   .sg-modal__topbar {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: .875rem 1.25rem; background: var(--bg-dark-2); border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .875rem 1.25rem;
+    background: var(--bg-dark-2);
+    border-bottom: 1px solid var(--border);
   }
-  .sg-modal__game-name { font-family: 'Montserrat', sans-serif; font-size: 1.25rem; color: #fff; margin: 0; }
+
+  .sg-modal__game-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.25rem;
+    color: #fff;
+    margin: 0;
+  }
+
   .sg-modal__close {
-    width: 2rem; height: 2rem; border-radius: 50%; cursor: pointer;
-    background: var(--bg-dark-4); border: 1px solid var(--border);
-    display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,.7);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
+    background: var(--bg-dark-4);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, .7);
   }
-  .sg-modal__close:hover { background: var(--color-primary); color: #000; }
-  .sg-modal__close svg  { width: .875rem; height: .875rem; }
-  .sg-modal__iframe-wrap { position: relative; width: 100%; padding-bottom: 56.25%; }
-  .sg-modal__iframe-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+
+  .sg-modal__close:hover {
+    background: var(--color-primary);
+    color: #000;
+  }
+
+  .sg-modal__close svg {
+    width: .875rem;
+    height: .875rem;
+  }
+
+  .sg-modal__iframe-wrap {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+  }
+
+  .sg-modal__iframe-wrap iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
   .sg-modal__loading {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 1rem;
-    background: var(--bg-dark-1); font-family: 'Montserrat', sans-serif;
-    font-size: .875rem; color: rgba(255,255,255,.5);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: var(--bg-dark-1);
+    font-family: 'Montserrat', sans-serif;
+    font-size: .875rem;
+    color: rgba(255, 255, 255, .5);
   }
+
   .sg-spinner {
-    width: 2.5rem; height: 2.5rem; border-radius: 50%;
-    border: 3px solid var(--border); border-top-color: var(--color-primary);
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    border: 3px solid var(--border);
+    border-top-color: var(--color-primary);
     animation: spin .8s linear infinite;
   }
-  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .cta-global { margin-top: 60px; }
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .cta-global {
+    margin-top: 60px;
+  }
 </style>
 
 
@@ -516,12 +915,16 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   <!-- BREADCRUMB -->
   <nav class="fm-bc" aria-label="Breadcrumb">
     <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
-    <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true"><path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor"/></svg>
+    <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true">
+      <path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor" />
+    </svg>
     <?php foreach ((array) $ancestors as $aid) :
       $at = get_term($aid, 'game_category');
       if (! $at || is_wp_error($at)) continue; ?>
       <a href="<?php echo esc_url(get_term_link($at)); ?>"><?php echo esc_html($at->name); ?></a>
-      <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true"><path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor"/></svg>
+      <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true">
+        <path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor" />
+      </svg>
     <?php endforeach; ?>
     <span class="fm-bc__cur"><?php echo esc_html($term_name); ?></span>
   </nav>
@@ -537,7 +940,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
           <div class="sg-thumb-fallback">
             <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
               fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="8" width="12" height="12" rx="2"/><rect x="10" y="3" width="10" height="12" rx="2"/>
+              <rect x="3" y="8" width="12" height="12" rx="2" />
+              <rect x="10" y="3" width="10" height="12" rx="2" />
             </svg>
           </div>
         <?php endif; ?>
@@ -591,11 +995,26 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
       <div class="sg-grid">
         <?php foreach ($related_games as $rg) : ?>
           <a href="<?php echo esc_url($rg['permalink']); ?>" class="sg-rcard">
-            <?php if ($rg['thumb']) : ?>
-              <img src="<?php echo esc_url($rg['thumb']); ?>" alt="<?php echo esc_attr($rg['title']); ?>" class="sg-rcard__img" loading="lazy">
-            <?php endif; ?>
-            <span class="sg-rcard__play">Play</span>
-          </a>
+    <?php if ($rg['thumb']) : ?>
+
+        <img
+            src="<?php echo esc_url($rg['thumb']); ?>"
+            alt=""
+            class="sg-rcard__bg"
+            aria-hidden="true"
+        >
+
+        <img
+            src="<?php echo esc_url($rg['thumb']); ?>"
+            alt="<?php echo esc_attr($rg['title']); ?>"
+            class="sg-rcard__img"
+            loading="lazy"
+        >
+
+    <?php endif; ?>
+
+    <span class="sg-rcard__play">Play</span>
+</a>
         <?php endforeach; ?>
       </div>
     </section>
@@ -610,49 +1029,51 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     <div class="sg-main">
       <div class="sg-main__wrap <?php echo ($main_layout === 'both') ? 'sg-main__wrap--both' : 'sg-main__wrap--single'; ?>">
 
-      <?php if ($has_about) : ?>
-        <div class="sg-panel">
-          <div class="sg-panel__hd">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-            </svg>
-            <h2>About the Game</h2>
+        <?php if ($has_about) : ?>
+          <div class="sg-panel">
+            <div class="sg-panel__hd">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <h2>About the Game</h2>
+            </div>
+            <div class="sg-about__content" id="sg-about-body">
+              <?php echo apply_filters('the_content', $content); ?>
+            </div>
+            <button type="button" class="sg-about__toggle" id="sg-about-toggle"
+              data-more="Read More" data-less="Read Less">Read More</button>
           </div>
-          <div class="sg-about__content" id="sg-about-body">
-            <?php echo apply_filters('the_content', $content); ?>
-          </div>
-          <button type="button" class="sg-about__toggle" id="sg-about-toggle"
-            data-more="Read More" data-less="Read Less">Read More</button>
-        </div>
-      <?php endif; ?>
+        <?php endif; ?>
 
-      <?php if ($has_rules) : ?>
-        <div class="sg-panel">
-          <div class="sg-panel__hd">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
-            </svg>
-            <h2>Game Rules</h2>
-          </div>
-          <div class="sg-rules">
-            <?php foreach ($game_rules as $rule) :
-              $r_title = isset($rule['fnlmx_game_rules_title'])      ? $rule['fnlmx_game_rules_title']      : '';
-              $r_desc  = isset($rule['fnlmx_game_rules_desription']) ? $rule['fnlmx_game_rules_desription'] : '';
-              if (! $r_title && ! $r_desc) continue; ?>
-              <div class="sg-rule">
-                <span class="sg-rule__num"></span>
-                <div class="sg-rule__body">
-                  <?php if ($r_title) : ?><h3 class="sg-rule__title"><?php echo esc_html($r_title); ?></h3><?php endif; ?>
-                  <?php if ($r_desc)  : ?><p  class="sg-rule__desc"><?php  echo esc_html($r_desc);  ?></p><?php endif; ?>
+        <?php if ($has_rules) : ?>
+          <div class="sg-panel">
+            <div class="sg-panel__hd">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+              </svg>
+              <h2>Game Rules</h2>
+            </div>
+            <div class="sg-rules">
+              <?php foreach ($game_rules as $rule) :
+                $r_title = isset($rule['fnlmx_game_rules_title'])      ? $rule['fnlmx_game_rules_title']      : '';
+                $r_desc  = isset($rule['fnlmx_game_rules_desription']) ? $rule['fnlmx_game_rules_desription'] : '';
+                if (! $r_title && ! $r_desc) continue; ?>
+                <div class="sg-rule">
+                  <span class="sg-rule__num"></span>
+                  <div class="sg-rule__body">
+                    <?php if ($r_title) : ?><h3 class="sg-rule__title"><?php echo esc_html($r_title); ?></h3><?php endif; ?>
+                    <?php if ($r_desc) : ?><p class="sg-rule__desc"><?php echo esc_html($r_desc);  ?></p><?php endif; ?>
+                  </div>
                 </div>
-              </div>
-            <?php endforeach; ?>
+              <?php endforeach; ?>
+            </div>
           </div>
-        </div>
-      <?php endif; ?>
+        <?php endif; ?>
 
       </div><!-- /.sg-main__wrap -->
     </div><!-- /.sg-main -->
@@ -672,7 +1093,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
       <button class="sg-modal__close" id="sg-modal-close" aria-label="Close">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
         </svg>
       </button>
     </div>
@@ -688,73 +1110,82 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
 
 <script>
-(function () {
-  'use strict';
+  (function() {
+    'use strict';
 
-  /* Modal */
-  var modal       = document.getElementById('sg-modal');
-  var modalIframe = document.getElementById('sg-modal-iframe');
-  var modalTitle  = document.getElementById('sg-modal-title');
-  var modalLoad   = document.getElementById('sg-modal-loading');
-  var modalClose  = document.getElementById('sg-modal-close');
+    /* Modal */
+    var modal = document.getElementById('sg-modal');
+    var modalIframe = document.getElementById('sg-modal-iframe');
+    var modalTitle = document.getElementById('sg-modal-title');
+    var modalLoad = document.getElementById('sg-modal-loading');
+    var modalClose = document.getElementById('sg-modal-close');
 
-  function openModal(url, title) {
-    modalTitle.textContent = title;
-    modalIframe.src = '';
-    modalLoad.style.display = 'flex';
-    modal.classList.add('is-open');
-    document.body.style.overflow = 'hidden';
-    modalIframe.onload = function () { modalLoad.style.display = 'none'; };
-    modalIframe.src = url;
-  }
-  function closeModal() {
-    modal.classList.remove('is-open');
-    modalIframe.src = '';
-    document.body.style.overflow = '';
-  }
-
-  document.querySelectorAll('.js-open-modal').forEach(function (btn) {
-    btn.addEventListener('click', function () { openModal(this.dataset.url, this.dataset.title); });
-  });
-  if (modalClose) modalClose.addEventListener('click', closeModal);
-  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeModal(); });
-
-  /* Read More toggle — animates at the same speed in both directions
-     by always transitioning between two explicit px values               */
-  var aboutBody = document.getElementById('sg-about-body');
-  var aboutBtn  = document.getElementById('sg-about-toggle');
-  if (aboutBody && aboutBtn) {
-    /* Content fits without truncation — hide button, show everything */
-    if (aboutBody.scrollHeight <= aboutBody.clientHeight + 4) {
-      aboutBtn.style.display = 'none';
-      aboutBody.style.maxHeight = 'none';
-    } else {
-      var isOpen = false;
-
-      aboutBtn.addEventListener('click', function () {
-        if (!isOpen) {
-          /* EXPAND: transition from collapsed height to full content height */
-          aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
-          aboutBtn.textContent = aboutBtn.dataset.less;
-          isOpen = true;
-        } else {
-          /* COLLAPSE: pin to current rendered height first, then on the
-             next two frames shrink — this gives the browser a clear
-             start-point so the transition fires cleanly */
-          aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
-          requestAnimationFrame(function () {
-            requestAnimationFrame(function () {
-              aboutBody.style.maxHeight = '8.5em';
-            });
-          });
-          aboutBtn.textContent = aboutBtn.dataset.more;
-          isOpen = false;
-        }
-      });
+    function openModal(url, title) {
+      modalTitle.textContent = title;
+      modalIframe.src = '';
+      modalLoad.style.display = 'flex';
+      modal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      modalIframe.onload = function() {
+        modalLoad.style.display = 'none';
+      };
+      modalIframe.src = url;
     }
-  }
-})();
+
+    function closeModal() {
+      modal.classList.remove('is-open');
+      modalIframe.src = '';
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.js-open-modal').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        openModal(this.dataset.url, this.dataset.title);
+      });
+    });
+    if (modalClose) modalClose.addEventListener('click', closeModal);
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+
+    /* Read More toggle — animates at the same speed in both directions
+       by always transitioning between two explicit px values               */
+    var aboutBody = document.getElementById('sg-about-body');
+    var aboutBtn = document.getElementById('sg-about-toggle');
+    if (aboutBody && aboutBtn) {
+      /* Content fits without truncation — hide button, show everything */
+      if (aboutBody.scrollHeight <= aboutBody.clientHeight + 4) {
+        aboutBtn.style.display = 'none';
+        aboutBody.style.maxHeight = 'none';
+      } else {
+        var isOpen = false;
+
+        aboutBtn.addEventListener('click', function() {
+          if (!isOpen) {
+            /* EXPAND: transition from collapsed height to full content height */
+            aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
+            aboutBtn.textContent = aboutBtn.dataset.less;
+            isOpen = true;
+          } else {
+            /* COLLAPSE: pin to current rendered height first, then on the
+               next two frames shrink — this gives the browser a clear
+               start-point so the transition fires cleanly */
+            aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
+            requestAnimationFrame(function() {
+              requestAnimationFrame(function() {
+                aboutBody.style.maxHeight = '8.5em';
+              });
+            });
+            aboutBtn.textContent = aboutBtn.dataset.more;
+            isOpen = false;
+          }
+        });
+      }
+    }
+  })();
 </script>
 
 <?php get_footer(); ?>

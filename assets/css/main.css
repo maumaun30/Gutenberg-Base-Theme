@@ -264,7 +264,7 @@
 }
 
 .funalo-nav__cta a:hover {
-  opacity: 0.88;
+  filter: brightness(1.1);
 }
 
 /* ── Search Icon Button ── */
@@ -286,7 +286,7 @@
 }
 
 .funalo-nav__search-btn:hover {
-  opacity: 0.88;
+  filter: brightness(1.1);
 }
 
 /* ── Full-Screen Search Overlay ── */
@@ -885,8 +885,8 @@ body.funalo-drawer-open {
 
 .fnlmx-footer__nav-list li a {
   font-size: 16px;
-  font-weight: 600;
-  color: #94a3b8;
+  font-weight: 400;
+  color: #FFFFFF;
   text-decoration: none;
   transition: color 0.2s;
   display: inline-block;
@@ -894,7 +894,7 @@ body.funalo-drawer-open {
 }
 
 .fnlmx-footer__nav-list li a:hover {
-  color: #fff;
+  color: var(--color-primary);
 }
 
 /* ── Trust column: Payments + Social stacked ────────────────── */
@@ -1391,7 +1391,7 @@ body.funalo-drawer-open {
   letter-spacing: 0.04em;
   cursor: pointer;
   /* Chamfer the top-left and bottom-right corners */
-  -webkit-clip-path: polygon(
+  /*-webkit-clip-path: polygon(
     14px 0,
     100% 0,
     100% calc(100% - 14px),
@@ -1406,7 +1406,8 @@ body.funalo-drawer-open {
     calc(100% - 14px) 100%,
     0 100%,
     0 14px
-  );
+  );*/
+  border-radius: 8px;
   transition:
     opacity 0.2s ease,
     transform 0.15s ease;
@@ -1572,7 +1573,8 @@ body.funalo-drawer-open {
    Typography
    -------------------------------------------------------------------------- */
 .fnlmx-cta__title {
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  /*font-size: clamp(1.5rem, 2.5vw, 2rem);*/
+  font-size: 24px;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -1911,7 +1913,7 @@ h1.page-title-404 {
     justify-content: center;
     gap: 0.5rem;
     padding: 0.75rem 1.75rem;
-    background: var(--color-funalomax-gradient);
+    background: var(--color-primary);
     color: #ffffff;
     font-weight: 600;
     border-radius: 0.5rem;

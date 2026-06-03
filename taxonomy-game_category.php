@@ -69,14 +69,18 @@ set_query_var('game_count',     $game_count);
     --fm-text: #fff;
     --fm-muted: rgb(161, 161, 170);
     --fm-muted-2: rgb(126, 121, 132);
-    --fm-pink: /*rgb(247, 29, 194)*/ #ba001d;
+    --fm-pink:
+      /*rgb(247, 29, 194)*/
+      #ba001d;
     --fm-pink-2: rgb(214, 61, 74);
     --fm-hot: rgb(147, 0, 10);
     --fm-red: #ba001d;
   }
 
   .fm-page {
-    background: /*var(--fm-bg)*/ var(--bg-dark-3);
+    background:
+      /*var(--fm-bg)*/
+      var(--bg-dark-3);
     color: var(--fm-text);
     font-family: 'Montserrat', system-ui, sans-serif;
   }
@@ -153,7 +157,7 @@ set_query_var('game_count',     $game_count);
   .fm-hero__desc {
     font-size: 18px;
     line-height: 1.6;
-    color: #DCBED4;
+    color: #FFFFFF;
     max-width: 576px;
     margin: 0;
   }
@@ -203,7 +207,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-card {
     position: relative;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 1 / 1;
     border-radius: 12px;
     overflow: hidden;
     background: var(--fm-card);
@@ -215,23 +219,31 @@ set_query_var('game_count',     $game_count);
 
   .fm-card:hover {
     transform: translateY(-4px);
-    /*border-color: rgba(247, 29, 194, .5);
-    box-shadow: 0 10px 30px rgba(247, 29, 194, .18);*/
   }
 
   .fm-card__img {
-    /*inset: 1px;
-    width: 190px;
-    height: 190px;
-    display: block;
-
-    position: absolute;*/
+    position: relative;
+    z-index: 2;
     inset: 0;
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
+    /*object-fit: contain;*/
     object-position: center;
+  }
+
+  .fm-card__blur {
+    position: absolute;
+    inset: 0;
+
+    background-size: cover;
+    background-position: center;
+
+    filter: blur(30px);
+
+    opacity: .7;
+
+    z-index: 1;
   }
 
   .fm-card__fallback {
@@ -615,12 +627,32 @@ set_query_var('game_count',     $game_count);
             $is_hot = function_exists('get_field') ? (bool) get_field('is_hot') : false;
           ?>
             <a href="<?php the_permalink(); ?>" class="fm-card" aria-label="<?php the_title_attribute(); ?>">
+
               <?php if ($thumb) : ?>
-                <img src="<?php echo esc_url($thumb); ?>" alt="<?php the_title_attribute(); ?>" class="fm-card__img" loading="lazy">
+
+                <div
+                  class="fm-card__blur"
+                  style="background-image:url('<?php echo esc_url($thumb); ?>');">
+                </div>
+
+                <img
+                  src="<?php echo esc_url($thumb); ?>"
+                  alt="<?php the_title_attribute(); ?>"
+                  class="fm-card__img"
+                  loading="lazy">
+
               <?php else : ?>
-                <div class="fm-card__fallback"><?php echo esc_html(mb_substr(get_the_title(), 0, 1)); ?></div>
+
+                <div class="fm-card__fallback">
+                  <?php echo esc_html(mb_substr(get_the_title(), 0, 1)); ?>
+                </div>
+
               <?php endif; ?>
-              <?php if ($is_hot) : ?><span class="fm-card__badge">HOT</span><?php endif; ?>
+
+              <?php if ($is_hot) : ?>
+                <span class="fm-card__badge">HOT</span>
+              <?php endif; ?>
+
             </a>
           <?php endwhile;
           wp_reset_postdata(); ?>
