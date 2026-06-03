@@ -552,7 +552,7 @@ $share_title = rawurlencode($title);
 
   .sp-fg__card {
     border-radius: var(--radius-md);
-    aspect-ratio: 3/4;
+    aspect-ratio: 2 / 2;
     overflow: hidden;
     background: var(--bg-dark-4);
     border: 1px solid var(--border);
@@ -592,7 +592,7 @@ $share_title = rawurlencode($title);
   .sp-fg__card img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    /*object-fit: cover;*/
     display: block;
   }
 

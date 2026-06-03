@@ -156,7 +156,7 @@
   align-items: center;
   justify-content: center;
   padding: 10px 34px;
-  background: var(--color-funalomax-gradient, var(--color-primary, #ba001d));
+  background: var(--color-primary);
   color: #ffffff !important;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;

@@ -194,19 +194,35 @@ export default function Edit({ attributes, setAttributes }) {
     return (
       <div key={game.id} className="game-card">
         <div className="game-card__image-wrap">
-          {thumb
-            ? <img src={thumb} alt={game.title?.rendered ?? ''} className="game-card__image" />
-            : <div className="game-card__image-placeholder">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <rect x="10" y="3" width="10" height="12" rx="2"/>
-                  <rect x="3" y="8" width="12" height="12" rx="2"/>
-                  <circle cx="6.5" cy="11.5" r="0.7" fill="currentColor"/>
-                  <circle cx="11.5" cy="11.5" r="0.7" fill="currentColor"/>
-                  <circle cx="6.5" cy="16.5" r="0.7" fill="currentColor"/>
-                  <circle cx="11.5" cy="16.5" r="0.7" fill="currentColor"/>
-                </svg>
-              </div>
-          }
+          {thumb ? (
+  <>
+    {/* Blurred Background */}
+    <img
+      src={thumb}
+      alt=""
+      aria-hidden="true"
+      className="game-card__image-bg"
+    />
+
+    {/* Main Image */}
+    <img
+      src={thumb}
+      alt={game.title?.rendered ?? ''}
+      className="game-card__image"
+    />
+  </>
+) : (
+  <div className="game-card__image-placeholder">
+    <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+      <rect x="10" y="3" width="10" height="12" rx="2"/>
+      <rect x="3" y="8" width="12" height="12" rx="2"/>
+      <circle cx="6.5" cy="11.5" r="0.7" fill="currentColor"/>
+      <circle cx="11.5" cy="11.5" r="0.7" fill="currentColor"/>
+      <circle cx="6.5" cy="16.5" r="0.7" fill="currentColor"/>
+      <circle cx="11.5" cy="16.5" r="0.7" fill="currentColor"/>
+    </svg>
+  </div>
+)}
           <div className="game-card__overlay" aria-hidden="true" />
         </div>
       </div>

@@ -316,7 +316,7 @@
   scroll-snap-align: start;
   transition: transform .3s ease, box-shadow .3s ease;
   cursor: pointer;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 2 / 2;
   /*aspect-ratio: 3 / 4;*/
   flex-shrink: 0;
   text-decoration: none;
@@ -330,16 +330,36 @@
 .game-card__image-wrap {
   position: absolute;
   inset: 0;
+  overflow: hidden;
 }
 
-.game-card__image {
+/* Blurred background layer */
+.game-card__image-bg {
+  position: absolute;
+  inset: 0;
+
   width: 100%;
   height: 100%;
-  /* contain = show the whole image, never crop it. Any leftover space
-     (when the image isn't square) shows the card background as a letterbox. */
+
   object-fit: cover;
+
+  filter: blur(20px);
+  transform: scale(1.3);
+
+  opacity: 0.7;
+
+  transition: transform .5s ease;
+}
+
+/* Main image */
+.game-card__image {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  /*object-fit: contain;*/
   object-position: center;
-  transition: transform 0.5s ease;
+  transition: transform .5s ease;
 }
 
 .game-card__image-placeholder {
