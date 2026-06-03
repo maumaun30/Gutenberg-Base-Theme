@@ -2,6 +2,8 @@
 
 /* ============================================================
    GAMES LISTING BLOCK
+   All rules scoped under .wp-block-mytheme-games-listing
+   to prevent conflicts with other blocks (e.g. steps block).
    ============================================================ */
 
 .wp-block-mytheme-games-listing {
@@ -13,7 +15,7 @@
   font-family: 'Montserrat', sans-serif;
 }
 
-.games-listing__glow {
+.wp-block-mytheme-games-listing .games-listing__glow {
   position: absolute;
   top: -8rem;
   right: -8rem;
@@ -27,7 +29,7 @@
   display: none;
 }
 
-.games-listing__container {
+.wp-block-mytheme-games-listing .games-listing__container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.25rem;
@@ -36,7 +38,7 @@
 }
 
 /* ── Category Tabs ── */
-.games-listing__tabs {
+.wp-block-mytheme-games-listing .games-listing__tabs {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,15 +49,16 @@
   flex-wrap: wrap;
 }
 
-.games-listing__tabs::-webkit-scrollbar { display: none; }
+.wp-block-mytheme-games-listing .games-listing__tabs::-webkit-scrollbar {
+  display: none;
+}
 
-.games-listing__tab {
+.wp-block-mytheme-games-listing .games-listing__tab {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.45rem 1.25rem;
   border-radius: 0.5rem;
-  border: 1px solid transparent;
   font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   font-weight: 700;
@@ -70,59 +73,61 @@
   border: none;
 }
 
-.games-listing__tab:hover {
+.wp-block-mytheme-games-listing .games-listing__tab:hover {
   color: #fff;
   background-color: rgba(255, 255, 255, 0.08);
 }
 
-.games-listing__tab.is-active {
+.wp-block-mytheme-games-listing .games-listing__tab.is-active {
   color: #fff;
   background-color: var(--color-primary, #f71dc2);
   border-color: var(--color-primary, #f71dc2);
 }
 
-.games-listing__tab-icon {
+.wp-block-mytheme-games-listing .games-listing__tab-icon {
   width: 25px;
   height: 25px;
   flex-shrink: 0;
 }
 
 /* ── Categories stacked vertically ── */
-.games-listing__categories {
+.wp-block-mytheme-games-listing .games-listing__categories {
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
 }
 
 /* hide a category section when filtered out */
-.games-listing__category.is-hidden {
+.wp-block-mytheme-games-listing .games-listing__category.is-hidden {
   display: none;
 }
 
-.games-listing__category {
+/* ── Single category row — MERGED (was split into two rules before) ── */
+.wp-block-mytheme-games-listing .games-listing__category {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  padding: 0 0 8px 0;
 }
 
-.games-listing__recommended {
+.wp-block-mytheme-games-listing .games-listing__recommended {
   margin-top: 2.5rem;
 }
 
 /* ── Category row header ── */
-.games-listing__cat-header {
+.wp-block-mytheme-games-listing .games-listing__cat-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 0;
 }
 
-.games-listing__cat-header-left {
+.wp-block-mytheme-games-listing .games-listing__cat-header-left {
   display: flex;
   align-items: center;
 }
 
-.games-listing__cat-name {
+.wp-block-mytheme-games-listing .games-listing__cat-name {
   font-family: 'Montserrat', sans-serif !important;
   font-size: 1rem !important;
   font-weight: 800 !important;
@@ -131,13 +136,13 @@
   margin: 0 !important;
 }
 
-.games-listing__cat-header-right {
+.wp-block-mytheme-games-listing .games-listing__cat-header-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.games-listing__view-all-link {
+.wp-block-mytheme-games-listing .games-listing__view-all-link {
   display: inline-flex;
   align-items: center;
   font-family: 'Montserrat', sans-serif;
@@ -150,14 +155,16 @@
   transition: opacity 0.2s;
 }
 
-.games-listing__view-all-link:hover { opacity: 0.7; }
+.wp-block-mytheme-games-listing .games-listing__view-all-link:hover {
+  opacity: 0.7;
+}
 
-.games-listing__nav-btns {
+.wp-block-mytheme-games-listing .games-listing__nav-btns {
   display: flex;
   gap: 0.25rem;
 }
 
-.games-listing__nav-btn {
+.wp-block-mytheme-games-listing .games-listing__nav-btn {
   width: 1.6rem;
   height: 1.6rem;
   border-radius: 0.375rem;
@@ -173,7 +180,7 @@
   border: none;
 }
 
-.games-listing__nav-btn svg {
+.wp-block-mytheme-games-listing .games-listing__nav-btn svg {
   width: 0.5rem;
   height: 0.5rem;
   fill: #000000;
@@ -181,57 +188,43 @@
   transition: fill 0.2s;
 }
 
-.games-listing__nav-btn:hover svg {
+.wp-block-mytheme-games-listing .games-listing__nav-btn:hover svg {
   fill: #ffffff;
 }
 
-.games-listing__nav-btn:hover {
+.wp-block-mytheme-games-listing .games-listing__nav-btn:hover {
   background: var(--color-primary, #f71dc2);
   color: #fff;
   border-color: var(--color-primary, #f71dc2);
 }
 
-/* ── Separator line between header and card row ── */
-.games-listing__cat-divider {
+/* ── Separator line ── */
+.wp-block-mytheme-games-listing .games-listing__cat-divider {
   width: 100%;
   height: 1px;
   background-color: #BA001D;
   margin: 0.75rem 0;
 }
 
-/* ── Scroll wrapper ──
-   overflow-x: auto here — NOT on the grid itself.
-   The negative margin trick is removed; we use clip-path on
-   the category instead so hover-lift isn't cut off.          */
-.games-listing__category {
-  /* allow cards to lift on hover without being clipped */
-  padding: 0 0 8px 0;
-}
-
-.games-listing__scroll-wrap {
+/* ── Scroll wrapper ── */
+.wp-block-mytheme-games-listing .games-listing__scroll-wrap {
   overflow-x: auto;
   overflow-y: visible;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
-  /* Small top padding so translateY(-5px) hover isn't clipped */
   padding-top: 6px;
   margin-top: -6px;
 }
 
-.games-listing__scroll-wrap::-webkit-scrollbar { display: none; }
+.wp-block-mytheme-games-listing .games-listing__scroll-wrap::-webkit-scrollbar {
+  display: none;
+}
 
-/* ── Horizontal scroll grid ──
-   KEY FIXES:
-   1. Removed `width: 100%`      — fought with min-width and collapsed the grid
-   2. Removed `min-width: max-content` — not needed; grid-auto-flow:column
-      already makes the grid as wide as its columns
-   3. grid-auto-columns uses vw-based calc so `100%` never
-      resolves to the clipped scroll-wrap width                */
-.games-listing__grid {
+/* ── Horizontal scroll grid ── */
+.wp-block-mytheme-games-listing .games-listing__grid {
   display: grid;
   grid-auto-flow: column;
-  /* Desktop default: 6 cards visible inside 1280px container with 1.25rem side padding */
   grid-auto-columns: calc((min(1280px, 100vw) - 2.5rem - 5 * 0.625rem) / 6);
   gap: 0.625rem;
   overflow: visible;
@@ -239,40 +232,40 @@
 
 /* ── Responsive card column widths ── */
 @media (max-width: 1279px) {
-  .games-listing__grid {
+  .wp-block-mytheme-games-listing .games-listing__grid {
     grid-auto-columns: calc((100vw - 2.5rem - 4 * 0.625rem) / 5);
   }
-  .games-listing__tabs {
+  .wp-block-mytheme-games-listing .games-listing__tabs {
     gap: 2rem;
   }
 }
 
 @media (max-width: 1023px) {
-  .games-listing__grid {
+  .wp-block-mytheme-games-listing .games-listing__grid {
     grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 4);
   }
-  .games-listing__tab {
+  .wp-block-mytheme-games-listing .games-listing__tab {
     font-size: 12px;
   }
-  .games-listing__tab-icon {
+  .wp-block-mytheme-games-listing .games-listing__tab-icon {
     width: 20px;
     height: 20px;
   }
 }
 
 @media (max-width: 767px) {
-  .games-listing__grid {
+  .wp-block-mytheme-games-listing .games-listing__grid {
     grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3.5);
   }
-  .games-listing__tabs {
+  .wp-block-mytheme-games-listing .games-listing__tabs {
     gap: 5px;
     flex-wrap: nowrap;
   }
-  .games-listing__tab-icon {
+  .wp-block-mytheme-games-listing .games-listing__tab-icon {
     width: 15px;
     height: 15px;
   }
-  .games-listing__tab {
+  .wp-block-mytheme-games-listing .games-listing__tab {
     padding: 0.25rem 0.20rem;
     flex-direction: row;
     gap: 2px;
@@ -280,89 +273,82 @@
 }
 
 @media (max-width: 479px) {
-  .games-listing__grid {
+  .wp-block-mytheme-games-listing .games-listing__grid {
     grid-auto-columns: calc((100vw - 2rem - 3 * 0.625rem) / 3.3);
   }
 }
 
 @media (max-width: 410px) {
-  .games-listing__grid {
+  .wp-block-mytheme-games-listing .games-listing__grid {
     grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 3);
   }
-  .games-listing__tabs {
+  .wp-block-mytheme-games-listing .games-listing__tabs {
     gap: 8px;
   }
-  .games-listing__tab {
+  .wp-block-mytheme-games-listing .games-listing__tab {
     padding: 0.25rem 0.20rem;
-    flex-direction: row; /* was: column — caused icon to stack over text */
+    flex-direction: row;
     gap: 2px;
     font-size: 10px;
   }
 }
 
 @media (max-width: 364px) {
-  .games-listing__tabs {
+  .wp-block-mytheme-games-listing .games-listing__tabs {
     justify-content: flex-start;
   }
 }
 
 /* ── Game card ── */
-.game-card {
+.wp-block-mytheme-games-listing .game-card {
   position: relative;
   overflow: hidden;
   border-radius: 0.625rem;
   background-color: var(--bg-dark-4, #13131a);
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid rgba(255, 255, 255, 0.06);
   scroll-snap-align: start;
   transition: transform .3s ease, box-shadow .3s ease;
   cursor: pointer;
   aspect-ratio: 2 / 2;
-  /*aspect-ratio: 3 / 4;*/
   flex-shrink: 0;
   text-decoration: none;
   display: block;
 }
 
-.game-card:hover {
+.wp-block-mytheme-games-listing .game-card:hover {
   transform: translateY(-5px);
 }
 
-.game-card__image-wrap {
+.wp-block-mytheme-games-listing .game-card__image-wrap {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
 
 /* Blurred background layer */
-.game-card__image-bg {
+.wp-block-mytheme-games-listing .game-card__image-bg {
   position: absolute;
   inset: 0;
-
   width: 100%;
   height: 100%;
-
   object-fit: cover;
-
   filter: blur(20px);
   transform: scale(1.3);
-
   opacity: 0.7;
-
   transition: transform .5s ease;
 }
 
 /* Main image */
-.game-card__image {
+.wp-block-mytheme-games-listing .game-card__image {
   position: relative;
   z-index: 2;
   width: 100%;
   height: 100%;
-  /*object-fit: contain;*/
   object-position: center;
   transition: transform .5s ease;
 }
 
-.game-card__image-placeholder {
+.wp-block-mytheme-games-listing .game-card__image-placeholder {
   width: 100%;
   height: 100%;
   display: flex;
@@ -372,7 +358,13 @@
   color: rgba(255, 255, 255, 0.12);
 }
 
-.game-card__price {
+.wp-block-mytheme-games-listing .game-card__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.wp-block-mytheme-games-listing .game-card__price {
   position: absolute;
   top: 0.45rem;
   right: 0.45rem;
@@ -387,12 +379,10 @@
   z-index: 3;
 }
 
-/* Body — hidden, only price badge remains visible */
-.game-card__body {
+.wp-block-mytheme-games-listing .game-card__body {
   display: none;
 }
 
-/* Glow — removed */
-.game-card__glow {
+.wp-block-mytheme-games-listing .game-card__glow {
   display: none;
 }
