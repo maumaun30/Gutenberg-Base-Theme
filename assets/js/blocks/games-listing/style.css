@@ -71,6 +71,23 @@
   text-decoration: none;
   background: none;
   border: none;
+  background: #1E1E1E;
+  /*-webkit-clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );
+  clip-path: polygon(
+    14px 0,
+    100% 0,
+    100% calc(100% - 14px),
+    calc(100% - 14px) 100%,
+    0 100%,
+    0 14px
+  );*/
 }
 
 .wp-block-mytheme-games-listing .games-listing__tab:hover {
@@ -80,14 +97,28 @@
 
 .wp-block-mytheme-games-listing .games-listing__tab.is-active {
   color: #fff;
-  background-color: var(--color-primary, #f71dc2);
-  border-color: var(--color-primary, #f71dc2);
+  background-color: var(--color-primary);
 }
 
 .wp-block-mytheme-games-listing .games-listing__tab-icon {
   width: 25px;
   height: 25px;
   flex-shrink: 0;
+}
+
+/* Swap default <-> active icon based on tab state.
+   The active icon stays hidden until its tab is active; the default icon is
+   hidden on the active tab only when an active icon actually exists. */
+.wp-block-mytheme-games-listing .games-listing__tab-icon--active {
+  display: none;
+}
+
+.wp-block-mytheme-games-listing .games-listing__tab.is-active .games-listing__tab-icon--active {
+  display: inline-block;
+}
+
+.wp-block-mytheme-games-listing .games-listing__tab.is-active:has(.games-listing__tab-icon--active) .games-listing__tab-icon--default {
+  display: none;
 }
 
 /* ── Categories stacked vertically ── */
@@ -131,7 +162,7 @@
   font-family: 'Montserrat', sans-serif !important;
   font-size: 1rem !important;
   font-weight: 800 !important;
-  color: var(--color-primary, #f71dc2) !important;
+  color: #FFFFFF;
   text-transform: uppercase !important;
   margin: 0 !important;
 }
@@ -150,7 +181,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--color-primary, #f71dc2);
+  color: #FFFFFF;
   text-decoration: none;
   transition: opacity 0.2s;
 }
@@ -258,8 +289,8 @@
     grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3.5);
   }
   .wp-block-mytheme-games-listing .games-listing__tabs {
-    gap: 5px;
     flex-wrap: nowrap;
+    justify-content: start;
   }
   .wp-block-mytheme-games-listing .games-listing__tab-icon {
     width: 15px;
@@ -309,7 +340,7 @@
   scroll-snap-align: start;
   transition: transform .3s ease, box-shadow .3s ease;
   cursor: pointer;
-  aspect-ratio: 2 / 2;
+  aspect-ratio: 111 / 140;
   flex-shrink: 0;
   text-decoration: none;
   display: block;
@@ -346,6 +377,7 @@
   height: 100%;
   object-position: center;
   transition: transform .5s ease;
+  object-fit: cover;
 }
 
 .wp-block-mytheme-games-listing .game-card__image-placeholder {

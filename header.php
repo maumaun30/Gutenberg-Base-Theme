@@ -54,6 +54,7 @@
         <a href="<?php echo esc_url( 'https://funalomax.com/' ); ?>" target="_blank" rel="noopener noreferrer">
           <?php esc_html_e('Login / Register', 'luxe'); ?>
         </a>
+        <svg aria-hidden="true" class="funalo-nav__cta-shape" viewBox="0 0 124 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#_R_mcnuliivb_)"><path d="M124 20.4 L112.4 32 H0 V7 L7 0 H124 V20.4 Z" fill="currentColor"></path><path d="M124 24 V32 H116 L124 24 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="_R_mcnuliivb_"><rect width="124" height="32" fill="white"></rect></clipPath></defs></svg>
       </div>
 
       <!-- Search Icon Button -->
@@ -64,17 +65,18 @@
           <circle cx="11" cy="11" r="8"/>
           <line x1="21" y1="21" x2="16.65" y2="16.65"/>
         </svg>
+        <svg aria-hidden="true" class="funalo-nav__cta-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#_R_ucnuliivb_)"><path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path><path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="_R_ucnuliivb_"><rect width="32" height="32" fill="white"></rect></clipPath></defs></svg>
+      </button>
+
+      <!-- Hamburger (mobile) -->
+      <button class="funalo-nav__hamburger" id="funalo-hamburger"
+              aria-label="Toggle mobile menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
 
     </div>
-
-    <!-- Hamburger (mobile) -->
-    <button class="funalo-nav__hamburger" id="funalo-hamburger"
-            aria-label="Toggle mobile menu" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
 
   </div><!-- /.funalo-nav__inner -->
 

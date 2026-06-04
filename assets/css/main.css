@@ -73,9 +73,6 @@
 .funalo-nav {
   background-color: var(--nav-bg);
   height: 100px;
-  /* Freeze the header so it (and the mobile hamburger) stays visible
-     while scrolling. Sticky keeps it in flow, so no body spacer is needed.
-     z-index sits above page content but below the drawer/search overlays. */
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -246,47 +243,80 @@
 }
 
 /* ── Login/Register CTA ── */
+/* The SVG (.funalo-nav__cta-shape) is the button background; the container is
+   its positioning context and supplies the fill via `color` (fill: currentColor),
+   while the <a> label sits on top of it. */
+.funalo-nav__cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-funalomax-gradient); /* fills the SVG shape */
+  --decoration: #ffffff;                  /* bottom-right accent triangle */
+  isolation: isolate;
+  transition:
+    filter 0.2s ease,
+    transform 0.2s ease;
+}
+
 .funalo-nav__cta a {
+  position: relative;
+  z-index: 1; /* above the shape */
   display: inline-block;
   padding: 11px 26px;
-  border-radius: 6px;
   font-family: "Montserrat", sans-serif;
   font-weight: 800;
   font-size: 13px;
   letter-spacing: 0.08em;
   text-decoration: none;
-  color: #ffffff;
-  background: var(--color-funalomax-gradient);
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  color: #ffffff; /* label color */
   white-space: nowrap;
 }
 
-.funalo-nav__cta a:hover {
-  filter: brightness(1.1);
+.funalo-nav__cta-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.funalo-nav__cta:hover {
+  filter: brightness(1.3);
 }
 
 /* ── Search Icon Button ── */
+/* Same treatment as the CTA: the SVG (.funalo-nav__cta-shape) is the background
+   shape, filled via `color` (fill: currentColor). The magnifying-glass icon sits
+   on top and stays white. */
 .funalo-nav__search-btn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 6px;
-  background: var(--color-funalomax-gradient);
-  color: #ffffff;
+  width: 43px;
+  height: 43px; /* square: matches CTA height + keeps the 32x32 shape's chamfers symmetric */
+  color: var(--color-funalomax-gradient); /* fills the shape */
+  --decoration: #ffffff;                  /* bottom-right accent triangle */
   cursor: pointer;
   flex-shrink: 0;
+  isolation: isolate;
   transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+    filter 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Magnifying-glass icon above the shape, kept white */
+.funalo-nav__search-btn > svg:not(.funalo-nav__cta-shape) {
+  position: relative;
+  z-index: 1;
+  stroke: #ffffff;
 }
 
 .funalo-nav__search-btn:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.3);
 }
 
 /* ── Full-Screen Search Overlay ── */
@@ -632,6 +662,14 @@
   .funalo-nav__hamburger {
     display: flex;
   }
+
+  .funalo-nav {
+    height: 80px;
+  }
+
+  .funalo-nav__inner {
+    height: 80px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -646,8 +684,8 @@
   }
 
   .funalo-nav__search-btn {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
   }
 }
 
@@ -841,12 +879,13 @@ body.funalo-drawer-open {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch; /* nav-pill & trust-col share the same height */
 }
 
 @media (min-width: 1024px) {
   .fnlmx-footer__bottom-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: auto auto; /* both pills hug content */
+    justify-content: space-between;   /* push them to opposite ends */
     gap: 2.5rem;
   }
 }
@@ -854,8 +893,8 @@ body.funalo-drawer-open {
 /* ── Nav pill: Support + Legal side by side inside a dark card ── */
 .fnlmx-footer__nav-pill {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: max-content max-content; /* each section sizes to its links */
+  gap: 3rem;
   background: /*#181528*/ #1e1e1e;
   border-radius: 8px;
   padding: 20px;
@@ -874,9 +913,10 @@ body.funalo-drawer-open {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.875rem;
+  display: grid;
+  grid-template-columns: repeat(2, max-content); /* links flow into 2 columns */
+  column-gap: 2.5rem;
+  row-gap: 0.875rem;
 }
 
 .fnlmx-footer__nav-list li {
@@ -903,6 +943,7 @@ body.funalo-drawer-open {
   border-radius: 8px;
   padding: 20px;
   width: 425px;
+  align-content: center;
 }
 
 .fnlmx-trust-block {
@@ -1011,6 +1052,15 @@ body.funalo-drawer-open {
 
   .fnlmx-footer__solaire {
     border-right: unset;
+  }
+
+  /* Below the desktop layout: even Support/Legal columns, single-column links */
+  .fnlmx-footer__nav-pill {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .fnlmx-footer__nav-list {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1247,18 +1297,18 @@ body.funalo-drawer-open {
 
 .fnlmx-rg-popup__body {
   padding: 1.25rem 1.75rem;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
   flex: 1;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(247, 29, 194, 0.4) transparent;
+  /*scrollbar-width: thin;
+  scrollbar-color: rgba(247, 29, 194, 0.4) transparent;*/
 }
-.fnlmx-rg-popup__body::-webkit-scrollbar {
+/*.fnlmx-rg-popup__body::-webkit-scrollbar {
   width: 4px;
 }
 .fnlmx-rg-popup__body::-webkit-scrollbar-thumb {
   background: rgba(247, 29, 194, 0.4);
   border-radius: 4px;
-}
+}*/
 
 .fnlmx-rg-popup__list,
 .fnlmx-rg-popup__wysiwyg ul,
@@ -1383,7 +1433,6 @@ body.funalo-drawer-open {
   flex: 1;
   padding: 1rem 1rem;
   border: none;
-  border-radius: 0;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   font-size: 0.9375rem;
@@ -1391,7 +1440,7 @@ body.funalo-drawer-open {
   letter-spacing: 0.04em;
   cursor: pointer;
   /* Chamfer the top-left and bottom-right corners */
-  /*-webkit-clip-path: polygon(
+  -webkit-clip-path: polygon(
     14px 0,
     100% 0,
     100% calc(100% - 14px),
@@ -1406,8 +1455,7 @@ body.funalo-drawer-open {
     calc(100% - 14px) 100%,
     0 100%,
     0 14px
-  );*/
-  border-radius: 8px;
+  );
   transition:
     opacity 0.2s ease,
     transform 0.15s ease;

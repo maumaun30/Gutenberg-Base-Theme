@@ -59,8 +59,7 @@
   gap: 16px;
   padding: 28px 20px 24px;
   border-radius: 6px;
-  background-color: rgb(30 30 30 / 50%);/*#0F172A*/
-  border: 1px solid rgb(30 30 30 / 50%);/*#1E293B*/
+  background-color: #1E1E1E;
   cursor: default;
   transition: border-color 0.25s ease, background-color 0.25s ease;
 }
@@ -69,7 +68,6 @@
 .mytheme-wcu__icon-bg {
   width: 240px;
   height: 40px;
-  background-color: #1E1E1E;
   display: flex;
   align-items: center;
   justify-content: center;
