@@ -499,6 +499,8 @@
 @media (max-width: 1023px) {
   .funalo-nav__hamburger {
     display: flex;
+    height: 43px;
+    width: 43px;
   }
 }
 
@@ -718,7 +720,7 @@
     font-size: 10px;
   }
 
-  .funalo-nav__search-btn {
+  .funalo-nav__search-btn, .funalo-nav__hamburger {
     width: 36px;
     height: 36px;
   }
