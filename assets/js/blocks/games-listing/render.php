@@ -122,11 +122,18 @@ if (! empty($category_order)) {
         HOT
       </button>
       <?php foreach ($categories as $cat) :
-        $cat_icon = get_field('fnlmx_game_ctg_icon', 'game_category_' . $cat->term_id);
+        $cat_icon        = get_field('fnlmx_game_ctg_icon', 'game_category_' . $cat->term_id);
+        $cat_icon_active = get_field('fnlmx_game_category_active_icon', 'game_category_' . $cat->term_id);
+        $cat_icon_active = is_array($cat_icon_active) ? ($cat_icon_active['url'] ?? '') : $cat_icon_active;
       ?>
         <button class="games-listing__tab" data-filter="<?php echo esc_attr($cat->slug); ?>">
           <?php if ($cat_icon) : ?>
-            <img src="<?php echo esc_url($cat_icon); ?>" alt="" class="games-listing__tab-icon" loading="lazy">
+            <img src="<?php echo esc_url($cat_icon); ?>" alt=""
+              class="games-listing__tab-icon games-listing__tab-icon--default" loading="lazy">
+          <?php endif; ?>
+          <?php if ($cat_icon_active) : ?>
+            <img src="<?php echo esc_url($cat_icon_active); ?>" alt=""
+              class="games-listing__tab-icon games-listing__tab-icon--active" loading="lazy">
           <?php endif; ?>
           <?php echo esc_html($cat->name); ?>
         </button>

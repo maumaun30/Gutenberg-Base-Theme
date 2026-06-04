@@ -108,6 +108,31 @@ function mytheme_register_blocks()
 add_action('init', 'mytheme_register_blocks');
 
 /**
+ * Cache-bust theme block stylesheets registered via block.json.
+ *
+ * Block "style" files (e.g. assets/js/blocks/<block>/style.css) are enqueued by
+ * register_block_type() with WordPress's own version string (?ver=6.9.4), which
+ * never changes when you edit the CSS. Browsers then cache the file indefinitely
+ * and keep serving a stale copy. Append the file's modification time so every
+ * edit produces a fresh URL.
+ */
+add_filter('style_loader_src', function ($src) {
+    if (strpos($src, '/assets/js/blocks/') === false) {
+        return $src;
+    }
+    $clean = strtok($src, '?');
+    $path  = str_replace(
+        trailingslashit(get_template_directory_uri()),
+        trailingslashit(get_template_directory()),
+        $clean
+    );
+    if (is_file($path)) {
+        $src = add_query_arg('ver', filemtime($path), $clean);
+    }
+    return $src;
+});
+
+/**
  * Enqueue Swiper.js + carousel frontend script.
  *
  * Add this to your theme's functions.php (or a dedicated assets loader file).
