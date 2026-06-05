@@ -115,11 +115,34 @@ if (! empty($category_order)) {
 
     <!-- ── Category Tabs ── -->
     <nav class="games-listing__tabs" aria-label="Game categories">
+      <?php
+      /* ── Helper: angled shape background shared by every tab ── */
+      if (! function_exists('gl_tab_shape')) :
+        function gl_tab_shape($uid)
+        { ?>
+          <svg aria-hidden="true" class="games-listing__tab-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#gl-tab-<?php echo esc_attr($uid); ?>)">
+              <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+              <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+            </g>
+            <defs>
+              <clipPath id="gl-tab-<?php echo esc_attr($uid); ?>">
+                <rect width="148" height="42" fill="white"></rect>
+              </clipPath>
+            </defs>
+          </svg>
+      <?php }
+      endif; ?>
+
       <button class="games-listing__tab is-hot is-active" data-filter="all">
-        <svg class="games-listing__tab-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M13.5 0.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z" />
-        </svg>
-        HOT
+        <?php gl_tab_shape('hot'); ?>
+        <span class="games-listing__tab-content">
+          <img src="<?php echo esc_url(get_theme_file_uri('assets/images/category-template/Latest hot icon.svg')); ?>" alt=""
+            class="games-listing__tab-icon games-listing__tab-icon--default" loading="lazy">
+          <img src="<?php echo esc_url(get_theme_file_uri('assets/images/category-template/Hot active icon.svg')); ?>" alt=""
+            class="games-listing__tab-icon games-listing__tab-icon--active" loading="lazy">
+          HOT
+        </span>
       </button>
       <?php foreach ($categories as $cat) :
         $cat_icon        = get_field('fnlmx_game_ctg_icon', 'game_category_' . $cat->term_id);
@@ -127,15 +150,18 @@ if (! empty($category_order)) {
         $cat_icon_active = is_array($cat_icon_active) ? ($cat_icon_active['url'] ?? '') : $cat_icon_active;
       ?>
         <button class="games-listing__tab" data-filter="<?php echo esc_attr($cat->slug); ?>">
-          <?php if ($cat_icon) : ?>
-            <img src="<?php echo esc_url($cat_icon); ?>" alt=""
-              class="games-listing__tab-icon games-listing__tab-icon--default" loading="lazy">
-          <?php endif; ?>
-          <?php if ($cat_icon_active) : ?>
-            <img src="<?php echo esc_url($cat_icon_active); ?>" alt=""
-              class="games-listing__tab-icon games-listing__tab-icon--active" loading="lazy">
-          <?php endif; ?>
-          <?php echo esc_html($cat->name); ?>
+          <?php gl_tab_shape($cat->slug); ?>
+          <span class="games-listing__tab-content">
+            <?php if ($cat_icon) : ?>
+              <img src="<?php echo esc_url($cat_icon); ?>" alt=""
+                class="games-listing__tab-icon games-listing__tab-icon--default" loading="lazy">
+            <?php endif; ?>
+            <?php if ($cat_icon_active) : ?>
+              <img src="<?php echo esc_url($cat_icon_active); ?>" alt=""
+                class="games-listing__tab-icon games-listing__tab-icon--active" loading="lazy">
+            <?php endif; ?>
+            <?php echo esc_html($cat->name); ?>
+          </span>
         </button>
       <?php endforeach; ?>
     </nav>
@@ -182,7 +208,20 @@ if (! empty($category_order)) {
             <?php if ($show_view_all) : ?>
               <div class="games-listing__cat-header-right">
                 <a href="<?php echo esc_url(is_wp_error($cat_link) ? '#' : $cat_link); ?>"
-                  class="games-listing__view-all-link">ALL</a>
+                  class="games-listing__view-all-link">
+                  <span class="games-listing__view-all-label">ALL</span>
+                  <svg aria-hidden="true" class="games-listing__view-all-shape" viewBox="0 0 48 24" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#gl-allbtn-<?php echo esc_attr($cat->slug); ?>)">
+                      <path d="M48 12.4 L36.4 24 H0 V7 L7 0 H48 V12.4 Z" fill="currentColor"></path>
+                      <path d="M48 16 V24 H40 L48 16 Z" fill="var(--decoration, currentColor)"></path>
+                    </g>
+                    <defs>
+                      <clipPath id="gl-allbtn-<?php echo esc_attr($cat->slug); ?>">
+                        <rect width="48" height="24" fill="white"></rect>
+                      </clipPath>
+                    </defs>
+                  </svg>
+                </a>
                 <?php gl_nav_btns($cat_id, $cat->name); ?>
               </div>
             <?php endif; ?>

@@ -451,13 +451,25 @@ function fnlmx_cta_section() {
                                     $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
                                     $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
                                     $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
+                                    $btn_uid     = uniqid();
+                                    // Angled SVG shape used as the button background.
+                                    $btn_shape = '<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">'
+                                        . '<g clip-path="url(#fnlmx-cta-btn-' . esc_attr( $btn_uid ) . ')">'
+                                        . '<path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>'
+                                        . '<path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>'
+                                        . '</g><defs><clipPath id="fnlmx-cta-btn-' . esc_attr( $btn_uid ) . '">'
+                                        . '<rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>';
                                 ?>
                                     <?php if ( $link ) : ?>
                                         <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $target; ?>>
-                                            <?php echo esc_html( $label ); ?>
+                                            <?php echo $btn_shape; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                            <span class="fnlmx-cta__btn-label"><?php echo esc_html( $label ); ?></span>
                                         </a>
                                     <?php else : ?>
-                                        <span class="<?php echo esc_attr( $btn_class ); ?>"><?php echo esc_html( $label ); ?></span>
+                                        <span class="<?php echo esc_attr( $btn_class ); ?>">
+                                            <?php echo $btn_shape; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                            <span class="fnlmx-cta__btn-label"><?php echo esc_html( $label ); ?></span>
+                                        </span>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </div>

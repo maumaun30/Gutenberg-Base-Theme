@@ -209,17 +209,20 @@ export default function Edit({ attributes, setAttributes }) {
           />
         </div>
 
-        {/* Cards grid */}
+        {/* Carousel preview — static scrollable row (animates on the front end) */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: `repeat(${Math.min(features.length, 4)}, 1fr)`,
+          display: 'flex',
           gap: '16px',
           marginBottom: '32px',
+          overflowX: 'auto',
+          paddingBottom: '8px',
         }}>
           {features.map((feature, index) => (
             <div
               key={index}
               style={{
+                flexShrink: 0,
+                width: '180px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',

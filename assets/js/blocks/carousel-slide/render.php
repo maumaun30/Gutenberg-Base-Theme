@@ -12,6 +12,25 @@ $overlay_opacity      = $attributes['overlayOpacity'] ?? 85;
 
 $overlay_full  = round( $overlay_opacity / 100, 2 );
 $overlay_light = round( $overlay_full * 0.6, 2 );
+
+// Unique suffix so each slide's SVG clipPath ids don't collide on the page.
+$slide_uid = uniqid();
+
+if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
+    function mytheme_carousel_btn_shape( $uid ) { ?>
+      <svg aria-hidden="true" class="mytheme-carousel-slide__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#mytheme-carousel-btn-<?php echo esc_attr( $uid ); ?>)">
+          <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+          <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+        </g>
+        <defs>
+          <clipPath id="mytheme-carousel-btn-<?php echo esc_attr( $uid ); ?>">
+            <rect width="148" height="42" fill="white"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+    <?php }
+}
 ?>
 
 <div <?php echo get_block_wrapper_attributes(['class' => 'swiper-slide mytheme-carousel-slide']); ?>>
@@ -65,7 +84,8 @@ $overlay_light = round( $overlay_full * 0.6, 2 );
               href="<?php echo esc_url( $primary_btn_url ); ?>"
               class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary"
             >
-              <?php echo esc_html( $primary_btn_text ); ?>
+              <?php mytheme_carousel_btn_shape( 'primary-' . $slide_uid ); ?>
+              <span class="mytheme-carousel-slide__btn-label"><?php echo esc_html( $primary_btn_text ); ?></span>
             </a>
           <?php endif; ?>
 
@@ -74,7 +94,8 @@ $overlay_light = round( $overlay_full * 0.6, 2 );
               href="<?php echo esc_url( $secondary_btn_url ); ?>"
               class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--secondary"
             >
-              <?php echo esc_html( $secondary_btn_text ); ?>
+              <?php mytheme_carousel_btn_shape( 'secondary-' . $slide_uid ); ?>
+              <span class="mytheme-carousel-slide__btn-label"><?php echo esc_html( $secondary_btn_text ); ?></span>
             </a>
           <?php endif; ?>
         </div>

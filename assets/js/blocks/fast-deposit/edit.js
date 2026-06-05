@@ -9,7 +9,12 @@ import {
 	TextControl,
 	Button,
 	BaseControl,
+	Flex,
+	FlexItem,
+	FlexBlock,
 } from '@wordpress/components';
+import { useEffect } from '@wordpress/element';
+import { plus, chevronUp, chevronDown, trash } from '@wordpress/icons';
 
 /* ── Reusable image upload row ── */
 function ImageUploadControl( { label, value, onSelect, onRemove, previewHeight = 28 } ) {
@@ -79,6 +84,7 @@ export default function Edit( { attributes, setAttributes } ) {
 		badgeLabel,
 		badgeSubLabel,
 		ctaText,
+		logos = [],
 		gcashLogoUrl,
 		mayaLogoUrl,
 		shieldIconUrl,
@@ -86,6 +92,42 @@ export default function Edit( { attributes, setAttributes } ) {
 	} = attributes;
 
 	const blockProps = useBlockProps( { className: 'fnlmx-fast-deposit-wrap' } );
+
+	/* One-time migration: seed the repeatable list from the legacy
+	   GCash / Maya fields so existing blocks keep their logos. */
+	useEffect( () => {
+		if ( logos.length === 0 && ( gcashLogoUrl || mayaLogoUrl ) ) {
+			const seeded = [];
+			if ( gcashLogoUrl ) seeded.push( { url: gcashLogoUrl, alt: 'GCash' } );
+			if ( mayaLogoUrl ) seeded.push( { url: mayaLogoUrl, alt: 'Maya' } );
+			setAttributes( { logos: seeded } );
+		}
+	}, [] );
+
+	/* ── Repeatable logo helpers ── */
+	const updateLogo = ( index, field, value ) => {
+		const updated = logos.map( ( l, i ) => ( i === index ? { ...l, [ field ]: value } : l ) );
+		setAttributes( { logos: updated } );
+	};
+
+	const MAX_LOGOS = 4;
+
+	const addLogo = () => {
+		if ( logos.length >= MAX_LOGOS ) return;
+		setAttributes( { logos: [ ...logos, { url: '', alt: '' } ] } );
+	};
+
+	const removeLogo = ( index ) => {
+		setAttributes( { logos: logos.filter( ( _, i ) => i !== index ) } );
+	};
+
+	const moveLogo = ( index, dir ) => {
+		const target = index + dir;
+		if ( target < 0 || target >= logos.length ) return;
+		const updated = [ ...logos ];
+		[ updated[ index ], updated[ target ] ] = [ updated[ target ], updated[ index ] ];
+		setAttributes( { logos: updated } );
+	};
 
 	return (
 		<>
@@ -123,24 +165,64 @@ export default function Edit( { attributes, setAttributes } ) {
 						onRemove={ () => setAttributes( { shieldIconUrl: '' } ) }
 					/>
 					<ImageUploadControl
-						label="GCash Logo"
-						value={ gcashLogoUrl }
-						onSelect={ ( url ) => setAttributes( { gcashLogoUrl: url } ) }
-						onRemove={ () => setAttributes( { gcashLogoUrl: '' } ) }
-					/>
-					<ImageUploadControl
-						label="Maya Logo"
-						value={ mayaLogoUrl }
-						onSelect={ ( url ) => setAttributes( { mayaLogoUrl: url } ) }
-						onRemove={ () => setAttributes( { mayaLogoUrl: '' } ) }
-					/>
-					<ImageUploadControl
 						label="Lightning Icon"
 						value={ lightningIconUrl }
 						previewHeight={ 32 }
 						onSelect={ ( url ) => setAttributes( { lightningIconUrl: url } ) }
 						onRemove={ () => setAttributes( { lightningIconUrl: '' } ) }
 					/>
+				</PanelBody>
+
+				{ /* ── Repeatable center logos (max 4) ── */ }
+				<PanelBody title={ `Center Logos (${ logos.length }/${ MAX_LOGOS })` } initialOpen={ true }>
+					{ logos.map( ( logo, index ) => (
+						<div
+							key={ index }
+							style={ { border: '1px solid #444', borderRadius: '4px', padding: '12px', marginBottom: '12px' } }
+						>
+							<Flex align="center" style={ { marginBottom: '8px' } }>
+								<FlexItem>
+									<strong style={ { color: '#aaa', fontSize: '12px' } }>Logo { index + 1 }</strong>
+								</FlexItem>
+								<FlexBlock />
+								<FlexItem>
+									<Button icon={ chevronUp } size="small" disabled={ index === 0 } onClick={ () => moveLogo( index, -1 ) } label="Move up" />
+								</FlexItem>
+								<FlexItem>
+									<Button icon={ chevronDown } size="small" disabled={ index === logos.length - 1 } onClick={ () => moveLogo( index, 1 ) } label="Move down" />
+								</FlexItem>
+								<FlexItem>
+									<Button icon={ trash } size="small" isDestructive onClick={ () => removeLogo( index ) } label="Remove" />
+								</FlexItem>
+							</Flex>
+							<ImageUploadControl
+								label={ `Logo ${ index + 1 }` }
+								value={ logo.url }
+								onSelect={ ( url ) => updateLogo( index, 'url', url ) }
+								onRemove={ () => updateLogo( index, 'url', '' ) }
+							/>
+							<TextControl
+								label="Alt text"
+								value={ logo.alt || '' }
+								onChange={ ( v ) => updateLogo( index, 'alt', v ) }
+								__nextHasNoMarginBottom
+							/>
+						</div>
+					) ) }
+					<Button
+						icon={ plus }
+						variant="secondary"
+						onClick={ addLogo }
+						disabled={ logos.length >= MAX_LOGOS }
+						style={ { width: '100%', justifyContent: 'center', marginTop: '4px' } }
+					>
+						Add Logo
+					</Button>
+					{ logos.length >= MAX_LOGOS && (
+						<p style={ { fontSize: '11px', color: 'rgba(255,255,255,0.4)', margin: '8px 0 0', fontStyle: 'italic' } }>
+							Maximum of { MAX_LOGOS } logos reached.
+						</p>
+					) }
 				</PanelBody>
 
 			</InspectorControls>
@@ -165,15 +247,21 @@ export default function Edit( { attributes, setAttributes } ) {
 
 					<div className="fnlmx-fast-deposit__divider" aria-hidden="true" />
 
-					{ /* Center: logos */ }
+					{ /* Center: logos (repeatable) */ }
 					<div className="fnlmx-fast-deposit__logos">
-						{ gcashLogoUrl
-							? <img src={ gcashLogoUrl } alt="GCash" className="fnlmx-fast-deposit__logo" />
-							: <span className="fnlmx-fast-deposit__logo-placeholder">GCash</span>
-						}
-						{ mayaLogoUrl
-							? <img src={ mayaLogoUrl } alt="Maya" className="fnlmx-fast-deposit__logo" />
-							: <span className="fnlmx-fast-deposit__logo-placeholder fnlmx-fast-deposit__logo-placeholder--maya">maya</span>
+						{ logos.length > 0
+							? logos
+								.slice( 0, MAX_LOGOS )
+								.filter( ( logo ) => logo.url )
+								.map( ( logo, index ) => (
+									<img key={ index } src={ logo.url } alt={ logo.alt || '' } className="fnlmx-fast-deposit__logo" />
+								) )
+							: (
+								<>
+									<span className="fnlmx-fast-deposit__logo-placeholder">GCash</span>
+									<span className="fnlmx-fast-deposit__logo-placeholder fnlmx-fast-deposit__logo-placeholder--maya">maya</span>
+								</>
+							)
 						}
 					</div>
 

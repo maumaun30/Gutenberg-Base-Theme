@@ -115,6 +115,7 @@
 .fnlmx-fast-deposit__logos {
 	display: flex;
 	align-items: center;
+	flex-wrap: nowrap;
 	gap: 28px;
 	flex: 1;
 	justify-content: center;

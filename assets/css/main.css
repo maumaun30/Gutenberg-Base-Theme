@@ -13,8 +13,8 @@
   --color-primary-light: #fb64d6;
   --color-secondary: #d63d4a;
   --color-secondary-hover: #e01a2a;
-  --color-funalomax-gradient: #1E1E1E;
-  --color-nav-active: #FFFFFF;
+  --color-funalomax-gradient: #1e1e1e;
+  --color-nav-active: #ffffff;
   --color-amber-gradient: linear-gradient(90deg, #936000 0%, #e9c349 100%);
 
   /* Background scale */
@@ -54,7 +54,7 @@
   --footer-bg: /*#110F20*/ #000000;
 
   /* ── Nav ── */
-  --nav-bg: #BA041C;
+  --nav-bg: #ba041c;
   --nav-gradient-bg: linear-gradient(
     180deg,
     rgba(0, 0, 0, 0.2) 0%,
@@ -62,7 +62,7 @@
   );
   --nav-border: rgba(247, 29, 194, 0.25);
   --nav-text: #a1a1aa;
-  --nav-text-muted: #FFFFFF;
+  --nav-text-muted: #ffffff;
   --nav-active-underline: var(--color-primary);
   --nav-height: 72px;
 }
@@ -103,9 +103,6 @@
 .funalo-nav__logo .custom-logo {
   height: 52px;
   width: auto;
-  display: block;
-  max-width: 100px;
-  object-fit: contain;
 }
 
 .funalo-nav__logo-text {
@@ -255,7 +252,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-funalomax-gradient); /* fills the SVG shape */
-  --decoration: #ffffff;                  /* bottom-right accent triangle */
+  --decoration: #ffffff; /* bottom-right accent triangle */
   isolation: isolate;
   transition:
     filter 0.2s ease,
@@ -302,7 +299,7 @@
   width: 43px;
   height: 43px; /* square: matches CTA height + keeps the 32x32 shape's chamfers symmetric */
   color: var(--color-funalomax-gradient); /* fills the shape */
-  --decoration: #ffffff;                  /* bottom-right accent triangle */
+  --decoration: #ffffff; /* bottom-right accent triangle */
   cursor: pointer;
   flex-shrink: 0;
   isolation: isolate;
@@ -486,7 +483,7 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  color: #1E1E1E;
+  color: #1e1e1e;
   z-index: 0;
 }
 
@@ -497,6 +494,13 @@
 }
 
 @media (max-width: 1023px) {
+  .funalo-nav__logo img,
+  .funalo-nav__logo .custom-logo {
+    display: block;
+    max-width: 100px;
+    object-fit: contain;
+  }
+
   .funalo-nav__hamburger {
     display: flex;
     height: 43px;
@@ -720,7 +724,8 @@
     font-size: 10px;
   }
 
-  .funalo-nav__search-btn, .funalo-nav__hamburger {
+  .funalo-nav__search-btn,
+  .funalo-nav__hamburger {
     width: 36px;
     height: 36px;
   }
@@ -894,9 +899,6 @@ body.funalo-drawer-open {
 .fnlmx-rg-badge {
   flex-shrink: 0;
   justify-content: center;
-  padding: 0.3rem 2rem 0.3rem;
-  background: /*#181528*/ #1e1e1e;
-  border-radius: 8px;
 }
 .fnlmx-rg-badge:last-child {
   border-right: none;
@@ -922,7 +924,7 @@ body.funalo-drawer-open {
 @media (min-width: 1024px) {
   .fnlmx-footer__bottom-row {
     grid-template-columns: auto auto; /* both pills hug content */
-    justify-content: space-between;   /* push them to opposite ends */
+    justify-content: space-between; /* push them to opposite ends */
     gap: 2.5rem;
   }
 }
@@ -963,7 +965,7 @@ body.funalo-drawer-open {
 .fnlmx-footer__nav-list li a {
   font-size: 16px;
   font-weight: 400;
-  color: #FFFFFF;
+  color: #ffffff;
   text-decoration: none;
   transition: color 0.2s;
   display: inline-block;
@@ -1121,6 +1123,12 @@ body.funalo-drawer-open {
     margin: auto;
   }
 
+  .fnlmx-rg-badge {
+    padding: 0.3rem 2rem 0.3rem;
+    background: #1e1e1e;
+    border-radius: 8px;
+  }
+
   .fnlmx-rg-badge img,
   .custom-logo-link img {
     margin: auto;
@@ -1239,6 +1247,7 @@ body.funalo-drawer-open {
     flex-wrap: wrap;
     justify-content: flex-end;
     flex-direction: row;
+    margin: auto;
   }
 
   .fnlmx-footer__solaire {
@@ -1462,7 +1471,7 @@ body.funalo-drawer-open {
   display: flex;
   gap: 0.75rem;
   padding: 1.25rem 1.75rem 1.5rem;
-  border-top: 1px solid #1E1E1E;
+  border-top: 1px solid #1e1e1e;
   flex-shrink: 0;
 }
 
@@ -1689,47 +1698,64 @@ body.funalo-drawer-open {
   align-items: center;
 }
 
+/* The SVG (.fnlmx-cta__btn-shape) is the button background, filled via `color`
+   (fill: currentColor); .fnlmx-cta__btn-label sits on top. */
 .fnlmx-cta__btn {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 200px;
+  text-decoration: none;
+  cursor: pointer;
+  isolation: isolate;
+  --decoration: #ffffff; /* bottom-right accent triangle */
+  transition: transform 0.2s ease;
+}
+
+.fnlmx-cta__btn-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fnlmx-cta__btn-label {
+  position: relative;
+  z-index: 1; /* above the shape */
   padding: 14px 32px;
   font-size: 0.875rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  border-radius: 4px;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  color: #ffffff; /* label color */
   white-space: nowrap;
 }
 
 .fnlmx-cta__btn:hover {
-  opacity: 0.88;
   transform: translateY(-5px);
 }
 
-/* Primary — solid pink */
-.fnlmx-cta__btn--primary {
-  background: var(--color-primary);
-  color: #ffffff;
-  max-width: 200px;
-}
-
-/* Secondary — white outline */
-.fnlmx-cta__btn--secondary {
-  background-color: transparent;
-  color: #ffffff;
-  border: 1px solid #334155;
-  max-width: 200px;
-}
-
-a.fnlmx-cta__btn--secondary:hover,
 a.fnlmx-cta__btn--primary:hover {
-  color: unset;
+  color: var(--color-primary);
+}
+
+a.fnlmx-cta__btn--secondary:hover {
+  color: var(--color-funalomax-gradient);
+}
+
+/* Primary — solid fill */
+.fnlmx-cta__btn--primary {
+  color: var(--color-primary); /* fills the SVG shape */
+}
+
+/* Secondary — muted fill */
+.fnlmx-cta__btn--secondary {
+  color: #334155; /* fills the SVG shape */
+  --decoration: rgba(255, 255, 255, 0.5);
 }
 
 /* --------------------------------------------------------------------------
