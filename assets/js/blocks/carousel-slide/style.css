@@ -173,42 +173,60 @@
   transform: translateY(0);
 }
 
+/* The SVG (.mytheme-carousel-slide__btn-shape) is the button background, filled via
+   `color` (fill: currentColor); .mytheme-carousel-slide__btn-label sits on top. */
 .mytheme-carousel-slide__btn {
-  display: inline-block;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  text-decoration: none;
+  isolation: isolate;
+  --decoration: #ffffff; /* bottom-right accent triangle */
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.mytheme-carousel-slide__btn-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mytheme-carousel-slide__btn-label {
+  position: relative;
+  z-index: 1; /* above the shape */
   padding: 14px 32px;
-  border-radius: 8px;
   font-weight: 600;
   font-size: 1rem;
   letter-spacing: -1.2px;
-  text-decoration: none;
-  transition: transform 0.2s ease, background-color 0.2s ease;
-}
-
-a.mytheme-carousel-slide__btn:hover {
-  color: unset !important;
+  color: #FFFFFF;
+  text-align: center;
 }
 
 .mytheme-carousel-slide__btn:hover {
   transform: translateY(-5px);
 }
 
+a.mytheme-carousel-slide__btn--primary:hover {
+  color: #BA001D;
+}
+a.mytheme-carousel-slide__btn--secondary:hover {
+  color: rgba(57, 57, 60, 0.6);
+}
+
+
 .mytheme-carousel-slide__btn--primary {
-  background: /*linear-gradient(90deg, #D63D4A 0%, #F71DC2 100%)*/#BA001D;
-  color: #FFFFFF;
-  width: 200px;
-  text-align: center;
+  color: #BA001D; /* fills the SVG shape */
 }
 
 .mytheme-carousel-slide__btn--secondary {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(57, 57, 60, 0.2);
-  color: #fff;
-  width: 200px;
-  text-align: center;
-}
-
-.mytheme-carousel-slide__btn--secondary:hover {
-  transform: translateY(-5px);
+  color: rgba(57, 57, 60, 0.6); /* fills the SVG shape */
+  --decoration: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 767px) {
@@ -228,7 +246,8 @@ a.mytheme-carousel-slide__btn:hover {
     margin: 0 auto;
   }
 
-  .mytheme-carousel-slide__btn--primary, .mytheme-carousel-slide__btn--secondary {
+  .mytheme-carousel-slide__btn--primary .mytheme-carousel-slide__btn-label,
+  .mytheme-carousel-slide__btn--secondary .mytheme-carousel-slide__btn-label {
     font-size: 16px;
   }
 }

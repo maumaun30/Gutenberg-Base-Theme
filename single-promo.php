@@ -550,7 +550,7 @@ if (! empty($fg_term_ids_by_tax)) {
 
   .pr-fg__card {
     border-radius: var(--radius-md);
-    aspect-ratio: 2 / 2;
+    aspect-ratio: 111 / 140;
     overflow: hidden;
     background: var(--bg-dark-4);
     border: 1px solid var(--border);
@@ -566,7 +566,7 @@ if (! empty($fg_term_ids_by_tax)) {
   .pr-fg__card img {
     width: 100%;
     height: 100%;
-    /*object-fit: cover;*/
+    object-fit: cover;
     display: block;
   }
 

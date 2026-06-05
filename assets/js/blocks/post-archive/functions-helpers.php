@@ -58,8 +58,16 @@ if ( ! function_exists( 'fnlmx_archive_card_template' ) ) {
                 <?php if ( $excerpt ) : ?>
                     <p class="fnlmx-archive-card__excerpt"><?php echo esc_html( $excerpt ); ?></p>
                 <?php endif; ?>
+                <?php $btn_uid = uniqid(); ?>
                 <a href="<?php echo esc_url( $link ); ?>" class="fnlmx-archive-card__btn">
-                    <?php esc_html_e( 'Read More', 'mytheme' ); ?>
+                    <svg aria-hidden="true" class="fnlmx-archive-card__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clip-path="url(#fnlmx-archive-btn-<?php echo esc_attr( $btn_uid ); ?>)">
+                            <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+                            <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+                        </g>
+                        <defs><clipPath id="fnlmx-archive-btn-<?php echo esc_attr( $btn_uid ); ?>"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+                    </svg>
+                    <span class="fnlmx-archive-card__btn-label"><?php esc_html_e( 'Read More', 'mytheme' ); ?></span>
                 </a>
             </div>
         </article>

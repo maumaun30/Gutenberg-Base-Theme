@@ -356,56 +356,66 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     gap: .875rem;
   }
 
-  a.sg-btn-play:hover {
-    color: unset;
-  }
-
-  .sg-btn-play {
+  /* The SVG (.sg-btn-shape) is the button background; .sg-btn-label sits on top.
+     Play fills via `color` (currentColor); Demo fills with an SVG gradient. */
+  .sg-btn-play,
+  .sg-btn-demo {
+    position: relative;
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
+    justify-content: center;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: none;
+    isolation: isolate;
+    transition: transform .25s;
+  }
+
+  .sg-btn-shape {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .sg-btn-label {
+    position: relative;
+    z-index: 1; /* above the shape */
     padding: 16px 32px;
-    border-radius: 8px;
-    background: var(--color-primary);
-    color: #fff;
     font-family: 'Montserrat', sans-serif;
     font-size: .95rem;
     font-weight: 600;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all .25s;
+    color: #fff;
     letter-spacing: -0.6px;
     text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .sg-btn-play {
+    color: var(--color-primary); /* fills the SVG shape */
+    --decoration: #ffffff; /* bottom-right accent triangle */
+  }
+
+  .sg-btn-demo {
+    color: #e9c349; /* decoration triangle base; main path uses the gradient */
+    --decoration: #e9c349;
   }
 
   .sg-btn-play:hover {
     transform: translateY(-4px);
-    filter: brightness(1.1);
   }
 
-  .sg-btn-demo {
-    display: inline-flex;
-    align-items: center;
-    gap: .5rem;
-    padding: 16px 32px;
-    border-radius: 8px;
-    background: var(--color-amber-gradient);
-    color: #fff;
-    font-family: 'Montserrat', sans-serif;
-    font-size: .95rem;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all .25s;
-    letter-spacing: -0.6px;
-    text-transform: uppercase;
+  a.sg-btn-play:hover {
+    color: var(--color-primary);
   }
 
   .sg-btn-demo:hover {
     transform: translateY(-2px);
-    filter: brightness(1.08);
   }
 
   /* ── RELATED GRID ── */
@@ -461,7 +471,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-rcard {
     position: relative;
     border-radius: var(--radius-md);
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 111 / 140;
     overflow: hidden;
     background: var(--bg-dark-4);
     border: 1px solid var(--border);
@@ -477,7 +487,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-rcard__img {
     width: 100%;
     height: 100%;
-    /*object-fit: contain;*/
+    object-fit: cover;
     display: block;
     position: relative;
     z-index: 2;
@@ -743,10 +753,14 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
     .sg-btn-play,
     .sg-btn-demo {
-      font-size: 12px;
-      padding: 15px 20px;
       width: 135px;
       justify-content: center;
+    }
+
+    .sg-btn-play .sg-btn-label,
+    .sg-btn-demo .sg-btn-label {
+      font-size: 12px;
+      padding: 15px 20px;
     }
 
     .sg-related-hd span,
@@ -970,12 +984,36 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
         <div class="sg-cta">
           <?php if ($game_url) : ?>
-            <a class="sg-btn-play" href="<?php echo esc_url($game_url); ?>">Play For Real</a>
+            <a class="sg-btn-play" href="<?php echo esc_url($game_url); ?>">
+              <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#sg-btn-play-shape)">
+                  <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+                  <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+                </g>
+                <defs><clipPath id="sg-btn-play-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+              </svg>
+              <span class="sg-btn-label">Play For Real</span>
+            </a>
           <?php endif; ?>
           <?php if ($demo_url) : ?>
             <button class="sg-btn-demo js-open-modal"
               data-url="<?php echo esc_url($demo_url); ?>"
-              data-title="<?php echo esc_attr($title); ?> — Demo">Try Demo</button>
+              data-title="<?php echo esc_attr($title); ?> — Demo">
+              <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#sg-btn-demo-shape)">
+                  <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="url(#sg-btn-demo-grad)"></path>
+                  <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+                </g>
+                <defs>
+                  <linearGradient id="sg-btn-demo-grad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#936000"></stop>
+                    <stop offset="100%" stop-color="#e9c349"></stop>
+                  </linearGradient>
+                  <clipPath id="sg-btn-demo-shape"><rect width="148" height="42" fill="white"></rect></clipPath>
+                </defs>
+              </svg>
+              <span class="sg-btn-label">Try Demo</span>
+            </button>
           <?php endif; ?>
         </div>
       </div>

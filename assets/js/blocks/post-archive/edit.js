@@ -150,7 +150,14 @@ export default function Edit({ attributes, setAttributes }) {
                       <p className="fnlmx-archive-card__excerpt">{excerpt}</p>
                     )}
                     <a href={post.link} className="fnlmx-archive-card__btn">
-                      {__('Read More')}
+                      <svg aria-hidden="true" className="fnlmx-archive-card__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <g clipPath={`url(#fnlmx-archive-btn-${post.id})`}>
+                          <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor" />
+                          <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)" />
+                        </g>
+                        <defs><clipPath id={`fnlmx-archive-btn-${post.id}`}><rect width="148" height="42" fill="white" /></clipPath></defs>
+                      </svg>
+                      <span className="fnlmx-archive-card__btn-label">{__('Read More')}</span>
                     </a>
                   </div>
                 </article>

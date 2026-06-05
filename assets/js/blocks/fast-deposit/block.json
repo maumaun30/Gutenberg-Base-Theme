@@ -21,6 +21,10 @@
       "type": "string",
       "default": "Instant top-ups with GCash and Maya"
     },
+    "logos": {
+      "type": "array",
+      "default": []
+    },
     "gcashLogoUrl": {
       "type": "string",
       "default": ""

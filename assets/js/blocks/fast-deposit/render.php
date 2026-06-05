@@ -6,9 +6,24 @@
 $badge_label        = ! empty( $attributes['badgeLabel'] )       ? $attributes['badgeLabel']       : 'Fast Deposit';
 $badge_sub_label    = ! empty( $attributes['badgeSubLabel'] )    ? $attributes['badgeSubLabel']    : 'With Trusted E-Wallets';
 $cta_text           = ! empty( $attributes['ctaText'] )          ? $attributes['ctaText']          : 'Instant top-ups with GCash and Maya';
+$logos              = ! empty( $attributes['logos'] ) && is_array( $attributes['logos'] ) ? $attributes['logos'] : [];
 $gcash_logo_url     = ! empty( $attributes['gcashLogoUrl'] )     ? $attributes['gcashLogoUrl']     : '';
 $maya_logo_url      = ! empty( $attributes['mayaLogoUrl'] )      ? $attributes['mayaLogoUrl']      : '';
 $shield_icon_url    = ! empty( $attributes['shieldIconUrl'] )    ? $attributes['shieldIconUrl']    : '';
+
+// Back-compat: if no repeatable logos saved yet, fall back to the legacy
+// GCash / Maya single-logo fields so existing blocks keep rendering.
+if ( empty( $logos ) ) {
+	if ( $gcash_logo_url ) {
+		$logos[] = [ 'url' => $gcash_logo_url, 'alt' => 'GCash' ];
+	}
+	if ( $maya_logo_url ) {
+		$logos[] = [ 'url' => $maya_logo_url, 'alt' => 'Maya' ];
+	}
+}
+
+// Center row holds a maximum of 4 logos.
+$logos = array_slice( $logos, 0, 4 );
 $lightning_icon_url = ! empty( $attributes['lightningIconUrl'] ) ? $attributes['lightningIconUrl'] : '';
 
 $wrapper_attributes = get_block_wrapper_attributes( [ 'class' => 'fnlmx-fast-deposit-wrap' ] );
@@ -36,17 +51,20 @@ $wrapper_attributes = get_block_wrapper_attributes( [ 'class' => 'fnlmx-fast-dep
 
 		<div class="fnlmx-fast-deposit__divider" aria-hidden="true"></div>
 
-		<?php /* ── Center: logos ── */ ?>
+		<?php /* ── Center: logos (repeatable) ── */ ?>
 		<div class="fnlmx-fast-deposit__logos">
-			<?php if ( $gcash_logo_url ) : ?>
-				<img src="<?php echo esc_url( $gcash_logo_url ); ?>" alt="GCash" class="fnlmx-fast-deposit__logo" loading="lazy" decoding="async" />
+			<?php if ( ! empty( $logos ) ) : ?>
+				<?php foreach ( $logos as $logo ) :
+					$logo_url = ! empty( $logo['url'] ) ? $logo['url'] : '';
+					$logo_alt = ! empty( $logo['alt'] ) ? $logo['alt'] : '';
+					if ( ! $logo_url ) {
+						continue;
+					}
+				?>
+					<img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php echo esc_attr( $logo_alt ); ?>" class="fnlmx-fast-deposit__logo" loading="lazy" decoding="async" />
+				<?php endforeach; ?>
 			<?php else : ?>
 				<span class="fnlmx-fast-deposit__logo-placeholder">GCash</span>
-			<?php endif; ?>
-
-			<?php if ( $maya_logo_url ) : ?>
-				<img src="<?php echo esc_url( $maya_logo_url ); ?>" alt="Maya" class="fnlmx-fast-deposit__logo" loading="lazy" decoding="async" />
-			<?php else : ?>
 				<span class="fnlmx-fast-deposit__logo-placeholder fnlmx-fast-deposit__logo-placeholder--maya">maya</span>
 			<?php endif; ?>
 		</div>
