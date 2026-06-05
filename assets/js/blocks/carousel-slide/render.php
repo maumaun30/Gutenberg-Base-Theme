@@ -3,6 +3,12 @@ $image_url            = $attributes['imageUrl'] ?? '';
 $image_alt            = $attributes['imageAlt'] ?? '';
 $title                = $attributes['title'] ?? '';
 $title_highlight = $attributes['titleHighlight'] ?? '';
+
+// SEO: only the first slide rendered on the page is an <h1>; every following
+// slide is an <h2>, so the page never has more than one H1.
+global $mytheme_carousel_slide_index;
+$mytheme_carousel_slide_index = isset( $mytheme_carousel_slide_index ) ? $mytheme_carousel_slide_index + 1 : 1;
+$title_tag = ( 1 === $mytheme_carousel_slide_index ) ? 'h1' : 'h2';
 $subtitle             = $attributes['subtitle'] ?? '';
 $primary_btn_text     = $attributes['primaryButtonText'] ?? '';
 $primary_btn_url      = $attributes['primaryButtonUrl'] ?? '#';
@@ -54,7 +60,7 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
     <div class="mytheme-carousel-slide__inner">
 
       <?php if ( $title || $title_highlight ) : ?>
-  <h1 class="mytheme-carousel-slide__title">
+  <<?php echo $title_tag; ?> class="mytheme-carousel-slide__title">
 
     <?php if ( $title ) : ?>
       <span>
@@ -68,7 +74,7 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
       </span>
     <?php endif; ?>
 
-  </h1>
+  </<?php echo $title_tag; ?>>
 <?php endif; ?>
 
       <?php if ( $subtitle ) : ?>

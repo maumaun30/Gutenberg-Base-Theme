@@ -12,8 +12,9 @@ import {
   RangeControl,
   ResponsiveWrapper,
 } from '@wordpress/components';
+import { useSelect } from '@wordpress/data';
 
-export default function Edit({ attributes, setAttributes }) {
+export default function Edit({ attributes, setAttributes, clientId }) {
   const {
     imageUrl,
     imageId,
@@ -27,6 +28,14 @@ export default function Edit({ attributes, setAttributes }) {
     secondaryButtonUrl,
     overlayOpacity,
   } = attributes;
+
+  // SEO: the first slide is an <h1>, every following slide an <h2>.
+  // Capitalized so JSX treats it as the element type.
+  const isFirstSlide = useSelect(
+    (select) => select('core/block-editor').getBlockIndex(clientId) === 0,
+    [clientId]
+  );
+  const TitleTag = isFirstSlide ? 'h1' : 'h2';
 
   const overlayStyle = {
     background: `linear-gradient(to right, rgba(10, 10, 11, ${overlayOpacity / 100}), rgba(10, 10, 11, ${(overlayOpacity / 100) * 0.6}))`,
@@ -135,7 +144,7 @@ export default function Edit({ attributes, setAttributes }) {
         {/* Content */}
         <div className="carousel-slide-editor__content">
           <div className="carousel-slide-editor__inner">
-            <h1 className="carousel-slide-editor__title">
+            <TitleTag className="carousel-slide-editor__title">
   <RichText
     tagName="span"
     value={title}
@@ -155,7 +164,7 @@ export default function Edit({ attributes, setAttributes }) {
       allowedFormats={[]}
     />
   </span>
-</h1>
+</TitleTag>
             <RichText
               tagName="p"
               className="carousel-slide-editor__subtitle"
