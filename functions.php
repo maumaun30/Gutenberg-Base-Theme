@@ -713,6 +713,69 @@ add_filter( 'nav_menu_css_class', function ( $classes, $item ) {
     return array_unique( $classes );
 }, 10, 2 );
 
+/**
+ * On a single 'promo' page, mark the parent "Promos" menu item as current.
+ * WordPress doesn't auto-highlight a CPT archive (or its Page/custom-link) on a
+ * CPT single, so match the menu item URL against the known Promos destinations.
+ */
+add_filter( 'nav_menu_css_class', function ( $classes, $item ) {
+    if ( ! is_singular( 'promo' ) ) {
+        return $classes;
+    }
+
+    // URLs the "Promos" menu item could point at (archive, Page, or custom link).
+    $targets = array_filter( [
+        get_post_type_archive_link( 'promo' ),
+        home_url( '/promos/' ),
+    ] );
+
+    $item_path = trailingslashit( (string) wp_parse_url( $item->url, PHP_URL_PATH ) );
+
+    foreach ( $targets as $target ) {
+        $target_path = trailingslashit( (string) wp_parse_url( $target, PHP_URL_PATH ) );
+        if ( strlen( $item_path ) > 1 && $item_path === $target_path ) {
+            $classes[] = 'current-menu-item';
+            $classes[] = 'current_page_item';
+            $classes[] = 'current-page-ancestor';
+            break;
+        }
+    }
+
+    return array_unique( $classes );
+}, 10, 2 );
+
+/**
+ * On a single blog post (single.php), mark the parent "Blogs" menu item as
+ * current. Mirrors the promo handling above and matches the menu item URL
+ * against the configured posts page or the /blog/ link.
+ */
+add_filter( 'nav_menu_css_class', function ( $classes, $item ) {
+    if ( ! is_singular( 'post' ) ) {
+        return $classes;
+    }
+
+    // URLs the "Blogs" menu item could point at (posts page, Page, or custom link).
+    $posts_page = (int) get_option( 'page_for_posts' );
+    $targets = array_filter( [
+        $posts_page ? get_permalink( $posts_page ) : '',
+        home_url( '/blogs/' ),
+    ] );
+
+    $item_path = trailingslashit( (string) wp_parse_url( $item->url, PHP_URL_PATH ) );
+
+    foreach ( $targets as $target ) {
+        $target_path = trailingslashit( (string) wp_parse_url( $target, PHP_URL_PATH ) );
+        if ( strlen( $item_path ) > 1 && $item_path === $target_path ) {
+            $classes[] = 'current-menu-item';
+            $classes[] = 'current_page_item';
+            $classes[] = 'current-page-ancestor';
+            break;
+        }
+    }
+
+    return array_unique( $classes );
+}, 10, 2 );
+
 // Post Archive Block helpers (AJAX handler + card template + asset enqueue)
 require_once get_template_directory() . '/assets/js/blocks/post-archive/functions-helpers.php';
 

@@ -57,9 +57,9 @@
 }
 
 @media (max-width: 599px) {
-  .wp-block-mytheme-steps .mytheme-steps__grid {
+  /*.wp-block-mytheme-steps .mytheme-steps__grid {
     grid-template-columns: 1fr !important;
-  }
+  }*/
 
   .wp-block-mytheme-steps .mytheme-steps__card {
     border-top: unset !important;
@@ -177,4 +177,31 @@
   font-weight: 400;
   color: rgba(255, 255, 255, 0.6);
   margin: 0;
+}
+
+@media (max-width: 499px) {
+
+  .wp-block-mytheme-steps .mytheme-steps__number {
+    width: 35px;
+    height: 35px;
+    font-size: 12px;
+  }
+
+  .wp-block-mytheme-steps .mytheme-steps__card {
+    padding: 20px 15px;
+  }
+
+  .wp-block-mytheme-steps .mytheme-steps__icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .wp-block-mytheme-steps .mytheme-steps__icon img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .wp-block-mytheme-steps .mytheme-steps__card-title, .mytheme-steps__card-desc {
+    font-size: 12px;
+  }
 }
