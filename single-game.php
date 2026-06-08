@@ -107,11 +107,15 @@ if ($primary_cat) {
 }
 
 $related_label = 'Similar';
+$square_cards  = false; // Slot & E-Games use square (1/1) tiles; others keep 111/140
 if ($primary_cat) {
   $cat_anc  = get_ancestors($primary_cat->term_id, 'game_category', 'taxonomy');
   $top_id   = ! empty($cat_anc) ? end($cat_anc) : $primary_cat->term_id;
   $top_term = get_term($top_id, 'game_category');
-  if ($top_term && ! is_wp_error($top_term)) $related_label = $top_term->name;
+  if ($top_term && ! is_wp_error($top_term)) {
+    $related_label = $top_term->name;
+    $square_cards  = in_array($top_term->slug, ['slot', 'e-game'], true);
+  }
 }
 
 /* About / Rules visibility */
@@ -219,12 +223,18 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     flex-shrink: 0;
     align-self: center;
     width: 230px;
-    height: 230px;
+    aspect-ratio: 111 / 140;
+  }
+
+  /* Square thumbnail for Slot & E-Games */
+  .sg-thumb-wrap--square {
+    aspect-ratio: 1 / 1;
   }
 
   .sg-thumb {
-    width: 230px;
-    height: 230px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
     border-radius: var(--radius-md);
     display: block;
     box-shadow: 0 24px 60px rgba(0, 0, 0, .7), 0 0 0 1px var(--border-strong);
@@ -232,7 +242,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
   .sg-thumb-fallback {
     width: 100%;
-    aspect-ratio: 1;
+    height: 100%;
     border-radius: var(--radius-md);
     background: linear-gradient(135deg, var(--bg-dark-4), #42424f);
     display: flex;
@@ -478,6 +488,11 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     text-decoration: none;
     display: block;
     transition: transform .35s, box-shadow .35s, border-color .35s;
+  }
+
+  /* Square tiles for Slot & E-Games categories */
+  .sg-grid--square .sg-rcard {
+    aspect-ratio: 1 / 1;
   }
 
   .sg-rcard:hover {
@@ -734,12 +749,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   @media(max-width:600px) {
     .sg-thumb-wrap {
       width: 180px;
-      height: 180px;
-    }
-
-    .sg-thumb {
-      width: 180px;
-      height: 180px;
     }
 
     .sg-title {
@@ -947,7 +956,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   <section class="sg-hero">
     <div class="sg-hero__inner">
 
-      <div class="sg-thumb-wrap">
+      <div class="sg-thumb-wrap<?php echo $square_cards ? ' sg-thumb-wrap--square' : ''; ?>">
         <?php if ($thumb_lg) : ?>
           <img src="<?php echo esc_url($thumb_lg); ?>" alt="<?php echo esc_attr($title); ?>" class="sg-thumb">
         <?php else : ?>
@@ -1030,7 +1039,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
           <a href="<?php echo esc_url(get_term_link($primary_cat)); ?>" class="sg-viewall">View All →</a>
         <?php endif; ?>
       </div>
-      <div class="sg-grid">
+      <div class="sg-grid<?php echo $square_cards ? ' sg-grid--square' : ''; ?>">
         <?php foreach ($related_games as $rg) : ?>
           <a href="<?php echo esc_url($rg['permalink']); ?>" class="sg-rcard">
     <?php if ($rg['thumb']) : ?>

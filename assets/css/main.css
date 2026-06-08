@@ -72,7 +72,7 @@
 /* ── Base Nav Shell ── */
 .funalo-nav {
   background-color: var(--nav-bg);
-  height: 100px;
+  height: 90px;
   position: -webkit-sticky;
   position: sticky;
   top: 0;
@@ -88,7 +88,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 32px;
-  height: 100px;
+  height: 90px;
 }
 
 /* ── Logo ── */
@@ -808,7 +808,7 @@ body.funalo-drawer-open {
 .fnlmx-footer__container {
   max-width: 80rem;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  padding: 2rem;
 }
 
 /* ── Divider ────────────────────────────────────────────────────── */
@@ -830,7 +830,7 @@ body.funalo-drawer-open {
 /* ================================================================ */
 .fnlmx-footer__top-row {
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
   gap: 2rem;
   flex-wrap: wrap;
@@ -939,7 +939,7 @@ body.funalo-drawer-open {
 .fnlmx-footer__nav-pill {
   display: grid;
   grid-template-columns: max-content max-content; /* each section sizes to its links */
-  gap: 3rem;
+  gap: 6rem;
   background: /*#181528*/ #1e1e1e;
   border-radius: 8px;
   padding: 20px;
@@ -1036,7 +1036,6 @@ body.funalo-drawer-open {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
-  margin: auto;
 }
 
 .fnlmx-social-icon {
@@ -1082,7 +1081,7 @@ body.funalo-drawer-open {
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.35);
   margin: 0;
-  line-height: 1.8;
+  line-height: 1;
   letter-spacing: 0.02em;
 }
 
@@ -1812,7 +1811,7 @@ a.fnlmx-cta__btn--secondary:hover {
   }
 
   .fnlmx-cta__buttons {
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 12px;
     justify-content: center;

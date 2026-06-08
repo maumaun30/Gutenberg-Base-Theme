@@ -17,12 +17,6 @@ if (! function_exists('gl_game_card')) :
         <?php if ($thumb) : ?>
 
           <img src="<?php echo esc_url($thumb); ?>"
-            alt=""
-            aria-hidden="true"
-            class="game-card__image-bg"
-            loading="lazy" />
-
-          <img src="<?php echo esc_url($thumb); ?>"
             alt="<?php echo esc_attr($title_attr); ?>"
             class="game-card__image"
             loading="lazy" />
@@ -181,16 +175,26 @@ if (! empty($category_order)) {
           is_wp_error($child_ids) ? [] : $child_ids
         );
 
+        // Category tiles only show games tagged "Hot" (game-tag: hot). The
+        // Recommended Games row below has its own tag and is queried separately.
         $games = new WP_Query([
           'post_type'      => 'game',
           'posts_per_page' => $posts_per_category,
           'post_status'    => 'publish',
-          'tax_query'      => [[
-            'taxonomy'         => 'game_category',
-            'field'            => 'term_id',
-            'terms'            => $all_term_ids,
-            'include_children' => false,
-          ]],
+          'tax_query'      => [
+            'relation' => 'AND',
+            [
+              'taxonomy'         => 'game_category',
+              'field'            => 'term_id',
+              'terms'            => $all_term_ids,
+              'include_children' => false,
+            ],
+            [
+              'taxonomy' => 'game-tag',
+              'field'    => 'slug',
+              'terms'    => 'hot',
+            ],
+          ],
         ]);
 
         if (! $games->have_posts()) continue;

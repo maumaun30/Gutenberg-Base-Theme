@@ -15,6 +15,13 @@ $term_desc      = $current_term->description;
 $parent_term_id = $current_term->parent;
 $ancestors      = array_reverse(get_ancestors($term_id, 'game_category', 'taxonomy'));
 
+/* Root parent category drives the card aspect ratio: Slot & E-Games use square
+   (1/1) tiles, everything else keeps the default 111/140. */
+$root_term_id = $ancestors[0] ?? $term_id;
+$root_term    = get_term($root_term_id, 'game_category');
+$root_slug    = ($root_term && ! is_wp_error($root_term)) ? $root_term->slug : '';
+$square_cards = in_array($root_slug, ['slot', 'e-game'], true);
+
 /* Total game count (this term + descendants) */
 $total_q = new WP_Query([
   'post_type'      => 'game',
@@ -217,6 +224,11 @@ set_query_var('game_count',     $game_count);
     transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
   }
 
+  /* Square tiles for Slot & E-Games categories */
+  .fm-grid--square .fm-card {
+    aspect-ratio: 1 / 1;
+  }
+
   .fm-card:hover {
     transform: translateY(-4px);
   }
@@ -262,9 +274,11 @@ set_query_var('game_count',     $game_count);
     position: absolute;
     top: 13px;
     left: 13px;
+    z-index: 3;
+    /* above .fm-card__img (z-index 2), otherwise the image paints over it */
     padding: 4px 10px;
     border-radius: 4px;
-    background: var(--fm-hot);
+    background: var(--color-primary);
     color: #fff;
     font-size: 10px;
     font-weight: 700;
@@ -619,12 +633,12 @@ set_query_var('game_count',     $game_count);
   <section class="fm-games">
     <div class="fm-container">
       <?php if ($grid_q->have_posts()) : ?>
-        <div class="fm-grid">
+        <div class="fm-grid<?php echo $square_cards ? ' fm-grid--square' : ''; ?>">
           <?php $i = 0;
           while ($grid_q->have_posts()) : $grid_q->the_post();
             $i++;
             $thumb  = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
-            $is_hot = function_exists('get_field') ? (bool) get_field('is_hot') : false;
+            $is_hot = has_term('hot', 'game-tag', get_the_ID());
           ?>
             <a href="<?php the_permalink(); ?>" class="fm-card" aria-label="<?php the_title_attribute(); ?>">
 

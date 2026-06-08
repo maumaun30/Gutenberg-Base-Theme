@@ -72,6 +72,17 @@ function mytheme_enqueue_assets()
             false
         );
     }
+
+    $attribution_js = get_theme_file_path('/assets/js/attribution.js');
+    if (file_exists($attribution_js)) {
+        wp_enqueue_script(
+            'mytheme-attribution',
+            get_theme_file_uri('/assets/js/attribution.js'),
+            [],
+            filemtime($attribution_js),
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'mytheme_enqueue_assets');
 

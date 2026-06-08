@@ -179,7 +179,7 @@ function fnlmx_img_alt( $img, $fallback = '' ) {
     <div class="fnlmx-footer__copyright">
       <p class="fnlmx-footer__copy">
         Copyright &copy; <?php echo esc_html( date('Y') ); ?>
-        <?php bloginfo('name'); ?><br>
+        <?php bloginfo('name'); ?>.
         <?php esc_html_e( 'All Rights Reserved.', 'luxe' ); ?>
       </p>
     </div>
