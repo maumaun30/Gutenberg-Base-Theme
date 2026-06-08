@@ -278,6 +278,7 @@
 
     .fnlmx-fast-deposit__title {
         font-size: 12px;
+		text-align: left;
     }
 }
 
@@ -309,7 +310,8 @@
 	}
 
 	.fnlmx-fast-deposit__cta-text {
-		max-width: 135px;
+		max-width: 160px;
+		text-align: left;
 	}
 }
 

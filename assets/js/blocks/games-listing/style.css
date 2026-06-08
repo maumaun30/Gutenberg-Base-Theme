@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 5rem;
+  gap: 2rem;
   margin-bottom: 2.5rem;
   overflow-x: auto;
   scrollbar-width: none;
@@ -386,6 +386,12 @@
   display: block;
 }
 
+/* Square cards for Slot and E-Games rows; Perya/Casino keep the default 111/140 */
+.wp-block-mytheme-games-listing .games-listing__category[data-category="slot"] .game-card,
+.wp-block-mytheme-games-listing .games-listing__category[data-category="e-game"] .game-card {
+  aspect-ratio: 1 / 1;
+}
+
 .wp-block-mytheme-games-listing .game-card:hover {
   transform: translateY(-5px);
 }
@@ -394,19 +400,6 @@
   position: absolute;
   inset: 0;
   overflow: hidden;
-}
-
-/* Blurred background layer */
-.wp-block-mytheme-games-listing .game-card__image-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: blur(20px);
-  transform: scale(1.3);
-  opacity: 0.7;
-  transition: transform .5s ease;
 }
 
 /* Main image */
