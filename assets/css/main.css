@@ -172,7 +172,6 @@
 
 .funalo-nav__primary li.current-page-ancestor > a {
   color: var(--color-nav-active);
-  font-weight: 800;
 }
 
 /* ── Dropdown ── */
@@ -251,12 +250,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  height: 43px; /* match the search button height */
   color: var(--color-funalomax-gradient); /* fills the SVG shape */
   --decoration: #ffffff; /* bottom-right accent triangle */
   isolation: isolate;
   transition:
     filter 0.2s ease,
     transform 0.2s ease;
+  height: 43px;
 }
 
 .funalo-nav__cta a {
@@ -705,11 +706,11 @@
   }
 
   .funalo-nav {
-    height: 70px;
+    height: 60px;
   }
 
   .funalo-nav__inner {
-    height: 70px;
+    height: 60px;
   }
 }
 
@@ -717,6 +718,10 @@
   .funalo-nav__inner {
     gap: 12px;
     padding: 0 16px;
+  }
+
+  .funalo-nav__cta {
+    height: 36px;
   }
 
   .funalo-nav__cta a {
@@ -880,6 +885,7 @@ body.funalo-drawer-open {
   height: 72px;
   flex-shrink: 0;
   border-right: 1px solid hsla(0, 0%, 100%, 0.12);
+  padding: 20px;
 }
 .fnlmx-footer__solaire img {
   width: auto;
@@ -1135,7 +1141,7 @@ body.funalo-drawer-open {
   }
 
   .fnlmx-footer__container {
-    padding: 2.5rem 1.25rem;
+    padding: 1rem 1.25rem;
   }
 
   /* Stack brand above pills */
@@ -1693,7 +1699,7 @@ body.funalo-drawer-open {
    -------------------------------------------------------------------------- */
 .fnlmx-cta__buttons {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 16px;
   align-items: center;
 }
@@ -1809,11 +1815,16 @@ a.fnlmx-cta__btn--secondary:hover {
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    justify-content: center;
   }
 
   .fnlmx-cta__btn {
     width: 100%;
-    max-width: 300px;
+    max-width: 150px;
+  }
+
+  .fnlmx-cta__btn-label {
+    font-size: 12px;
   }
 
   /* Bottom — CTA image */

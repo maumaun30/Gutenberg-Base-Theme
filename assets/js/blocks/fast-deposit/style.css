@@ -305,6 +305,7 @@
 		flex-wrap: wrap;
 		text-align: center;
 		width: 100%;
+		flex-direction: row-reverse;
 	}
 
 	.fnlmx-fast-deposit__cta-text {

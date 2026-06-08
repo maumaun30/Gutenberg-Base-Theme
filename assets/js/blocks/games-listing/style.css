@@ -192,6 +192,7 @@
   isolation: isolate;
   text-decoration: none;
   transition: filter 0.2s ease;
+  height: 1.7rem;
 }
 
 .wp-block-mytheme-games-listing .games-listing__view-all-label {
@@ -227,8 +228,8 @@
 }
 
 .wp-block-mytheme-games-listing .games-listing__nav-btn {
-  width: 1.6rem;
-  height: 1.6rem;
+  width: 1.7rem;
+  height: 1.7rem;
   background: #FFFFFF;
   color: #000000;
   display: flex;
@@ -319,9 +320,9 @@
 }
 
 @media (max-width: 767px) {
-  .wp-block-mytheme-games-listing .games-listing__grid {
+  /*.wp-block-mytheme-games-listing .games-listing__grid {
     grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3.5);
-  }
+  }*/
   .wp-block-mytheme-games-listing .games-listing__tabs {
     flex-wrap: nowrap;
     justify-content: start;
@@ -340,14 +341,14 @@
 
 @media (max-width: 479px) {
   .wp-block-mytheme-games-listing .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2rem - 3 * 0.625rem) / 3.3);
+    grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3);
+    /*grid-template-columns: repeat(3, minmax(0px, 1fr));
+    gap: calc(0.25rem * 2);*/
+
   }
 }
 
 @media (max-width: 410px) {
-  .wp-block-mytheme-games-listing .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 3);
-  }
   .wp-block-mytheme-games-listing .games-listing__tabs {
     gap: 8px;
   }
@@ -360,6 +361,10 @@
 }
 
 @media (max-width: 364px) {
+  .wp-block-mytheme-games-listing .games-listing__grid {
+    grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 2);
+  }
+
   .wp-block-mytheme-games-listing .games-listing__tabs {
     justify-content: flex-start;
   }

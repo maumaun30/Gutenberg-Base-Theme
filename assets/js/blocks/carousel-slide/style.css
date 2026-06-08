@@ -159,7 +159,7 @@
 .mytheme-carousel-slide__buttons {
   display: flex;
   gap: 16px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   opacity: 0;
   transform: translateY(30px);
   transition: opacity 0.6s ease 0.6s, transform 0.6s ease 0.6s;
@@ -232,11 +232,12 @@ a.mytheme-carousel-slide__btn--secondary:hover {
 @media (max-width: 767px) {
   .mytheme-carousel-slide__title {
     text-align: center;
-    font-size: 42px;
+    font-size: 40px;
   }
 
   .mytheme-carousel-slide__subtitle {
     text-align: center;
+    font-size: 14px;
   }
 
   .mytheme-carousel-slide__buttons {
@@ -246,8 +247,12 @@ a.mytheme-carousel-slide__btn--secondary:hover {
     margin: 0 auto;
   }
 
-  .mytheme-carousel-slide__btn--primary .mytheme-carousel-slide__btn-label,
-  .mytheme-carousel-slide__btn--secondary .mytheme-carousel-slide__btn-label {
-    font-size: 16px;
+  .mytheme-carousel-slide__btn {
+    width: 150px;
+  }
+
+  .mytheme-carousel-slide__btn-label {
+    font-size: 12px;
+    padding: 15px 25px;
   }
 }
