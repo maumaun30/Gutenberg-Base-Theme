@@ -887,7 +887,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-modal__iframe-wrap {
     position: relative;
     width: 100%;
-    padding-bottom: 56.25%;
   }
 
   .sg-modal__iframe-wrap iframe {
@@ -1150,11 +1149,10 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <span>Loading game…</span>
       </div>
       <?php
-        if ($game_code) {
-          echo do_shortcode('[st8_game game="' . esc_attr($game_code) . '" fun_mode="true"]');
-        } else {
-          echo 'No Game Found.';
-        }
+        $device = wp_is_mobile() ? 'MOBILE' : 'DESKTOP';
+        echo $game_code
+          ? do_shortcode('[st8_game game="' . esc_attr($game_code) . '" fun_mode="true" device="' . $device . '"]')
+          : 'No Game Found.';
       ?>
     </div>
   </div>
