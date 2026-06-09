@@ -8,12 +8,15 @@ $recommended_per_page = (int) ($attributes['recommendedPerPage']  ?? 12);
 
 /* ── Helper: render a single game card ── */
 if (! function_exists('gl_game_card')) :
-  function gl_game_card($button_url, $thumb, $title_attr, $price)
+  function gl_game_card($button_url, $thumb, $title_attr, $price, $has_demo = false)
   { ?>
     <a href="<?php echo esc_url($button_url); ?>"
       class="game-card"
       title="<?php echo esc_attr($title_attr); ?>">
       <div class="game-card__image-wrap">
+        <?php if ($has_demo) : ?>
+          <span class="game-card__badge">DEMO</span>
+        <?php endif; ?>
         <?php if ($thumb) : ?>
 
           <img src="<?php echo esc_url($thumb); ?>"
@@ -240,7 +243,8 @@ if (! empty($category_order)) {
                   get_post_meta(get_the_ID(), 'game_button_url', true) ?: get_permalink(),
                   get_the_post_thumbnail_url(get_the_ID(), 'large'),
                   get_the_title(),
-                  get_post_meta(get_the_ID(), 'game_price', true)
+                  get_post_meta(get_the_ID(), 'game_price', true),
+                  (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true)
                 );
               endwhile;
               wp_reset_postdata(); ?>
@@ -286,7 +290,8 @@ if (! empty($category_order)) {
                     get_post_meta(get_the_ID(), 'game_button_url', true) ?: get_permalink(),
                     get_the_post_thumbnail_url(get_the_ID(), 'large'),
                     get_the_title(),
-                    get_post_meta(get_the_ID(), 'game_price', true)
+                    get_post_meta(get_the_ID(), 'game_price', true),
+                    (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true)
                   );
                 endwhile;
                 wp_reset_postdata(); ?>
