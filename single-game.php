@@ -883,7 +883,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   }
 
   .sg-modal__close:hover {
-    transform: scale(1.08);
     opacity: .85;
   }
 
