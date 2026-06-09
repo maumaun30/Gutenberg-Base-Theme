@@ -31,7 +31,6 @@ function gc_acf($key, $id)
 }
 
 $game_url   = gc_acf('game_url',                    $post_id);
-$demo_url   = gc_acf('demo_url',                    $post_id);
 $hero_desc  = gc_acf('fnlmx_game_short_description', $post_id);
 $game_rules = gc_acf('fnlmx_game_rules',             $post_id);
 $game_code = get_field('fnlmx_game_code', $post_id);
@@ -1007,7 +1006,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
           <?php endif; ?>
           <?php if ($game_code) : ?>
             <button class="sg-btn-demo js-open-modal"
-              data-url="<?php echo esc_url($game_code); ?>"
               data-title="<?php echo esc_attr($title); ?> — Demo">
               <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#sg-btn-demo-shape)">
@@ -1151,16 +1149,13 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <div class="sg-spinner"></div>
         <span>Loading game…</span>
       </div>
-      <!-- <iframe id="sg-modal-iframe" src="" allowfullscreen allow="autoplay; fullscreen" title="Game"></iframe> -->
-       <?php
-        $game_code = get_field('fnlmx_game_code');
-        if($game_code){
-         echo do_shortcode('[st8_game game="'.$game_code.'" fun_mode="true"]'); 
+      <?php
+        if ($game_code) {
+          echo do_shortcode('[st8_game game="' . esc_attr($game_code) . '" fun_mode="true"]');
+        } else {
+          echo 'No Game Found.';
         }
-        else {
-          echo "No Game Found.";
-        }
-       ?>
+      ?>
     </div>
   </div>
 </div>
@@ -1170,43 +1165,54 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   (function() {
     'use strict';
 
-    /* Modal */
+    /* Modal — the game is embedded via the [st8_game] shortcode inside the modal */
     var modal = document.getElementById('sg-modal');
-    var modalIframe = document.getElementById('sg-modal-iframe');
     var modalTitle = document.getElementById('sg-modal-title');
     var modalLoad = document.getElementById('sg-modal-loading');
     var modalClose = document.getElementById('sg-modal-close');
 
-    function openModal(url, title) {
-      modalTitle.textContent = title;
-      modalIframe.src = '';
-      modalLoad.style.display = 'flex';
-      modal.classList.add('is-open');
-      document.body.style.overflow = 'hidden';
-      modalIframe.onload = function() {
-        modalLoad.style.display = 'none';
-      };
-      modalIframe.src = url;
-    }
+    if (modal) {
+      var gameFrame = modal.querySelector('.sg-modal__iframe-wrap iframe');
 
-    function closeModal() {
-      modal.classList.remove('is-open');
-      modalIframe.src = '';
-      document.body.style.overflow = '';
-    }
+      function hideLoading() {
+        if (modalLoad) modalLoad.style.display = 'none';
+      }
 
-    document.querySelectorAll('.js-open-modal').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        openModal(this.dataset.url, this.dataset.title);
+      // The embedded game loads in the background on page load. Hide the
+      // spinner once its iframe is ready; if there's no iframe, hide it too.
+      if (gameFrame) {
+        gameFrame.addEventListener('load', hideLoading);
+      } else {
+        hideLoading();
+      }
+
+      function openModal(title) {
+        if (modalTitle) modalTitle.textContent = title;
+        modal.classList.add('is-open');
+        document.body.style.overflow = 'hidden';
+        // By the time the user opens the modal the game has usually finished
+        // loading, so clear the spinner as a fallback.
+        hideLoading();
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        document.body.style.overflow = '';
+      }
+
+      document.querySelectorAll('.js-open-modal').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          openModal(this.dataset.title);
+        });
       });
-    });
-    if (modalClose) modalClose.addEventListener('click', closeModal);
-    modal.addEventListener('click', function(e) {
-      if (e.target === modal) closeModal();
-    });
-    document.addEventListener('keydown', function(e) {
-      if (e.key === 'Escape') closeModal();
-    });
+      if (modalClose) modalClose.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+      });
+    }
 
     /* Read More toggle — animates at the same speed in both directions
        by always transitioning between two explicit px values               */
