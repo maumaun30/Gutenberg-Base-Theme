@@ -35,21 +35,13 @@ $hero_desc  = gc_acf('fnlmx_game_short_description', $post_id);
 $game_rules = gc_acf('fnlmx_game_rules',             $post_id);
 $game_code = get_field('fnlmx_game_code', $post_id);
 
-/* Demo embed — desktop opens it in a modal, mobile opens it in a new tab.
-   wp_is_mobile() reads the User-Agent server-side. */
-$is_mobile  = wp_is_mobile();
-$device     = $is_mobile ? 'MOBILE' : 'DESKTOP';
+/* Demo embed. Desktop opens it in the modal; mobile opens the game's iframe URL
+   in a new tab (handled client-side — see the modal script below).
+   wp_is_mobile() reads the User-Agent server-side just to set the shortcode device. */
+$device     = wp_is_mobile() ? 'MOBILE' : 'DESKTOP';
 $game_embed = $game_code
   ? do_shortcode('[st8_game game="' . esc_attr($game_code) . '" fun_mode="true" device="' . $device . '"]')
   : '';
-
-/* On mobile, pull the launch URL out of the embed so the button can open it in
-   a new tab (and we skip rendering the heavy iframe in the page). */
-$demo_url = '';
-if ($is_mobile && $game_embed && preg_match('/<iframe[^>]+src=["\']([^"\']+)["\']/i', $game_embed, $m)) {
-  $demo_url = $m[1];
-}
-$demo_new_tab = $is_mobile && $demo_url;
 
 /* Stats — build array only for non-empty fields */
 $fnlmx_rtp        = gc_acf('fnlmx_rtp',        $post_id);
@@ -1021,8 +1013,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
           <?php endif; ?>
           <?php if ($game_code) : ?>
             <button class="sg-btn-demo js-open-modal"
-              data-title="<?php echo esc_attr($title); ?> — Demo"
-              <?php if ($demo_new_tab) : ?>data-demo-url="<?php echo esc_url($demo_url); ?>"<?php endif; ?>>
+              data-title="<?php echo esc_attr($title); ?> — Demo">
               <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#sg-btn-demo-shape)">
                   <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="url(#sg-btn-demo-grad)"></path>
@@ -1165,12 +1156,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <div class="sg-spinner"></div>
         <span>Loading game…</span>
       </div>
-      <?php
-        // Mobile opens the demo in a new tab, so only embed the game here for the modal.
-        if (! $demo_new_tab) {
-          echo $game_embed ?: 'No Game Found.';
-        }
-      ?>
+      <?php echo $game_embed ?: 'No Game Found.'; ?>
     </div>
   </div>
 </div>
@@ -1188,6 +1174,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
     if (modal) {
       var gameFrame = modal.querySelector('.sg-modal__iframe-wrap iframe');
+      var isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
       function hideLoading() {
         if (modalLoad) modalLoad.style.display = 'none';
@@ -1217,10 +1204,14 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
       document.querySelectorAll('.js-open-modal').forEach(function(btn) {
         btn.addEventListener('click', function() {
-          // On mobile the demo opens in a new tab instead of the modal.
-          if (this.dataset.demoUrl) {
-            window.open(this.dataset.demoUrl, '_blank', 'noopener');
-            return;
+          // On mobile, open the game in a new tab instead of the cramped modal.
+          if (isMobile) {
+            var frame = modal.querySelector('.sg-modal__iframe-wrap iframe');
+            var src = frame ? frame.src : '';
+            if (src && src !== 'about:blank') {
+              window.open(src, '_blank', 'noopener');
+              return;
+            }
           }
           openModal(this.dataset.title);
         });
