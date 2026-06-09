@@ -807,3 +807,92 @@ function mytheme_enqueue_hero_slider() {
     );
 }
 add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_hero_slider' );
+
+/* ──────────────────────────────────────────────────────────────
+   Game Category archive — "Load More" support
+   Shared card template (used by taxonomy-game_category.php + AJAX)
+   ────────────────────────────────────────────────────────────── */
+if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
+    function fnlmx_game_card_template( int $post_id ): void {
+        $thumb  = get_the_post_thumbnail_url( $post_id, 'medium_large' );
+        $title  = get_the_title( $post_id );
+        $is_hot = has_term( 'hot', 'game-tag', $post_id );
+        ?>
+        <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="fm-card" aria-label="<?php echo esc_attr( $title ); ?>">
+
+            <?php if ( $thumb ) : ?>
+
+                <div
+                    class="fm-card__blur"
+                    style="background-image:url('<?php echo esc_url( $thumb ); ?>');">
+                </div>
+
+                <img
+                    src="<?php echo esc_url( $thumb ); ?>"
+                    alt="<?php echo esc_attr( $title ); ?>"
+                    class="fm-card__img"
+                    loading="lazy">
+
+            <?php else : ?>
+
+                <div class="fm-card__fallback">
+                    <?php echo esc_html( mb_substr( $title, 0, 1 ) ); ?>
+                </div>
+
+            <?php endif; ?>
+
+            <?php if ( $is_hot ) : ?>
+                <span class="fm-card__badge">HOT</span>
+            <?php endif; ?>
+
+        </a>
+        <?php
+    }
+}
+
+if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
+    function fnlmx_ajax_load_more_games(): void {
+        check_ajax_referer( 'fnlmx_load_more', 'nonce' );
+
+        $term_id = absint( $_POST['term_id'] ?? 0 );
+        $page    = max( 1, (int) ( $_POST['page'] ?? 2 ) );
+
+        if ( ! $term_id ) {
+            wp_send_json_error( [ 'message' => 'Missing term' ], 400 );
+        }
+
+        $query = new WP_Query( [
+            'post_type'      => 'game',
+            'post_status'    => 'publish',
+            'tax_query'      => [ [
+                'taxonomy'         => 'game_category',
+                'field'            => 'term_id',
+                'terms'            => $term_id,
+                'include_children' => true,
+            ] ],
+            'posts_per_page' => 12,
+            'paged'          => $page,
+            'orderby'        => 'date',
+            'order'          => 'DESC',
+        ] );
+
+        if ( ! $query->have_posts() ) {
+            wp_send_json_success( [ 'html' => '', 'has_more' => false ] );
+        }
+
+        ob_start();
+        while ( $query->have_posts() ) {
+            $query->the_post();
+            fnlmx_game_card_template( get_the_ID() );
+        }
+        wp_reset_postdata();
+        $html = ob_get_clean();
+
+        $has_more = $page < (int) $query->max_num_pages;
+
+        wp_send_json_success( compact( 'html', 'has_more' ) );
+    }
+
+    add_action( 'wp_ajax_fnlmx_load_more_games',        'fnlmx_ajax_load_more_games' );
+    add_action( 'wp_ajax_nopriv_fnlmx_load_more_games', 'fnlmx_ajax_load_more_games' );
+}

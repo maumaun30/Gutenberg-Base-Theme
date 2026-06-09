@@ -179,7 +179,7 @@ if (! empty($category_order)) {
         // Recommended Games row below has its own tag and is queried separately.
         $games = new WP_Query([
           'post_type'      => 'game',
-          'posts_per_page' => $posts_per_category,
+          'posts_per_page' => $posts_per_category > 0 ? $posts_per_category : -1,
           'post_status'    => 'publish',
           'tax_query'      => [
             'relation' => 'AND',

@@ -145,7 +145,7 @@ export default function Edit({ attributes, setAttributes }) {
     Promise.all(
       activeCats.map((cat) =>
         apiFetch({
-          path: `/wp/v2/game?game_category=${cat.id}&per_page=${postsPerCategory}&_fields=id,title,meta,_links&_embed=1`,
+          path: `/wp/v2/game?game_category=${cat.id}&per_page=${postsPerCategory > 0 ? postsPerCategory : 100}&_fields=id,title,meta,_links&_embed=1`,
         }).then((games) => ({ cat, games }))
       )
     )
@@ -249,7 +249,8 @@ export default function Edit({ attributes, setAttributes }) {
             label="Games per category"
             value={postsPerCategory}
             onChange={(v) => setAttributes({ postsPerCategory: v })}
-            min={1} max={12}
+            min={0} max={48}
+            help="Set to 0 to show all games (no limit)."
           />
           <ToggleControl
             label='Show "View All" button'
