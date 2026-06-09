@@ -34,6 +34,7 @@ $game_url   = gc_acf('game_url',                    $post_id);
 $demo_url   = gc_acf('demo_url',                    $post_id);
 $hero_desc  = gc_acf('fnlmx_game_short_description', $post_id);
 $game_rules = gc_acf('fnlmx_game_rules',             $post_id);
+$game_code = get_field('fnlmx_game_code', $post_id);
 
 /* Stats — build array only for non-empty fields */
 $fnlmx_rtp        = gc_acf('fnlmx_rtp',        $post_id);
@@ -1004,9 +1005,9 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
               <span class="sg-btn-label">Play For Real</span>
             </a>
           <?php endif; ?>
-          <?php if ($demo_url) : ?>
+          <?php if ($game_code) : ?>
             <button class="sg-btn-demo js-open-modal"
-              data-url="<?php echo esc_url($demo_url); ?>"
+              data-url="<?php echo esc_url($game_code); ?>"
               data-title="<?php echo esc_attr($title); ?> — Demo">
               <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#sg-btn-demo-shape)">
@@ -1150,7 +1151,16 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <div class="sg-spinner"></div>
         <span>Loading game…</span>
       </div>
-      <iframe id="sg-modal-iframe" src="" allowfullscreen allow="autoplay; fullscreen" title="Game"></iframe>
+      <!-- <iframe id="sg-modal-iframe" src="" allowfullscreen allow="autoplay; fullscreen" title="Game"></iframe> -->
+       <?php
+        $game_code = get_field('fnlmx_game_code');
+        if($game_code){
+         echo do_shortcode('[st8_game game="'.$game_code.'" fun_mode="true"]'); 
+        }
+        else {
+          echo "No Game Found.";
+        }
+       ?>
     </div>
   </div>
 </div>
