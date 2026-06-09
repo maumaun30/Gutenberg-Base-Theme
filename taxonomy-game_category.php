@@ -20,7 +20,7 @@ $ancestors      = array_reverse(get_ancestors($term_id, 'game_category', 'taxono
 $root_term_id = $ancestors[0] ?? $term_id;
 $root_term    = get_term($root_term_id, 'game_category');
 $root_slug    = ($root_term && ! is_wp_error($root_term)) ? $root_term->slug : '';
-$square_cards = in_array($root_slug, ['slot', 'e-game'], true);
+$square_cards = in_array($root_slug, ['slot', 'e-games'], true);
 
 /* Total game count (this term + descendants) */
 $total_q = new WP_Query([
@@ -305,7 +305,8 @@ set_query_var('game_count',     $game_count);
     margin-top: 48px;
   }
 
-  .fm-viewall a {
+  .fm-viewall a,
+  .fm-viewall .fm-loadmore {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -314,18 +315,29 @@ set_query_var('game_count',     $game_count);
     padding: 0 24px;
     border-radius: 6px;
     border: 2px solid var(--fm-pink);
+    background: transparent;
     color: #fff;
+    font-family: inherit;
     font-size: 20px;
     font-weight: 500;
     letter-spacing: .02em;
     text-decoration: none;
     text-transform: uppercase;
-    transition: background .25s, color .25s;
+    cursor: pointer;
+    transition: background .25s, color .25s, opacity .25s;
   }
 
-  .fm-viewall a:hover {
+  .fm-viewall a:hover,
+  .fm-viewall .fm-loadmore:hover {
     background: var(--fm-pink);
     color: #000;
+  }
+
+  .fm-viewall .fm-loadmore[disabled] {
+    opacity: .6;
+    cursor: default;
+    background: transparent;
+    color: #fff;
   }
 
   /* WHY / QUICK GUIDE */
@@ -634,49 +646,23 @@ set_query_var('game_count',     $game_count);
     <div class="fm-container">
       <?php if ($grid_q->have_posts()) : ?>
         <div class="fm-grid<?php echo $square_cards ? ' fm-grid--square' : ''; ?>">
-          <?php $i = 0;
-          while ($grid_q->have_posts()) : $grid_q->the_post();
-            $i++;
-            $thumb  = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
-            $is_hot = has_term('hot', 'game-tag', get_the_ID());
-          ?>
-            <a href="<?php the_permalink(); ?>" class="fm-card" aria-label="<?php the_title_attribute(); ?>">
-
-              <?php if ($thumb) : ?>
-
-                <div
-                  class="fm-card__blur"
-                  style="background-image:url('<?php echo esc_url($thumb); ?>');">
-                </div>
-
-                <img
-                  src="<?php echo esc_url($thumb); ?>"
-                  alt="<?php the_title_attribute(); ?>"
-                  class="fm-card__img"
-                  loading="lazy">
-
-              <?php else : ?>
-
-                <div class="fm-card__fallback">
-                  <?php echo esc_html(mb_substr(get_the_title(), 0, 1)); ?>
-                </div>
-
-              <?php endif; ?>
-
-              <?php if ($is_hot) : ?>
-                <span class="fm-card__badge">HOT</span>
-              <?php endif; ?>
-
-            </a>
-          <?php endwhile;
+          <?php while ($grid_q->have_posts()) : $grid_q->the_post();
+            fnlmx_game_card_template(get_the_ID());
+          endwhile;
           wp_reset_postdata(); ?>
         </div>
 
-        <?php if ($game_count > 12) :
-          $archive_link = get_post_type_archive_link('game');
-        ?>
+        <?php if ($game_count > 12) : ?>
           <div class="fm-viewall">
-            <a href="<?php echo esc_url($archive_link ?: '#'); ?>">View All <?php echo esc_html($term_name); ?> Games</a>
+            <button
+              type="button"
+              class="fm-loadmore"
+              data-term="<?php echo esc_attr($term_id); ?>"
+              data-page="1"
+              data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+              data-nonce="<?php echo esc_attr(wp_create_nonce('fnlmx_load_more')); ?>">
+              Load More <?php echo esc_html($term_name); ?> Games
+            </button>
           </div>
         <?php endif; ?>
       <?php else : ?>
@@ -790,6 +776,51 @@ set_query_var('game_count',     $game_count);
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Load More games
+    const loadMoreBtn = document.querySelector('.fm-loadmore');
+    if (loadMoreBtn) {
+      const grid = document.querySelector('.fm-games .fm-grid');
+      const original = loadMoreBtn.textContent.trim();
+
+      loadMoreBtn.addEventListener('click', async () => {
+        const nextPage = parseInt(loadMoreBtn.dataset.page, 10) + 1;
+
+        loadMoreBtn.disabled = true;
+        loadMoreBtn.textContent = 'Loading…';
+
+        const body = new URLSearchParams({
+          action: 'fnlmx_load_more_games',
+          nonce: loadMoreBtn.dataset.nonce,
+          term_id: loadMoreBtn.dataset.term,
+          page: nextPage,
+        });
+
+        try {
+          const res = await fetch(loadMoreBtn.dataset.ajax, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: body.toString(),
+          });
+          const json = await res.json();
+
+          if (json.success && json.data.html) {
+            grid.insertAdjacentHTML('beforeend', json.data.html);
+            loadMoreBtn.dataset.page = nextPage;
+          }
+
+          if (!json.success || !json.data.has_more) {
+            loadMoreBtn.closest('.fm-viewall').remove();
+          } else {
+            loadMoreBtn.disabled = false;
+            loadMoreBtn.textContent = original;
+          }
+        } catch (err) {
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.textContent = original;
+        }
+      });
+    }
+
     document.querySelectorAll('.fm-faq').forEach(faq => {
       const items = faq.querySelectorAll('details');
 

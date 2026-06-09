@@ -388,7 +388,7 @@
 
 /* Square cards for Slot and E-Games rows; Perya/Casino keep the default 111/140 */
 .wp-block-mytheme-games-listing .games-listing__category[data-category="slot"] .game-card,
-.wp-block-mytheme-games-listing .games-listing__category[data-category="e-game"] .game-card {
+.wp-block-mytheme-games-listing .games-listing__category[data-category="e-games"] .game-card {
   aspect-ratio: 1 / 1;
 }
 
