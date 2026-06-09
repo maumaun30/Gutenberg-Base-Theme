@@ -872,24 +872,24 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-modal__close {
     width: 2rem;
     height: 2rem;
-    border-radius: 50%;
+    padding: 0;
     cursor: pointer;
-    background: var(--bg-dark-4);
-    border: 1px solid var(--border);
+    background: transparent;
+    border: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: rgba(255, 255, 255, .7);
+    transition: transform .15s ease, opacity .15s ease;
   }
 
   .sg-modal__close:hover {
-    background: var(--color-primary);
-    color: #000;
+    transform: scale(1.08);
+    opacity: .85;
   }
 
   .sg-modal__close svg {
-    width: .875rem;
-    height: .875rem;
+    width: 1.75rem;
+    height: 1.75rem;
   }
 
   .sg-modal__iframe-wrap {
@@ -1144,11 +1144,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     <div class="sg-modal__topbar">
       <h2 class="sg-modal__game-name" id="sg-modal-title"></h2>
       <button class="sg-modal__close" id="sg-modal-close" aria-label="Close">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="18" y1="6" x2="6" y2="18" />
-          <line x1="6" y1="6" x2="18" y2="18" />
-        </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="none" viewBox="0 0 24 24" class="size-6" aria-hidden="true"><path fill="#BA001D" d="M0 0h12v24H0zM12 0h12v12H12z"></path><path fill="#424242" d="M24 18v6h-6z"></path><path fill="#BA001D" d="M24 24h-.001v-8.571L15.428 24H12V12h12z"></path><g fill="#fff" filter="url(#close-button_svg__a)"><path d="M11.892 11.057v.002l1.02 1.02v-.001l3.908 3.907-.418.418-.418.418L12 12.836 8.015 16.82l-.836-.836L11.163 12 7.178 8.016l.837-.837zM16.403 7.597l.418.419-3.21 3.207-.836-.836 3.21-3.208z"></path></g><defs><filter id="close-button_svg__a" width="16.714" height="16.714" x="3.964" y="3.964" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood><feColorMatrix in="SourceAlpha" result="hardAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0"></feColorMatrix><feOffset dx="0.321" dy="0.321"></feOffset><feGaussianBlur stdDeviation="0.321"></feGaussianBlur><feComposite in2="hardAlpha" operator="out"></feComposite><feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.2 0"></feColorMatrix><feBlend in2="BackgroundImageFix" result="effect1_dropShadow_264_5500"></feBlend><feBlend in="SourceGraphic" in2="effect1_dropShadow_264_5500" result="shape"></feBlend></filter></defs></svg>
       </button>
     </div>
     <div class="sg-modal__iframe-wrap">

@@ -320,9 +320,15 @@
 }
 
 @media (max-width: 767px) {
-  /*.wp-block-mytheme-games-listing .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3.5);
-  }*/
+  /* Tighter side padding + tighter gap so 3 tiles fill the width and look bigger. */
+  .wp-block-mytheme-games-listing .games-listing__container {
+    padding: 0 0.75rem;
+  }
+  .wp-block-mytheme-games-listing .games-listing__grid {
+    gap: 0.5rem;
+    /* Exactly 3 columns filling the available width (minus the 2 inner gaps). */
+    grid-auto-columns: calc((100% - 2 * 0.5rem) / 3);
+  }
   .wp-block-mytheme-games-listing .games-listing__tabs {
     flex-wrap: nowrap;
     justify-content: start;
@@ -341,10 +347,7 @@
 
 @media (max-width: 479px) {
   .wp-block-mytheme-games-listing .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2.5rem - 3 * 0.625rem) / 3);
-    /*grid-template-columns: repeat(3, minmax(0px, 1fr));
-    gap: calc(0.25rem * 2);*/
-
+    grid-auto-columns: calc((100% - 2 * 0.5rem) / 3);
   }
 }
 
@@ -362,7 +365,7 @@
 
 @media (max-width: 364px) {
   .wp-block-mytheme-games-listing .games-listing__grid {
-    grid-auto-columns: calc((100vw - 2rem - 2 * 0.625rem) / 2);
+    grid-auto-columns: calc((100% - 1 * 0.5rem) / 2);
   }
 
   .wp-block-mytheme-games-listing .games-listing__tabs {
@@ -373,6 +376,8 @@
 /* ── Game card ── */
 .wp-block-mytheme-games-listing .game-card {
   position: relative;
+  /* Query container so overlays (badge/price) scale with the tile width. */
+  container-type: inline-size;
   overflow: hidden;
   border-radius: 0.625rem;
   background-color: var(--bg-dark-4, #13131a);
@@ -429,19 +434,32 @@
   z-index: 1;
 }
 
-.wp-block-mytheme-games-listing .game-card__price {
+/* Overlay pills scale with the tile width (cqi = % of the card's inline size),
+   clamped so they stay readable on tiny tiles and tidy on large ones. */
+.wp-block-mytheme-games-listing .game-card__price,
+.wp-block-mytheme-games-listing .game-card__badge {
   position: absolute;
-  top: 0.45rem;
-  right: 0.45rem;
-  padding: 0.18rem 0.45rem;
-  border-radius: 0.3rem;
-  font-size: 0.6rem;
+  top: clamp(0.25rem, 4cqi, 0.5rem);
+  padding: clamp(0.1rem, 1.6cqi, 0.2rem) clamp(0.25rem, 4cqi, 0.5rem);
+  border-radius: clamp(0.2rem, 2.5cqi, 0.3rem);
+  font-size: clamp(0.5rem, 6cqi, 0.7rem);
   font-weight: 800;
   font-family: 'Montserrat', sans-serif;
   letter-spacing: 0.04em;
-  background: linear-gradient(135deg, var(--color-primary, #f71dc2), var(--color-secondary, #a020f0));
+  line-height: 1.2;
   color: #fff;
   z-index: 3;
+}
+
+.wp-block-mytheme-games-listing .game-card__price {
+  right: clamp(0.25rem, 4cqi, 0.5rem);
+  background: linear-gradient(135deg, var(--color-primary, #f71dc2), var(--color-secondary, #a020f0));
+}
+
+.wp-block-mytheme-games-listing .game-card__badge {
+  left: clamp(0.25rem, 4cqi, 0.5rem);
+  font-weight: 700;
+  background: var(--color-primary);
 }
 
 .wp-block-mytheme-games-listing .game-card__body {
