@@ -210,6 +210,21 @@ set_query_var('game_count',     $game_count);
     .fm-faq-title {
       text-align: center;
     }
+
+    /* Smaller Load More button on mobile */
+    .fm-loadmore__label {
+      font-size: 10px;
+      padding: 10px 20px;
+    }
+
+    /* Smaller HOT badge on mobile */
+    .fm-card__badge {
+      top: 8px;
+      left: 8px;
+      padding: 2px 7px;
+      font-size: 8px;
+      line-height: 12px;
+    }
   }
 
   .fm-card {
@@ -305,39 +320,55 @@ set_query_var('game_count',     $game_count);
     margin-top: 48px;
   }
 
-  .fm-viewall a,
+  /* The SVG (.fm-loadmore__shape) is the button background, filled via `color`
+     (fill: currentColor); .fm-loadmore__label sits on top. */
   .fm-viewall .fm-loadmore {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 306px;
-    height: 59px;
-    padding: 0 24px;
-    border-radius: 6px;
-    border: 2px solid var(--fm-pink);
-    background: transparent;
-    color: #fff;
+    border: none;
+    background: none;
+    padding: 0;
+    color: var(--color-primary); /* fills the SVG shape */
+    --decoration: #ffffff; /* bottom-right accent triangle */
     font-family: inherit;
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: .02em;
     text-decoration: none;
-    text-transform: uppercase;
     cursor: pointer;
-    transition: background .25s, color .25s, opacity .25s;
+    isolation: isolate;
+    transition: transform .2s ease, opacity .25s;
   }
 
-  .fm-viewall a:hover,
+  .fm-loadmore__shape {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .fm-loadmore__label {
+    position: relative;
+    z-index: 1; /* above the shape */
+    padding: 16px 32px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+  }
+
   .fm-viewall .fm-loadmore:hover {
-    background: var(--fm-pink);
-    color: #000;
+    transform: translateY(-5px);
   }
 
   .fm-viewall .fm-loadmore[disabled] {
     opacity: .6;
     cursor: default;
-    background: transparent;
-    color: #fff;
+    transform: none;
   }
 
   /* WHY / QUICK GUIDE */
@@ -661,7 +692,14 @@ set_query_var('game_count',     $game_count);
               data-page="1"
               data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
               data-nonce="<?php echo esc_attr(wp_create_nonce('fnlmx_load_more')); ?>">
-              Load More <?php echo esc_html($term_name); ?> Games
+              <svg aria-hidden="true" class="fm-loadmore__shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#fm-loadmore-shape)">
+                  <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+                  <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+                </g>
+                <defs><clipPath id="fm-loadmore-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+              </svg>
+              <span class="fm-loadmore__label">Load More <?php echo esc_html($term_name); ?> Games</span>
             </button>
           </div>
         <?php endif; ?>
@@ -780,13 +818,14 @@ set_query_var('game_count',     $game_count);
     const loadMoreBtn = document.querySelector('.fm-loadmore');
     if (loadMoreBtn) {
       const grid = document.querySelector('.fm-games .fm-grid');
-      const original = loadMoreBtn.textContent.trim();
+      const label = loadMoreBtn.querySelector('.fm-loadmore__label') || loadMoreBtn;
+      const original = label.textContent.trim();
 
       loadMoreBtn.addEventListener('click', async () => {
         const nextPage = parseInt(loadMoreBtn.dataset.page, 10) + 1;
 
         loadMoreBtn.disabled = true;
-        loadMoreBtn.textContent = 'Loading…';
+        label.textContent = 'Loading…';
 
         const body = new URLSearchParams({
           action: 'fnlmx_load_more_games',
@@ -812,11 +851,11 @@ set_query_var('game_count',     $game_count);
             loadMoreBtn.closest('.fm-viewall').remove();
           } else {
             loadMoreBtn.disabled = false;
-            loadMoreBtn.textContent = original;
+            label.textContent = original;
           }
         } catch (err) {
           loadMoreBtn.disabled = false;
-          loadMoreBtn.textContent = original;
+          label.textContent = original;
         }
       });
     }
