@@ -736,6 +736,31 @@
   }
 }
 
+/* ── Very small phones: keep the header from overflowing ── */
+@media (max-width: 360px) {
+  .funalo-nav__inner {
+    gap: 8px;
+    padding: 0 10px;
+  }
+
+  .funalo-nav__logo img,
+  .funalo-nav__logo .custom-logo {
+    max-width: 78px;
+  }
+
+  .funalo-nav__cta a {
+    padding: 7px 10px;
+    font-size: 9px;
+    letter-spacing: 0.04em;
+  }
+
+  .funalo-nav__search-btn,
+  .funalo-nav__hamburger {
+    width: 32px;
+    height: 32px;
+  }
+}
+
 /* Prevent body scroll when drawer open */
 body.funalo-drawer-open {
   overflow: hidden;
@@ -830,7 +855,7 @@ body.funalo-drawer-open {
 /* ================================================================ */
 .fnlmx-footer__top-row {
   display: flex;
-  align-items: start;
+  align-items: center;
   justify-content: space-between;
   gap: 2rem;
   flex-wrap: wrap;
@@ -838,13 +863,16 @@ body.funalo-drawer-open {
 
 /* Brand */
 .fnlmx-footer__brand {
-  flex: 0 0 auto;
-  max-width: 460px;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .fnlmx-footer__brand .custom-logo-link {
   display: block;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .fnlmx-footer__brand .custom-logo-link img {
@@ -863,10 +891,11 @@ body.funalo-drawer-open {
 }
 
 .fnlmx-footer__desc {
-  font-size: 0.875rem;
-  line-height: 1.75;
+  font-size: 12px;
+  line-height: 1.6;
   color: rgba(255, 255, 255, 0.55);
   margin: 0;
+  max-width: 52ch;
 }
 
 /* Right side — two pills side by side */
@@ -917,6 +946,14 @@ body.funalo-drawer-open {
   object-fit: contain;
 }
 
+/* Let badge images shrink with their pill on small screens instead of
+   overflowing at their natural width */
+@media (max-width: 767px) {
+  .fnlmx-rg-badge img {
+    max-width: 100%;
+  }
+}
+
 /* ================================================================ */
 /*  ROW 2 — Nav pill (left) | Trust col (right)                    */
 /* ================================================================ */
@@ -930,8 +967,17 @@ body.funalo-drawer-open {
 @media (min-width: 1024px) {
   .fnlmx-footer__bottom-row {
     grid-template-columns: auto auto; /* both pills hug content */
-    justify-content: space-between; /* push them to opposite ends */
-    gap: 2.5rem;
+    /*justify-content: space-between;  push them to opposite ends */
+    gap: 20px;
+  }
+
+  /* Keep brand + pills on one line; let the brand shrink instead of wrapping */
+  .fnlmx-footer__top-row {
+    flex-wrap: nowrap;
+  }
+
+  .fnlmx-footer__brand {
+    min-width: 0;
   }
 }
 
@@ -987,7 +1033,7 @@ body.funalo-drawer-open {
   background: /*#181528*/ #1e1e1e;
   border-radius: 8px;
   padding: 20px;
-  width: 425px;
+  /*width: 425px;*/
   align-content: center;
 }
 
@@ -1036,6 +1082,7 @@ body.funalo-drawer-open {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  justify-content: space-between;
 }
 
 .fnlmx-social-icon {
@@ -1122,6 +1169,8 @@ body.funalo-drawer-open {
 
   .fnlmx-footer__divider-mobile {
     display: block;
+    width: 100%;
+    align-self: stretch;
   }
 
   .fnlmx-footer__brand .custom-logo-link img {
@@ -1147,14 +1196,20 @@ body.funalo-drawer-open {
   .fnlmx-footer__top-row {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.5rem;
+    gap: unset;
     margin-bottom: 20px;
   }
 
   .fnlmx-footer__brand {
+    flex-direction: column;
+    align-items: center;
     max-width: 100%;
     text-align: center;
     width: 100%;
+  }
+
+  .fnlmx-footer__desc {
+    max-width: 100%;
   }
 
   .fnlmx-footer__brand .custom-logo-link {
@@ -1242,6 +1297,14 @@ body.funalo-drawer-open {
     width: 1rem;
     height: 1rem;
   }
+
+  .fnlmx-footer__nav-heading {
+    text-align: center;
+  }
+
+  .fnlmx-social-list {
+    justify-content: center;
+  }
 }
 
 /* ================================================================ */
@@ -1275,6 +1338,8 @@ body.funalo-drawer-open {
   }
 
   .fnlmx-footer__brand {
+    flex-direction: column;
+    align-items: center;
     margin: auto;
   }
 
@@ -1283,6 +1348,7 @@ body.funalo-drawer-open {
   }
 
   .fnlmx-footer__desc {
+    max-width: 100%;
     text-align: center;
   }
 }
@@ -1759,8 +1825,8 @@ a.fnlmx-cta__btn--secondary:hover {
 
 /* Secondary — muted fill */
 .fnlmx-cta__btn--secondary {
-  color: #334155; /* fills the SVG shape */
-  --decoration: rgba(255, 255, 255, 0.5);
+  color: #1E1E1E; /* fills the SVG shape */
+  --decoration: #FFFFFF;
 }
 
 /* --------------------------------------------------------------------------
