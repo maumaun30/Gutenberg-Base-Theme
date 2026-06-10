@@ -83,6 +83,17 @@ function mytheme_enqueue_assets()
             true
         );
     }
+
+    $register_modal_js = get_theme_file_path('/assets/js/register-modal.js');
+    if (file_exists($register_modal_js)) {
+        wp_enqueue_script(
+            'mytheme-register-modal',
+            get_theme_file_uri('/assets/js/register-modal.js'),
+            ['mytheme-attribution'],
+            filemtime($register_modal_js),
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'mytheme_enqueue_assets');
 

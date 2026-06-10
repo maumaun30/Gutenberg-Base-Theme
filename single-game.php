@@ -1005,7 +1005,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <?php endif; ?>
 
         <div class="sg-cta">
-          <a class="sg-btn-play fm-register-btn" href="https://funalomax.com/en">
+          <a class="sg-btn-play fm-open-register" href="https://funalomax.com/en">
             <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clip-path="url(#sg-btn-play-shape)">
                 <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>

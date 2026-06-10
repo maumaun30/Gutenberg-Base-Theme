@@ -52,7 +52,7 @@
         ]);
         ?>
 
-        <div class="funalo-nav__cta fm-register-btn">
+        <div class="funalo-nav__cta" id="fm-register-trigger">
           <a href="<?php echo esc_url('https://funalomax.com/'); ?>" target="_blank" rel="noopener noreferrer">
             <?php esc_html_e('Login / Register', 'luxe'); ?>
           </a>
@@ -212,6 +212,74 @@
         </form>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ── Register / Sign Up Modal ── -->
+  <div class="fm-reg-modal" id="fm-reg-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Register">
+    <div class="fm-reg-modal__card" role="document">
+
+      <!-- Close (chamfered red button) -->
+      <button class="fm-reg-modal__close" id="fm-reg-close" type="button" aria-label="Close">
+        <svg aria-hidden="true" class="fm-reg-modal__close-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#fm-reg-close-shape)">
+            <path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path>
+            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, #ffffff)"></path>
+          </g>
+          <defs><clipPath id="fm-reg-close-shape"><rect width="32" height="32" fill="white"></rect></clipPath></defs>
+        </svg>
+        <svg class="fm-reg-modal__close-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <!-- Brand -->
+      <div class="fm-reg-modal__brand">
+        <?php if (has_custom_logo()) : the_custom_logo(); else : ?>
+          <span class="fm-reg-modal__brand-text"><?php bloginfo('name'); ?></span>
+        <?php endif; ?>
+      </div>
+
+      <h3 class="fm-reg-modal__title">
+        <?php esc_html_e('JOIN THE ACTION', 'luxe'); ?>
+        <span class="fm-reg-modal__title-accent"><?php esc_html_e('TODAY', 'luxe'); ?></span>
+      </h3>
+      <p class="fm-reg-modal__sub"><?php esc_html_e('Get instant access to exciting casino games anytime, anywhere.', 'luxe'); ?></p>
+
+      <!-- Phone field: icon + +63 prefix + local number -->
+      <div class="fm-reg-modal__field">
+        <svg class="fm-reg-modal__field-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+        <span class="fm-reg-modal__cc">+63</span>
+        <input type="tel" id="fm-reg-phone" class="fm-reg-modal__input"
+          placeholder="09XX XXX XXXX" inputmode="numeric" autocomplete="tel">
+      </div>
+
+      <!-- Submit (chamfered red button) -->
+      <button type="button" id="fm-reg-submit" class="fm-reg-modal__submit">
+        <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#fm-reg-submit-shape)">
+            <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+            <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, #ffffff)"></path>
+          </g>
+          <defs><clipPath id="fm-reg-submit-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+        </svg>
+        <span class="fm-reg-modal__submit-label"><?php esc_html_e('Login / Register', 'luxe'); ?></span>
+      </button>
+
+      <label class="fm-reg-modal__terms" for="fm-reg-terms">
+        <input type="checkbox" id="fm-reg-terms" checked>
+        <span>
+          <?php esc_html_e('I Agree To The', 'luxe'); ?>
+          <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Terms Of Use', 'luxe'); ?></a>
+          <?php esc_html_e('And', 'luxe'); ?>
+          <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
+        </span>
+      </label>
     </div>
   </div>
 
