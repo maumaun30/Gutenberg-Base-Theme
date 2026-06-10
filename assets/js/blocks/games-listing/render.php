@@ -26,16 +26,21 @@ if (! function_exists('gl_game_card')) :
 
         <?php else : ?>
           <div class="game-card__image-placeholder">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-              fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5">
-              <rect x="10" y="3" width="10" height="12" rx="2" />
-              <rect x="3" y="8" width="12" height="12" rx="2" />
-              <circle cx="6.5" cy="11.5" r="0.7" />
-              <circle cx="11.5" cy="11.5" r="0.7" />
-              <circle cx="6.5" cy="16.5" r="0.7" />
-              <circle cx="11.5" cy="16.5" r="0.7" />
-              <circle cx="9" cy="14" r="0.7" />
-            </svg>
+            <?php $gl_fallback_logo = function_exists('fnlmx_tile_fallback_logo') ? fnlmx_tile_fallback_logo() : ''; ?>
+            <?php if ($gl_fallback_logo) : ?>
+              <?php echo $gl_fallback_logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <?php else : ?>
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                fill="none" stroke="rgba(255,255,255,.12)" stroke-width="1.5">
+                <rect x="10" y="3" width="10" height="12" rx="2" />
+                <rect x="3" y="8" width="12" height="12" rx="2" />
+                <circle cx="6.5" cy="11.5" r="0.7" />
+                <circle cx="11.5" cy="11.5" r="0.7" />
+                <circle cx="6.5" cy="16.5" r="0.7" />
+                <circle cx="11.5" cy="16.5" r="0.7" />
+                <circle cx="9" cy="14" r="0.7" />
+              </svg>
+            <?php endif; ?>
           </div>
         <?php endif; ?>
         <div class="game-card__overlay" aria-hidden="true"></div>

@@ -823,6 +823,37 @@ add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_hero_slider' );
    Game Category archive — "Load More" support
    Shared card template (used by taxonomy-game_category.php + AJAX)
    ────────────────────────────────────────────────────────────── */
+/**
+ * Site (custom) logo URL — used as the fallback art on game tiles that have no
+ * featured image. Resolved once per request.
+ */
+if ( ! function_exists( 'fnlmx_site_logo_url' ) ) {
+    function fnlmx_site_logo_url(): string {
+        static $url = null;
+        if ( $url !== null ) {
+            return $url;
+        }
+        $logo_id = (int) get_theme_mod( 'custom_logo' );
+        $url = $logo_id ? ( wp_get_attachment_image_url( $logo_id, 'medium' ) ?: '' ) : '';
+        return $url;
+    }
+}
+
+/**
+ * Centered site-logo markup for a game tile that lacks a featured image.
+ * Returns an empty string when no custom logo is set (callers can then fall
+ * back to their own placeholder).
+ */
+if ( ! function_exists( 'fnlmx_tile_fallback_logo' ) ) {
+    function fnlmx_tile_fallback_logo(): string {
+        $logo = fnlmx_site_logo_url();
+        if ( ! $logo ) {
+            return '';
+        }
+        return '<img src="' . esc_url( $logo ) . '" alt="" class="fnlmx-fallback-logo" loading="lazy">';
+    }
+}
+
 if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
     function fnlmx_game_card_template( int $post_id ): void {
         $thumb  = get_the_post_thumbnail_url( $post_id, 'medium_large' );
@@ -847,7 +878,10 @@ if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
             <?php else : ?>
 
                 <div class="fm-card__fallback">
-                    <?php echo esc_html( mb_substr( $title, 0, 1 ) ); ?>
+                    <?php
+                    $fallback_logo = fnlmx_tile_fallback_logo();
+                    echo $fallback_logo ?: esc_html( mb_substr( $title, 0, 1 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ?>
                 </div>
 
             <?php endif; ?>

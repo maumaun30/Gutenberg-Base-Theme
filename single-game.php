@@ -253,7 +253,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     width: 100%;
     height: 100%;
     border-radius: var(--radius-md);
-    background: linear-gradient(135deg, var(--bg-dark-4), #42424f);
+    background: #1E1E1E;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -530,6 +530,17 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
     z-index: 1;
 }
+
+  /* Fallback (site logo) when a related game has no featured image */
+  .sg-rcard__fallback {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1E1E1E;
+  }
 
   /* Play pill — bottom-right corner */
   .sg-rcard__play {
@@ -974,11 +985,16 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
           <img src="<?php echo esc_url($thumb_lg); ?>" alt="<?php echo esc_attr($title); ?>" class="sg-thumb">
         <?php else : ?>
           <div class="sg-thumb-fallback">
-            <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
-              fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="8" width="12" height="12" rx="2" />
-              <rect x="10" y="3" width="10" height="12" rx="2" />
-            </svg>
+            <?php $hero_fallback_logo = function_exists('fnlmx_tile_fallback_logo') ? fnlmx_tile_fallback_logo() : ''; ?>
+            <?php if ($hero_fallback_logo) : ?>
+              <?php echo $hero_fallback_logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+            <?php else : ?>
+              <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" viewBox="0 0 24 24"
+                fill="none" stroke="rgba(255,255,255,.15)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="8" width="12" height="12" rx="2" />
+                <rect x="10" y="3" width="10" height="12" rx="2" />
+              </svg>
+            <?php endif; ?>
           </div>
         <?php endif; ?>
       </div>
@@ -1067,6 +1083,15 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
             class="sg-rcard__img"
             loading="lazy"
         >
+
+    <?php else : ?>
+
+        <div class="sg-rcard__fallback">
+          <?php
+          $rc_fallback_logo = function_exists('fnlmx_tile_fallback_logo') ? fnlmx_tile_fallback_logo() : '';
+          echo $rc_fallback_logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+          ?>
+        </div>
 
     <?php endif; ?>
 

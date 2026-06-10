@@ -1015,6 +1015,16 @@ body.funalo-drawer-open {
     text-align: left;
   }
 }
+
+/* ---- Game-tile fallback (site logo when no featured image) --- */
+.fnlmx-fallback-logo {
+  width: 60%;
+  max-width: 130px;
+  height: auto;
+  object-fit: contain;
+  opacity: 0.85;
+}
+
 .fnlmx-back-to-top {
   position: fixed;
   right: 1.5rem;

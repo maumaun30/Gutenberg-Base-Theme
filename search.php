@@ -142,7 +142,7 @@ function fm_search_type_label($post_type)
   .fm-card__fallback {
     position: absolute;
     inset: 1px;
-    background: linear-gradient(135deg, #1a1729, #0c0a1e);
+    background: #1E1E1E;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -290,7 +290,10 @@ function fm_search_type_label($post_type)
               <?php if ($thumb) : ?>
                 <img src="<?php echo esc_url($thumb); ?>" alt="<?php the_title_attribute(); ?>" class="fm-card__img" loading="lazy">
               <?php else : ?>
-                <div class="fm-card__fallback"><?php echo esc_html(mb_substr(get_the_title(), 0, 1)); ?></div>
+                <div class="fm-card__fallback"><?php
+                  $fallback_logo = function_exists('fnlmx_tile_fallback_logo') ? fnlmx_tile_fallback_logo() : '';
+                  echo $fallback_logo ?: esc_html(mb_substr(get_the_title(), 0, 1)); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                ?></div>
               <?php endif; ?>
               <?php if ($is_hot) : ?><span class="fm-card__badge">HOT</span><?php endif; ?>
               <span class="fm-card__type"><?php echo esc_html(fm_search_type_label($post_type)); ?></span>

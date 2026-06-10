@@ -43,14 +43,19 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
   });
 
-  /* Live-format the phone toward a local 09XXXXXXXXX form */
+  /* The +63 prefix is shown next to the field, so the input holds only the
+     10-digit local number starting with 9 (9XXXXXXXXX). Strip any country
+     code or leading 0 the user types/pastes. */
+  function toLocal(value) {
+    let v = (value || '').replace(/\D/g, '');
+    if (v.startsWith('63')) v = v.slice(2);
+    if (v.startsWith('0')) v = v.slice(1);
+    return v.slice(0, 10);
+  }
+
   if (phoneIn) {
     phoneIn.addEventListener('input', function () {
-      let v = this.value.replace(/\D/g, '');
-      if (v.startsWith('639')) v = '0' + v.slice(2);
-      else if (v.startsWith('63')) v = '0' + v.slice(2);
-      else if (v.startsWith('9')) v = '0' + v;
-      this.value = v;
+      this.value = toLocal(this.value);
     });
   }
 
@@ -65,19 +70,22 @@ document.addEventListener('DOMContentLoaded', function () {
       alert('You must agree to the Terms');
       return;
     }
-    let v = (phoneIn ? phoneIn.value : '').trim();
-    if (!v) { alert('Enter phone number'); if (phoneIn) phoneIn.focus(); return; }
+    const local = toLocal(phoneIn ? phoneIn.value : '');
+    if (!local) { alert('Enter phone number'); if (phoneIn) phoneIn.focus(); return; }
 
-    v = v.replace(/\D/g, '');
-    if (v.startsWith('639') && v.length === 12) v = '0' + v.slice(2);
-    else if (v.startsWith('63') && v.length === 12) v = '0' + v.slice(2);
-    else if (v.startsWith('9') && v.length === 10) v = '0' + v;
-    else if (v.startsWith('09') && v.length === 11) { /* already valid */ }
-    else { alert('Invalid PH number'); if (phoneIn) phoneIn.focus(); return; }
+    // Must be a 10-digit PH mobile starting with 9 (the +63 is implied)
+    if (!/^9\d{9}$/.test(local)) {
+      alert('Invalid PH number');
+      if (phoneIn) phoneIn.focus();
+      return;
+    }
+
+    // Send in the 09XXXXXXXXX form the registration flow expects
+    const mobile = '0' + local;
 
     const attr = getAttribution();
     const query = new URLSearchParams();
-    query.set('mobile', v);
+    query.set('mobile', mobile);
     Object.keys(attr).forEach(function (key) {
       if (attr[key]) query.set(key, attr[key]);
     });
