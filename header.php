@@ -256,7 +256,7 @@
         </svg>
         <span class="fm-reg-modal__cc">+63</span>
         <input type="tel" id="fm-reg-phone" class="fm-reg-modal__input"
-          placeholder="09XX XXX XXXX" inputmode="numeric" autocomplete="tel">
+          placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
       </div>
 
       <!-- Submit (chamfered red button) -->

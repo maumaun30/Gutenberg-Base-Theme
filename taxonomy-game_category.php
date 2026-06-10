@@ -276,7 +276,7 @@ set_query_var('game_count',     $game_count);
   .fm-card__fallback {
     position: absolute;
     inset: 1px;
-    background: linear-gradient(135deg, #1a1729, #0c0a1e);
+    background: #1E1E1E;
     display: flex;
     align-items: center;
     justify-content: center;
