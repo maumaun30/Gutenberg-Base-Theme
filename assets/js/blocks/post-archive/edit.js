@@ -170,7 +170,14 @@ export default function Edit({ attributes, setAttributes }) {
         {showLoadMore && !isLoading && (
           <div className="fnlmx-post-archive__load-more-wrap">
             <button className="fnlmx-post-archive__load-more" disabled>
-              {__('Load More')}
+              <svg aria-hidden="true" className="fnlmx-post-archive__load-more-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clipPath="url(#fnlmx-post-archive-loadmore-shape-editor)">
+                  <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+                  <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+                </g>
+                <defs><clipPath id="fnlmx-post-archive-loadmore-shape-editor"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+              </svg>
+              <span className="fnlmx-post-archive__load-more-label">{__('Load More')}</span>
             </button>
             <p className="fnlmx-post-archive__load-more-note">
               {__('(Load More is active on the front end)')}

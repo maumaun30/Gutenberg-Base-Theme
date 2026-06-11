@@ -141,11 +141,11 @@
 }
 
 .hero-slider__dot {
-    /* Inactive: small grey circle */
-    width:         10px;
-    height:        10px;
-    border-radius: 6px;
-    background:    rgba(255, 255, 255, 0.35);
+    /* Inactive: small grey square */
+    width:         12px;
+    height:        12px;
+    border-radius: 0;
+    background:    rgba(255, 255, 255, 0.3);
     border:        none;
     cursor:        pointer;
     padding:       0;
@@ -157,10 +157,10 @@
     background: rgba(255, 255, 255, 0.65);
 }
 
-/* Active: larger, solid brand red */
+/* Active: wider bar, solid brand red */
 .hero-slider__dot.is-active {
     background:    var(--color-primary, #BA001D);
-    width:         38px;
+    width:         48px;
 }
 
 /* ══════════════════════════════════════════════════════════════

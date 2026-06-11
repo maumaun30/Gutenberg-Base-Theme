@@ -69,12 +69,20 @@ $wrapper    = get_block_wrapper_attributes( [
     <?php if ( $show_load_more && $has_more ) : ?>
         <div class="fnlmx-post-archive__load-more-wrap">
             <button
+                type="button"
                 class="fnlmx-post-archive__load-more"
                 data-grid="<?php echo esc_attr( $block_id . '-grid' ); ?>"
                 data-block="<?php echo esc_attr( $block_id ); ?>"
                 data-nonce="<?php echo wp_create_nonce( 'fnlmx_load_more' ); ?>"
             >
-                <?php esc_html_e( 'Load More', 'mytheme' ); ?>
+                <svg aria-hidden="true" class="fnlmx-post-archive__load-more-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#fnlmx-post-archive-loadmore-shape)">
+                        <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+                        <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
+                    </g>
+                    <defs><clipPath id="fnlmx-post-archive-loadmore-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+                </svg>
+                <span class="fnlmx-post-archive__load-more-label"><?php esc_html_e( 'Load More', 'mytheme' ); ?></span>
             </button>
         </div>
     <?php endif; ?>

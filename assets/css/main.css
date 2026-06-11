@@ -532,7 +532,8 @@
   right: 0;
   width: 100%;
   max-width: 420px;
-  height: 100vh;
+  height: 100vh; /* fallback */
+  height: 100dvh; /* fits the visible viewport, accounts for mobile browser chrome */
   background: var(--bg-dark-3);
   z-index: 999;
   transform: translateX(110%);
@@ -554,7 +555,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 28px 24px 24px;
+  padding: 10px;
   background: var(--color-primary);
   flex-shrink: 0;
 }
@@ -619,8 +620,8 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding: 28px 0 24px;
+  justify-content: start;
+  padding: 16px 0;
 }
 
 .funalo-nav__mobile ul {
@@ -638,7 +639,7 @@
   text-transform: uppercase;
   color: #fff;
   text-decoration: none;
-  padding: 13px 28px;
+  padding: 12px 28px;
   transition:
     color 0.2s ease,
     transform 0.2s ease;
@@ -655,7 +656,7 @@
 .funalo-drawer__cta {
   position: relative;
   display: flex;
-  margin: 8px 24px 36px;
+  margin: 8px 24px 24px;
   flex-shrink: 0;
   color: var(--color-primary); /* fills the shape */
   --decoration: #ffffff; /* bottom-right accent triangle */

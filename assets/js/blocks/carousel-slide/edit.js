@@ -9,6 +9,7 @@ import {
   PanelBody,
   Button,
   TextControl,
+  ToggleControl,
   RangeControl,
   ResponsiveWrapper,
 } from '@wordpress/components';
@@ -23,7 +24,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     titleHighlight,
     subtitle,
     primaryButtonText,
-    primaryButtonUrl,
+    showPrimaryButton,
     secondaryButtonText,
     secondaryButtonUrl,
     overlayOpacity,
@@ -100,17 +101,19 @@ export default function Edit({ attributes, setAttributes, clientId }) {
         </PanelBody>
 
         <PanelBody title="Primary Button" initialOpen={false}>
-          <TextControl
-            label="Button Text"
-            value={primaryButtonText}
-            onChange={(value) => setAttributes({ primaryButtonText: value })}
+          <ToggleControl
+            label="Show Primary Button"
+            help="When on, the primary button is shown and opens the Login / Register modal."
+            checked={!!showPrimaryButton}
+            onChange={(value) => setAttributes({ showPrimaryButton: value })}
           />
-          <TextControl
-            label="Button URL"
-            value={primaryButtonUrl}
-            onChange={(value) => setAttributes({ primaryButtonUrl: value })}
-            type="url"
-          />
+          {showPrimaryButton && (
+            <TextControl
+              label="Button Text"
+              value={primaryButtonText}
+              onChange={(value) => setAttributes({ primaryButtonText: value })}
+            />
+          )}
         </PanelBody>
 
         <PanelBody title="Secondary Button" initialOpen={false}>
@@ -175,9 +178,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             />
 
             {/* Only render buttons wrapper when at least one button has text */}
-            {(primaryButtonText || secondaryButtonText) && (
+            {((showPrimaryButton && primaryButtonText) || secondaryButtonText) && (
               <div className="carousel-slide-editor__buttons">
-                {primaryButtonText && (
+                {showPrimaryButton && primaryButtonText && (
                   <span className="carousel-slide-editor__btn carousel-slide-editor__btn--primary">
                     {primaryButtonText}
                   </span>
