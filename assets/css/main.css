@@ -548,13 +548,14 @@
   visibility: visible;
 }
 
-/* Drawer header row: logo + close btn */
+/* Drawer header row: centered logo, close btn pinned to upper-right */
 .funalo-drawer__header {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 18px 24px;
-  border-bottom: 1px solid /*rgba(255, 45, 120, 0.14)*/ #ba001c4d;
+  justify-content: center;
+  padding: 28px 24px 24px;
+  background: var(--color-primary);
   flex-shrink: 0;
 }
 
@@ -572,36 +573,54 @@
   text-decoration: none;
 }
 
-/* Close (×) button */
+/* Close (×) button — chamfered shape background like the header buttons */
 .funalo-drawer__close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #fff;
-  padding: 6px;
+  position: absolute;
+  top: 16px;
+  right: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  opacity: 0.75;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease;
+  width: 38px;
+  height: 38px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-funalomax-gradient); /* fills the shape */
+  --decoration: #ffffff; /* bottom-right accent triangle */
+  flex-shrink: 0;
+  isolation: isolate;
+  transition: filter 0.2s ease;
 }
 
 .funalo-drawer__close:hover {
-  opacity: 1;
-  transform: rotate(90deg);
+  filter: brightness(1.3);
 }
 
-.funalo-drawer__close svg {
-  width: 28px;
-  height: 28px;
+.funalo-drawer__close .funalo-nav__cta-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.funalo-drawer__close-icon {
+  position: relative;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  stroke: #fff;
 }
 
 /* Drawer nav links */
 .funalo-drawer__nav {
   flex: 1;
-  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 28px 0 24px;
 }
 
 .funalo-nav__mobile ul {
@@ -613,60 +632,65 @@
 .funalo-nav__mobile ul li a {
   display: block;
   font-family: "Montserrat", sans-serif;
-  font-weight: 500;
-  font-size: 15px;
-  letter-spacing: -0.8px;
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: /*rgba(255, 255, 255, 0.72)*/ var(--nav-text-muted);
+  color: #fff;
   text-decoration: none;
-  padding: 17px 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 13px 28px;
   transition:
     color 0.2s ease,
-    background 0.2s ease,
-    padding-left 0.2s ease;
+    transform 0.2s ease;
   text-align: center;
 }
 
 .funalo-nav__mobile ul li a:hover,
 .funalo-nav__mobile ul li.current-menu-item > a {
-  color: #fff;
-  background: /*rgba(255, 45, 120, 0.07)*/ #1e1e1e;
-  padding-left: 36px;
+  color: var(--color-primary);
+  transform: scale(1.04);
 }
 
-.funalo-nav__mobile ul li:first-child a {
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* Drawer CTA */
+/* Drawer CTA — chamfered shape background like the header CTA */
 .funalo-drawer__cta {
-  padding: 24px 24px 36px;
+  position: relative;
+  display: flex;
+  margin: 8px 24px 36px;
   flex-shrink: 0;
+  color: var(--color-primary); /* fills the shape */
+  --decoration: #ffffff; /* bottom-right accent triangle */
+  isolation: isolate;
+  transition: filter 0.2s ease;
 }
 
 .funalo-drawer__cta a {
+  position: relative;
+  z-index: 1; /* above the shape */
   display: block;
+  width: 100%;
   text-align: center;
-  padding: 16px;
-  border-radius: 8px;
+  padding: 15px;
   font-family: "Montserrat", sans-serif;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   text-decoration: none;
   color: #ffffff;
-  background-color: var(--color-primary);
-  box-shadow: 0 0 24px rgba(255, 45, 120, 0.5);
-  transition:
-    background-color 0.2s ease,
-    box-shadow 0.2s ease;
+  white-space: nowrap;
 }
 
-.funalo-drawer__cta a:hover {
-  background-color: var(--color-primary-hover);
-  box-shadow: 0 0 36px rgba(255, 45, 120, 0.7);
+.funalo-drawer__cta .funalo-nav__cta-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.funalo-drawer__cta:hover {
+  filter: brightness(1.3);
 }
 
 /* ── Responsive Breakpoint ── */
