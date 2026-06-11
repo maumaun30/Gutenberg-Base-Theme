@@ -268,7 +268,9 @@ if (! empty($category_order)) {
         $rec_query = new WP_Query([
           'post_type'      => 'game',
           'post_status'    => 'publish',
-          'posts_per_page' => $recommended_per_page,
+          // Match the per-category tile count so the Recommended row shows the
+          // same number of games as every other displayed category.
+          'posts_per_page' => $posts_per_category > 0 ? $posts_per_category : -1,
           'tax_query'      => [[
             'taxonomy' => 'game-tag',
             'field'    => 'term_id',
