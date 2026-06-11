@@ -1041,6 +1041,234 @@ body.funalo-drawer-open {
   }
 }
 
+/* ---- New User Welcome Bonus Modal ----------------------- */
+/* Patterned on .fm-reg-modal: fixed blurred overlay, centered card, chamfered
+   close + CTA. Gold/orange theme to match the welcome-bonus design. */
+.fm-welcome-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9997;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.fm-welcome-modal.is-open {
+  display: flex;
+}
+
+.fm-welcome-modal__card {
+  position: relative;
+  width: 100%;
+  max-width: 550px;
+  padding: 3.25rem 3rem 2.75rem;
+  border-radius: 16px;
+  text-align: center;
+  background: #000000;
+  border: 1px solid var(--color-primary);
+  overflow: hidden; /* clip the full-bleed hero to the rounded top corners */
+}
+
+/* Close — chamfered red button (matches register modal) */
+.fm-welcome-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-primary); /* fills the shape */
+  --decoration: #ffffff;
+  cursor: pointer;
+  isolation: isolate;
+  transition: filter 0.2s ease;
+}
+
+.fm-welcome-modal__close:hover {
+  filter: brightness(1.2);
+}
+
+.fm-welcome-modal__close-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fm-welcome-modal__close-icon {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+}
+
+/* Hero image — full-bleed across the top of the card, bleeding into the
+   padding so it meets the rounded top corners (card has overflow:hidden).
+   Negative margins must match the card's padding. */
+.fm-welcome-modal__hero {
+  margin: -3.25rem -3rem 1.5rem;
+}
+
+.fm-welcome-modal__hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+}
+
+.fm-welcome-modal__title {
+  font-family: "Montserrat", sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  margin: 0 0 22px;
+  color: #ffffff;
+}
+
+/* Second line accent — brand red (matches register modal title) */
+.fm-welcome-modal__title-accent {
+  display: block;
+  color: var(--color-primary);
+}
+
+/* Coin badge */
+.fm-welcome-modal__coin {
+  width: 116px;
+  height: 116px;
+  margin: 8px auto 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 38%, #ff5a72 0%, var(--color-primary) 50%, #7a0013 100%);
+  border: 3px solid var(--color-primary);
+  box-shadow: 0 0 32px rgba(186, 0, 29, 0.55), inset 0 -4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.fm-welcome-modal__coin-amount {
+  font-family: "Montserrat", sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.fm-welcome-modal__sub {
+  font-family: "Montserrat", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85);
+  margin: 0 auto 26px;
+  max-width: 340px;
+}
+
+.fm-welcome-modal__sub strong {
+  color: var(--color-primary);
+}
+
+/* CTA — chamfered red button (carries .fm-register-btn) */
+.fm-welcome-modal__cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 60px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--color-primary); /* fills the shape */
+  --decoration: #ffffff;
+  cursor: pointer;
+  isolation: isolate;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.fm-welcome-modal__cta:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.fm-welcome-modal__cta-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.fm-welcome-modal__cta-label {
+  position: relative;
+  z-index: 1;
+  font-family: "Montserrat", sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .fm-welcome-modal__card {
+    max-width: 320px;
+    padding: 2rem 1.5rem 1.75rem;
+  }
+
+  .fm-welcome-modal__hero {
+    margin: -2rem -1.5rem 1.25rem;
+  }
+
+  .fm-welcome-modal__title {
+    font-size: 24px;
+    margin-bottom: 14px;
+  }
+
+  .fm-welcome-modal__coin {
+    width: 76px;
+    height: 76px;
+    margin: 4px auto 16px;
+    border-width: 2px;
+  }
+
+  .fm-welcome-modal__coin-amount {
+    font-size: 28px;
+  }
+
+  .fm-welcome-modal__sub {
+    font-size: 13px;
+    margin-bottom: 20px;
+    max-width: 240px;
+  }
+
+  .fm-welcome-modal__cta {
+    height: 48px;
+  }
+
+  .fm-welcome-modal__cta-label {
+    font-size: 14px;
+  }
+
+  .fm-welcome-modal__close {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 /* ---- Game-tile fallback (site logo when no featured image) --- */
 .fnlmx-fallback-logo {
   width: 60%;

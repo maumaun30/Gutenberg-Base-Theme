@@ -241,6 +241,24 @@ function fnlmx_responsible_gaming_popup() {
   $images_wrapper     = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_img_wrapper', 'option') : [];
   $subparagraph       = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_subparagraph', 'option') : '';
   $exit_url = 'https://www.google.com';
+
+  // Hero image for the New User Welcome Bonus modal (shown after Proceed).
+  // Prefer the ACF options field; otherwise fall back to a theme asset so the
+  // image can be supplied simply by dropping a file into /assets/images/.
+  $welcome_img     = function_exists('get_field') ? get_field('fnlmx_welcome_bonus_image', 'option') : null;
+  $welcome_img_url = '';
+  $welcome_img_alt = 'New User Welcome Bonus';
+  if ( $welcome_img && is_array( $welcome_img ) && ! empty( $welcome_img['url'] ) ) {
+    $welcome_img_url = $welcome_img['url'];
+    $welcome_img_alt = $welcome_img['alt'] ?? $welcome_img_alt;
+  } else {
+    foreach ( [ 'welcome-bonus-hero.png', 'welcome-bonus-hero.webp', 'welcome-bonus-hero.jpg' ] as $welcome_fallback ) {
+      if ( file_exists( get_theme_file_path( '/assets/images/' . $welcome_fallback ) ) ) {
+        $welcome_img_url = get_theme_file_uri( '/assets/images/' . $welcome_fallback );
+        break;
+      }
+    }
+  }
   ?>
 
   <div class="fnlmx-rg-popup" id="fnlmx-rg-popup" aria-modal="true" role="dialog" aria-label="Responsible Gaming Guidelines" aria-hidden="true">
@@ -316,11 +334,79 @@ function fnlmx_responsible_gaming_popup() {
     </div>
   </div>
 
+  <!-- ── New User Welcome Bonus Modal (opens after Proceed) ── -->
+  <div class="fm-welcome-modal" id="fm-welcome-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="New User Welcome Bonus">
+    <div class="fm-welcome-modal__card" role="document">
+
+      <!-- Close (chamfered button, matches register modal) -->
+      <button class="fm-welcome-modal__close" id="fm-welcome-close" type="button" aria-label="Close">
+        <svg aria-hidden="true" class="fm-welcome-modal__close-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#fm-welcome-close-shape)">
+            <path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path>
+            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, #ffffff)"></path>
+          </g>
+          <defs><clipPath id="fm-welcome-close-shape"><rect width="32" height="32" fill="white"></rect></clipPath></defs>
+        </svg>
+        <svg class="fm-welcome-modal__close-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <?php if ( $welcome_img_url ) : ?>
+        <div class="fm-welcome-modal__hero">
+          <img src="<?php echo esc_url( $welcome_img_url ); ?>" alt="<?php echo esc_attr( $welcome_img_alt ); ?>" loading="lazy" decoding="async">
+        </div>
+      <?php endif; ?>
+
+      <h3 class="fm-welcome-modal__title"><?php esc_html_e( 'New User', 'luxe' ); ?><span class="fm-welcome-modal__title-accent"><?php esc_html_e( 'Welcome Bonus', 'luxe' ); ?></span></h3>
+
+      <div class="fm-welcome-modal__coin" aria-hidden="true">
+        <span class="fm-welcome-modal__coin-amount">&#8369;5</span>
+      </div>
+
+      <p class="fm-welcome-modal__sub"><?php esc_html_e( 'Register now and get', 'luxe' ); ?> <strong>&#8369;5</strong> <?php esc_html_e( 'instantly.', 'luxe' ); ?></p>
+
+      <!-- CTA — triggers attribution.js via the fm-register-btn class -->
+      <button type="button" class="fm-welcome-modal__cta fm-open-register">
+        <svg aria-hidden="true" class="fm-welcome-modal__cta-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#fm-welcome-cta-shape)">
+            <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
+            <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, #ffffff)"></path>
+          </g>
+          <defs><clipPath id="fm-welcome-cta-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
+        </svg>
+        <span class="fm-welcome-modal__cta-label"><?php esc_html_e( 'Register & Get', 'luxe' ); ?> &#8369;5</span>
+      </button>
+
+    </div>
+  </div>
+
   <script>
         document.addEventListener('DOMContentLoaded', function () {
             const rgPopup   = document.getElementById('fnlmx-rg-popup');
             const rgProceed = document.getElementById('fnlmx-rg-proceed');
             const rgExit    = document.getElementById('fnlmx-rg-exit');
+            const welcomeModal = document.getElementById('fm-welcome-modal');
+            const welcomeClose = document.getElementById('fm-welcome-close');
+
+            function openWelcome() {
+                if (!welcomeModal) return;
+                welcomeModal.classList.add('is-open');
+                welcomeModal.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('funalo-drawer-open');
+            }
+            function closeWelcome() {
+                if (!welcomeModal) return;
+                welcomeModal.classList.remove('is-open');
+                welcomeModal.setAttribute('aria-hidden', 'true');
+                document.body.classList.remove('funalo-drawer-open');
+            }
+            if (welcomeClose) welcomeClose.addEventListener('click', closeWelcome);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && welcomeModal && welcomeModal.classList.contains('is-open')) closeWelcome();
+            });
 
             if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
             setTimeout(function () {
@@ -335,7 +421,13 @@ function fnlmx_responsible_gaming_popup() {
                 sessionStorage.setItem('fnlmx_rg_accepted', '1');
                 rgPopup.classList.remove('is-open');
                 rgPopup.setAttribute('aria-hidden', 'true');
-                document.body.classList.remove('funalo-drawer-open');
+                // Show the New User Welcome Bonus modal next; keep body locked
+                // while it's open, otherwise release the scroll lock.
+                if (welcomeModal) {
+                    openWelcome();
+                } else {
+                    document.body.classList.remove('funalo-drawer-open');
+                }
             });
             }
 
@@ -472,7 +564,9 @@ function fnlmx_cta_section() {
 
                                     $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
                                     $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
-                                    $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
+                                    // Primary button opens registration via attribution.js (fm-register-btn);
+                                    // its click is intercepted, so the href just acts as a fallback.
+                                    $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary fm-register-btn' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
                                     $btn_uid     = uniqid();
                                     // Angled SVG shape used as the button background.
                                     $btn_shape = '<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">'
