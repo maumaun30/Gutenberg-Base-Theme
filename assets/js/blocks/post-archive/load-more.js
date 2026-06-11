@@ -18,13 +18,16 @@
 
     if (!grid || !block) return;
 
+    // Text lives in the label span so the chamfered SVG shape isn't wiped.
+    const label = btn.querySelector('.fnlmx-post-archive__load-more-label') || btn;
+
     const postType = block.dataset.postType || 'post';
     const perPage  = parseInt(block.dataset.perPage, 10) || 4;
     let   page     = parseInt(block.dataset.currentPage, 10) || 1;
     page += 1;
 
     btn.disabled    = true;
-    btn.textContent = 'Loading…';
+    label.textContent = 'Loading…';
 
     const body = new URLSearchParams({
       action   : fnlmxArchive.action,
@@ -70,12 +73,12 @@
           btn.closest('.fnlmx-post-archive__load-more-wrap')?.remove();
         } else {
           btn.disabled    = false;
-          btn.textContent = 'Load More';
+          label.textContent = 'Load More';
         }
       })
       .catch(() => {
         btn.disabled    = false;
-        btn.textContent = 'Load More';
+        label.textContent = 'Load More';
       });
   });
 })();

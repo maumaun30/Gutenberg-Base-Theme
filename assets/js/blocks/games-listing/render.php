@@ -109,7 +109,7 @@ if (! empty($category_order)) {
 
 ?>
 
-<section <?php echo get_block_wrapper_attributes(['class' => 'games-listing bg-dark-3 section']); ?>>
+<section <?php echo get_block_wrapper_attributes(['class' => 'games-listing bg-dark-3 section', 'id' => 'games-listing']); ?>>
 
   <div class="games-listing__glow" aria-hidden="true"></div>
 

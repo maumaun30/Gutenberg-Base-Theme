@@ -11,10 +11,16 @@ $mytheme_carousel_slide_index = isset( $mytheme_carousel_slide_index ) ? $mythem
 $title_tag = ( 1 === $mytheme_carousel_slide_index ) ? 'h1' : 'h2';
 $subtitle             = $attributes['subtitle'] ?? '';
 $primary_btn_text     = $attributes['primaryButtonText'] ?? '';
-$primary_btn_url      = $attributes['primaryButtonUrl'] ?? '#';
+$show_primary_btn     = $attributes['showPrimaryButton'] ?? true;
 $secondary_btn_text   = $attributes['secondaryButtonText'] ?? '';
-$secondary_btn_url    = $attributes['secondaryButtonUrl'] ?? '#';
+$secondary_btn_url    = $attributes['secondaryButtonUrl'] ?? '';
 $overlay_opacity      = $attributes['overlayOpacity'] ?? 85;
+
+// Secondary button: fall back to scrolling to the games listing section when
+// no URL (or just the placeholder "#") is set in the block settings.
+if ( '' === trim( (string) $secondary_btn_url ) || '#' === $secondary_btn_url ) {
+    $secondary_btn_url = '#games-listing';
+}
 
 $overlay_full  = round( $overlay_opacity / 100, 2 );
 $overlay_light = round( $overlay_full * 0.6, 2 );
@@ -83,12 +89,12 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
         </p>
       <?php endif; ?>
 
-      <?php if ( $primary_btn_text || $secondary_btn_text ) : ?>
+      <?php if ( ( $show_primary_btn && $primary_btn_text ) || $secondary_btn_text ) : ?>
         <div class="mytheme-carousel-slide__buttons">
-          <?php if ( $primary_btn_text ) : ?>
+          <?php if ( $show_primary_btn && $primary_btn_text ) : ?>
             <a
-              href="<?php echo esc_url( $primary_btn_url ); ?>"
-              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary"
+              href="#"
+              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary fm-open-register"
             >
               <?php mytheme_carousel_btn_shape( 'primary-' . $slide_uid ); ?>
               <span class="mytheme-carousel-slide__btn-label"><?php echo esc_html( $primary_btn_text ); ?></span>

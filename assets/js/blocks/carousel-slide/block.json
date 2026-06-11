@@ -38,9 +38,9 @@
     "type": "string",
     "default": ""
     },
-    "primaryButtonUrl": {
-      "type": "string",
-      "default": "#"
+    "showPrimaryButton": {
+      "type": "boolean",
+      "default": true
     },
     "secondaryButtonText": {
       "type": "string",
