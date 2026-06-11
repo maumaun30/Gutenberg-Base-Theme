@@ -145,7 +145,19 @@
         <?php endif; ?>
       </a>
       <button class="funalo-drawer__close" id="funalo-drawer-close" aria-label="Close menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        <!-- Chamfered shape background (same as header buttons) -->
+        <svg aria-hidden="true" class="funalo-nav__cta-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#_R_drawerclose_)">
+            <path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor" />
+            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)" />
+          </g>
+          <defs>
+            <clipPath id="_R_drawerclose_">
+              <rect width="32" height="32" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+        <svg class="funalo-drawer__close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
           stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18" />
           <line x1="6" y1="6" x2="18" y2="18" />
@@ -172,7 +184,23 @@
       ?>
     </nav>
 
-
+    <!-- Drawer CTA: Login / Register (same chamfered shape as header CTA) -->
+    <div class="funalo-drawer__cta" id="fm-drawer-register-trigger">
+      <a href="<?php echo esc_url('https://funalomax.com/'); ?>" class="fm-open-register" target="_blank" rel="noopener noreferrer">
+        <?php esc_html_e('Login / Register', 'luxe'); ?>
+      </a>
+      <svg aria-hidden="true" class="funalo-nav__cta-shape" viewBox="0 0 124 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clip-path="url(#_R_drawercta_)">
+          <path d="M124 20.4 L112.4 32 H0 V7 L7 0 H124 V20.4 Z" fill="currentColor"></path>
+          <path d="M124 24 V32 H116 L124 24 Z" fill="var(--decoration, currentColor)"></path>
+        </g>
+        <defs>
+          <clipPath id="_R_drawercta_">
+            <rect width="124" height="32" fill="white"></rect>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
 
   </div>
 
@@ -316,6 +344,9 @@
         });
         if (closeBtn) closeBtn.addEventListener('click', closeDrawer);
         if (backdrop) backdrop.addEventListener('click', closeDrawer);
+        // Close the drawer when the in-drawer Login/Register opens the modal
+        const drawerCta = document.getElementById('fm-drawer-register-trigger');
+        if (drawerCta) drawerCta.addEventListener('click', closeDrawer);
       }
 
       /* ── Search Overlay ── */
