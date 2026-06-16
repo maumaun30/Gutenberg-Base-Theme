@@ -651,6 +651,29 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     margin-bottom: 0;
   }
 
+  /* List markers — ul: primary bullet, ol: numbers */
+  .sg-about__content ul,
+  .sg-about__content ol {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .sg-about__content ul {
+    list-style: disc;
+  }
+
+  .sg-about__content ol {
+    list-style: decimal;
+  }
+
+  .sg-about__content li {
+    margin-bottom: .35rem;
+  }
+
+  .sg-about__content ul li::marker {
+    color: var(--color-primary);
+  }
+
   .sg-about__toggle {
     margin-top: 1.25rem;
     background: transparent;

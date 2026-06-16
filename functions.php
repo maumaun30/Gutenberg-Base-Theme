@@ -368,8 +368,19 @@ function fnlmx_responsible_gaming_popup() {
 
       <p class="fm-welcome-modal__sub"><?php esc_html_e( 'Register now and get', 'luxe' ); ?> <strong>&#8369;5</strong> <?php esc_html_e( 'instantly.', 'luxe' ); ?></p>
 
-      <!-- CTA — triggers attribution.js via the fm-register-btn class -->
-      <button type="button" class="fm-welcome-modal__cta fm-open-register">
+      <!-- Phone field: icon + +63 prefix + local number (mirrors the register modal) -->
+      <div class="fm-welcome-modal__field">
+        <svg class="fm-welcome-modal__field-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+        </svg>
+        <span class="fm-welcome-modal__cc">+63</span>
+        <input type="tel" id="fm-welcome-phone" class="fm-welcome-modal__input"
+          placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
+      </div>
+
+      <!-- CTA — submits the phone via register-modal.js (same flow as the register modal) -->
+      <button type="button" id="fm-welcome-submit" class="fm-welcome-modal__cta">
         <svg aria-hidden="true" class="fm-welcome-modal__cta-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#fm-welcome-cta-shape)">
             <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>

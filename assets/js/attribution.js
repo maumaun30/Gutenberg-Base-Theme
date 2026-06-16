@@ -39,9 +39,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const params = new URLSearchParams(window.location.search);
 
         const attribution = {
-            utm_source: params.get("utm_source") || "seo-sub",
-            utm_medium: params.get("utm_medium") || "seo-sub",
-            utm_campaign: params.get("utm_campaign") || "",
+            utm_source: params.get("utm_source") || "seo",
+            utm_medium: params.get("utm_medium") || "ggo",
+            utm_campaign: params.get("utm_campaign") ||
+                "2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo",
             utm_term: params.get("utm_term") || "",
             utm_content: params.get("utm_content") || "",
             affiliate_id: params.get("affiliate_id") || "",
