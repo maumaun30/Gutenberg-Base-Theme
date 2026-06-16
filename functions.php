@@ -511,7 +511,7 @@ function fnlmx_register_modal() {
       </div>
 
       <!-- Submit (chamfered red button) -->
-      <button type="button" id="fm-reg-submit" class="fm-reg-modal__submit">
+      <button type="button" id="fm-reg-submit" class="fm-reg-modal__submit fm-register-btn">
         <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#fm-reg-submit-shape)">
             <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
