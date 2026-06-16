@@ -248,31 +248,18 @@ $share_title = rawurlencode($title);
     line-height: 1.2;
   }
 
-  /* dot psuedo list */
-  .sp-content__body .wp-block-list {
-    list-style: none;
-    padding-left: 0;
+  /* List markers — ul: primary bullet, ol: numbers */
+  .sp-content__body ul {
+    list-style: disc;
   }
 
-  .sp-content__body .wp-block-list li {
-    position: relative;
-    padding-left: 16px;
+  .sp-content__body ol {
+    list-style: decimal;
   }
 
-  .sp-content__body .wp-block-list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.8em;
-    width: 3px;
-    height: 3px;
-    background: #F7F1F3;
-    /* dot color */
-    border-radius: 50%;
-    transform: translateY(-50%);
+  .sp-content__body ul li::marker {
+    color: var(--color-primary);
   }
-
-  /* end of dot psuedo list */
 
   .sp-terms {
     display: flex;
@@ -322,8 +309,8 @@ $share_title = rawurlencode($title);
 
   .sp-content__body ul,
   .sp-content__body ol {
-    margin: 0 0 1.1rem 1.25rem;
-    padding: 0;
+    margin: 0 0 1.1rem;
+    padding-left: 1.5rem;
   }
 
   .sp-content__body li {

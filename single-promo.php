@@ -65,7 +65,6 @@ if ($raw_duration) {
 $is_ongoing    = $end_ts && $end_ts > current_time('timestamp');
 $end_formatted = $end_ts ? date_i18n('j M Y', $end_ts) : '';
 
-$cta_url   = sp_promo_acf('fnlmx_deposit_now', $post_id);
 $cta_label = 'Deposit Now';
 
 /* Recent Promos — same CPT, exclude current, latest 3 */
@@ -331,8 +330,8 @@ if (! empty($fg_term_ids_by_tax)) {
 
   .pr-content__body ul,
   .pr-content__body ol {
-    margin: 0 0 1rem 1.25rem;
-    padding: 0;
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
   }
 
   .pr-content__body li {
@@ -354,27 +353,17 @@ if (! empty($fg_term_ids_by_tax)) {
     margin: 1rem 0;
   }
 
-  /* Dot pseudo-list (matches single.php) */
-  .pr-content__body .wp-block-list {
-    list-style: none;
-    padding-left: 0;
+  /* List markers — ul: primary bullet, ol: numbers */
+  .pr-content__body ul {
+    list-style: disc;
   }
 
-  .pr-content__body .wp-block-list li {
-    position: relative;
-    padding-left: 16px;
+  .pr-content__body ol {
+    list-style: decimal;
   }
 
-  .pr-content__body .wp-block-list li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.8em;
-    width: 3px;
-    height: 3px;
-    background: #F7F1F3;
-    border-radius: 50%;
-    transform: translateY(-50%);
+  .pr-content__body ul li::marker {
+    color: var(--color-primary);
   }
 
   /* ── DEPOSIT NOW CTA ── */
@@ -390,6 +379,7 @@ if (! empty($fg_term_ids_by_tax)) {
     border-radius: 8px;
     background: var(--color-primary);
     color: #fff;
+    font-family: inherit;
     font-size: .85rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -622,17 +612,11 @@ if (! empty($fg_term_ids_by_tax)) {
         <?php echo apply_filters('the_content', $content); ?>
       </div>
 
-      <?php if ($cta_url) : ?>
-        <div class="pr-cta-wrap">
-          <a
-            class="pr-cta-btn"
-            href="<?php echo esc_url($cta_url); ?>"
-            target="_blank"
-            rel="noopener noreferrer">
-            <?php echo esc_html($cta_label); ?>
-          </a>
-        </div>
-      <?php endif; ?>
+      <div class="pr-cta-wrap">
+        <button type="button" class="pr-cta-btn fm-register-btn">
+          <?php echo esc_html($cta_label); ?>
+        </button>
+      </div>
     </article>
 
     <!-- RIGHT: recent promos -->

@@ -38,7 +38,10 @@
   --shadow-lg: 0 8px 40px rgba(0, 0, 0, 0.65);
   --shadow-glow: 0 0 24px rgba(245, 179, 53, 0.25);
 
-  /* Typography — fluid with clamp() */
+  /* Typography — font stack + fluid sizes with clamp() */
+  --font-sans: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-display: "Bebas Neue", "Montserrat", "Impact", sans-serif;
   --text-hero: clamp(2.5rem, 5vw, 4.5rem);
   --text-h1: clamp(2rem, 4vw, 3.75rem);
   --text-h2: clamp(1.75rem, 3vw, 3rem);
@@ -1180,6 +1183,50 @@ body.funalo-drawer-open {
   color: var(--color-primary);
 }
 
+/* Phone field — icon + +63 prefix + local number (mirrors the register modal) */
+.fm-welcome-modal__field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 58px;
+  padding: 0 18px;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+}
+
+.fm-welcome-modal__field-icon {
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.fm-welcome-modal__cc {
+  flex-shrink: 0;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.fm-welcome-modal__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  outline: none;
+}
+
+.fm-welcome-modal__input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
 /* CTA — chamfered red button (carries .fm-register-btn) */
 .fm-welcome-modal__cta {
   position: relative;
@@ -1253,6 +1300,17 @@ body.funalo-drawer-open {
     font-size: 13px;
     margin-bottom: 20px;
     max-width: 240px;
+  }
+
+  .fm-welcome-modal__field {
+    height: 50px;
+    padding: 0 14px;
+    margin-bottom: 14px;
+  }
+
+  .fm-welcome-modal__cc,
+  .fm-welcome-modal__input {
+    font-size: 14px;
   }
 
   .fm-welcome-modal__cta {
@@ -1807,10 +1865,6 @@ body.funalo-drawer-open {
   .fnlmx-social-icon img {
     width: 1rem;
     height: 1rem;
-  }
-
-  .fnlmx-footer__nav-heading {
-    text-align: center;
   }
 
   .fnlmx-social-list {
@@ -2458,13 +2512,26 @@ h1.page-title-404 {
 @layer base {
   html {
     scroll-behavior: smooth;
+    /* Optimized typographic root — Montserrat cascades from here */
+    font-family: var(--font-sans);
+    font-size: 100%; /* respects the user's browser preference */
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%; /* no iOS landscape inflation */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis: none; /* never fake bold/italic when a weight is missing */
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-kerning: normal;
   }
 
   body {
     background-color: var(--bg-dark-3);
     color: #ffffff;
+    font-family: var(--font-sans);
+    font-weight: 400;
     line-height: 1.65;
-    -webkit-font-smoothing: antialiased;
+    letter-spacing: -0.005em;
   }
 
   h1 {
@@ -2478,6 +2545,7 @@ h1.page-title-404 {
     line-height: 1.2;
     font-weight: 700;
     letter-spacing: -0.015em;
+    margin: 10px 0;
   }
   h3 {
     font-size: var(--text-h3);
@@ -2510,11 +2578,12 @@ h1.page-title-404 {
   }
 
   a {
-    color: var(--color-primary);
+    color: #FFFFFF;
     transition: color 0.2s ease;
+    text-decoration: underline;
   }
   a:hover {
-    color: var(--color-primary-light);
+    color: var(--color-primary);
   }
 
   ::selection {
@@ -2737,6 +2806,60 @@ h1.page-title-404 {
   }
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     background: var(--color-primary);
+  }
+}
+
+/* ============================================================
+   PAGE CONTENT WIDTH (index.php — pages / blog)
+   ------------------------------------------------------------
+   index.php wraps the regular page blocks (core/*) in
+   .entry-content and renders full-bleed custom section blocks
+   (mytheme/*) outside it. Constrain the wrapper to 1280px so the
+   page text lines up with the section blocks' inner container,
+   while those section blocks keep their full-bleed backgrounds.
+   ============================================================ */
+.entry-content {
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 60px 10px;
+  box-sizing: border-box;
+}
+
+/* Restore list markers inside page content (Tailwind preflight strips them).
+   ul → primary-coloured bullets, ol → numbers. */
+.entry-content ul,
+.entry-content ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.entry-content ul {
+  list-style: disc;
+}
+
+.entry-content ol {
+  list-style: decimal;
+}
+
+.entry-content li {
+  margin-bottom: 0.4rem;
+}
+
+/* Colour the ul bullet with the brand primary (number keeps the text colour) */
+.entry-content ul li::marker {
+  color: var(--color-primary);
+}
+
+@media (max-width: 1024px) {
+  .entry-content {
+    padding: 40px 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .entry-content {
+    padding: 20px;
   }
 }
 
