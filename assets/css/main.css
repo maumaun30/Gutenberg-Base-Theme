@@ -2578,12 +2578,12 @@ h1.page-title-404 {
   }
 
   a {
-    color: #FFFFFF;
+    color: var(--color-primary);
     transition: color 0.2s ease;
     text-decoration: underline;
   }
   a:hover {
-    color: var(--color-primary);
+    color: #FFFFFF;
   }
 
   ::selection {
@@ -2822,7 +2822,11 @@ h1.page-title-404 {
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
-  padding: 60px 10px;
+  padding: 40px;
+  background: #1E1E1E;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  border-radius: 6px;
   box-sizing: border-box;
 }
 
@@ -2853,13 +2857,17 @@ h1.page-title-404 {
 
 @media (max-width: 1024px) {
   .entry-content {
-    padding: 40px 20px;
+    padding: 40px;
+    margin-left: 20px;
+    margin-right: 20px;
   }
 }
 
 @media (max-width: 767px) {
   .entry-content {
     padding: 20px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 

@@ -185,6 +185,14 @@
   isolation: isolate;
   --decoration: #ffffff; /* bottom-right accent triangle */
   transition: transform 0.2s ease, filter 0.2s ease;
+  /* reset so the <button> primary matches the <a> secondary */
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .mytheme-carousel-slide__btn-shape {
@@ -212,7 +220,7 @@
   transform: translateY(-5px);
 }
 
-a.mytheme-carousel-slide__btn--primary:hover {
+.mytheme-carousel-slide__btn--primary:hover {
   color: #BA001D;
 }
 a.mytheme-carousel-slide__btn--secondary:hover {
