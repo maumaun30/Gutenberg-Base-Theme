@@ -60,8 +60,18 @@ document.addEventListener('DOMContentLoaded', function () {
     // Always include the core UTM params (fall back to defaults when missing)
     query.set('utm_source', attr.utm_source || 'seo');
     query.set('utm_medium', attr.utm_medium || 'ggo');
-    query.set('utm_campaign', attr.utm_campaign ||
-      '2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo-reg-bonus');
+
+    // The modal is the registration-bonus flow, so it should report the
+    // -reg-bonus campaign. attribution.js always stores a campaign (default
+    // …sub-seo), so the plain `|| fallback` never fires — swap the organic
+    // default for the bonus variant, but keep any real paid-link campaign.
+    var ORGANIC_CAMPAIGN = '2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo';
+    var BONUS_CAMPAIGN   = '2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo-reg-bonus';
+    var campaign = attr.utm_campaign;
+    if (!campaign || campaign === ORGANIC_CAMPAIGN) {
+      campaign = BONUS_CAMPAIGN;
+    }
+    query.set('utm_campaign', campaign);
 
     // Optional UTM params — only when present
     if (attr.utm_term) query.set('utm_term', attr.utm_term);
@@ -118,7 +128,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+      if (e.key === 'Escape' && modal.classList.contains('is-open')) { closeModal(); return; }
+      /* Keyboard-activate the #fm-register-trigger (role="button") */
+      if ((e.key === 'Enter' || e.key === ' ') && e.target.closest('#fm-register-trigger')) {
+        e.preventDefault();
+        openModal();
+      }
     });
 
     wirePhoneForm(

@@ -92,13 +92,13 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
       <?php if ( ( $show_primary_btn && $primary_btn_text ) || $secondary_btn_text ) : ?>
         <div class="mytheme-carousel-slide__buttons">
           <?php if ( $show_primary_btn && $primary_btn_text ) : ?>
-            <a
-              href="#"
-              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary fm-open-register"
+            <button
+              type="button"
+              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary fm-register-btn"
             >
               <?php mytheme_carousel_btn_shape( 'primary-' . $slide_uid ); ?>
               <span class="mytheme-carousel-slide__btn-label"><?php echo esc_html( $primary_btn_text ); ?></span>
-            </a>
+            </button>
           <?php endif; ?>
 
           <?php if ( $secondary_btn_text ) : ?>

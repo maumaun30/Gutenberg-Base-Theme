@@ -1,13 +1,3 @@
-/**
- * Attribution capture + "Register" redirect.
- *
- * Captures UTM / click-id params on every page load (persisted to localStorage
- * and cookies), then redirects to the registration URL with that attribution.
- *
- * Usage: add the class `fm-register-btn` to any <a> or <button>. Clicking it
- * runs goToRegister(). The global window.goToRegister() is also still callable
- * directly (e.g. from an inline onclick) if needed.
- */
 document.addEventListener("DOMContentLoaded", function () {
 
     const STORAGE_KEY = "fm_attr";
@@ -34,19 +24,32 @@ document.addEventListener("DOMContentLoaded", function () {
             `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
     }
 
+    /*
+     * Capture attribution on page load
+     */
     (function captureAttribution() {
 
         const params = new URLSearchParams(window.location.search);
 
         const attribution = {
-            utm_source: params.get("utm_source") || "seo",
-            utm_medium: params.get("utm_medium") || "ggo",
-            utm_campaign: params.get("utm_campaign") ||
+            utm_source:
+                params.get("utm_source") || "seo",
+
+            utm_medium:
+                params.get("utm_medium") || "ggo",
+
+            utm_campaign:
+                params.get("utm_campaign") ||
                 "2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo",
-            utm_term: params.get("utm_term") || "",
-            utm_content: params.get("utm_content") || "",
-            affiliate_id: params.get("affiliate_id") || "",
-            captured_at: new Date().toISOString()
+
+            utm_term:
+                params.get("utm_term") || "",
+
+            utm_content:
+                params.get("utm_content") || "",
+
+            affiliate_id:
+                params.get("affiliate_id") || ""
         };
 
         [
@@ -60,26 +63,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const value = params.get(field);
 
-            if (value && !attribution.click_platform) {
+            if (value && !attribution.click_id) {
 
                 attribution.click_field = field;
                 attribution.click_id = value;
 
-                if (field.startsWith("g")) {
+                if (
+                    field === "gclid" ||
+                    field === "gbraid" ||
+                    field === "wbraid"
+                ) {
                     attribution.click_platform = "google";
+
                 } else if (field === "fbclid") {
                     attribution.click_platform = "facebook";
+
                 } else if (field === "ttclid") {
                     attribution.click_platform = "tiktok";
+
                 } else {
                     attribution.click_platform = "microsoft";
                 }
             }
         });
-
-        if (!attribution.click_platform) {
-            attribution.click_platform = "direct";
-        }
 
         Object.keys(attribution).forEach(function (key) {
             if (attribution[key]) {
@@ -91,6 +97,138 @@ document.addEventListener("DOMContentLoaded", function () {
 
     })();
 
+    /*
+     * Submit phone
+     */
+    window.submitPhone = function () {
+
+        const phoneInput =
+            document.getElementById("phoneInput");
+
+        const termsCheck =
+            document.getElementById("termsCheck");
+
+        if (!phoneInput || !termsCheck) {
+            alert("Form not ready");
+            return;
+        }
+
+        if (!termsCheck.checked) {
+            alert("You must agree to the Terms");
+            return;
+        }
+
+        let phone = phoneInput.value.trim();
+
+        if (!phone) {
+            alert("Enter phone number");
+            phoneInput.focus();
+            return;
+        }
+
+        phone = phone.replace(/\D/g, "");
+
+        if (
+            phone.startsWith("639") &&
+            phone.length === 12
+        ) {
+            phone = "0" + phone.slice(2);
+
+        } else if (
+            phone.startsWith("63") &&
+            phone.length === 12
+        ) {
+            phone = "0" + phone.slice(2);
+
+        } else if (
+            phone.startsWith("9") &&
+            phone.length === 10
+        ) {
+            phone = "0" + phone;
+
+        } else if (
+            !(
+                phone.startsWith("09") &&
+                phone.length === 11
+            )
+        ) {
+            alert("Invalid PH number");
+            phoneInput.focus();
+            return;
+        }
+
+        const attribution = getAttribution();
+
+        const query = new URLSearchParams();
+
+        query.set("mobile", phone);
+
+        query.set(
+            "utm_source",
+            attribution.utm_source || "seo"
+        );
+
+        query.set(
+            "utm_medium",
+            attribution.utm_medium || "ggo"
+        );
+
+        query.set(
+            "utm_campaign",
+            attribution.utm_campaign ||
+            "2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo-reg-bonus"
+        );
+
+        if (attribution.utm_term) {
+            query.set(
+                "utm_term",
+                attribution.utm_term
+            );
+        }
+
+        if (attribution.utm_content) {
+            query.set(
+                "utm_content",
+                attribution.utm_content
+            );
+        }
+
+        if (attribution.affiliate_id) {
+            query.set(
+                "affiliate_id",
+                attribution.affiliate_id
+            );
+        }
+
+        if (
+            attribution.click_field &&
+            attribution.click_id
+        ) {
+            query.set(
+                "click_field",
+                attribution.click_field
+            );
+
+            query.set(
+                "click_id",
+                attribution.click_id
+            );
+
+            query.set(
+                "click_platform",
+                attribution.click_platform
+            );
+        }
+
+        window.location.href =
+            "https://funalomax.com/en/profile/wallet?tab=deposit&" +
+            query.toString();
+    };
+
+    /*
+     * Register redirect — for .fm-register-btn elements (no phone field).
+     * Reuses the captured attribution and sends mobile=true.
+     */
     window.goToRegister = function () {
 
         const attribution = getAttribution();
@@ -98,18 +236,41 @@ document.addEventListener("DOMContentLoaded", function () {
         const query = new URLSearchParams();
 
         query.set("mobile", "true");
-        query.set("utm_source", "seo-sub");
-        query.set("utm_medium", "seo-sub");
 
-        if (attribution.click_field) {
+        query.set(
+            "utm_source",
+            attribution.utm_source || "seo"
+        );
+
+        query.set(
+            "utm_medium",
+            attribution.utm_medium || "ggo"
+        );
+
+        query.set(
+            "utm_campaign",
+            attribution.utm_campaign ||
+            "2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo"
+        );
+
+        if (attribution.utm_term) {
+            query.set("utm_term", attribution.utm_term);
+        }
+
+        if (attribution.utm_content) {
+            query.set("utm_content", attribution.utm_content);
+        }
+
+        if (attribution.affiliate_id) {
+            query.set("affiliate_id", attribution.affiliate_id);
+        }
+
+        if (
+            attribution.click_field &&
+            attribution.click_id
+        ) {
             query.set("click_field", attribution.click_field);
-        }
-
-        if (attribution.click_id) {
             query.set("click_id", attribution.click_id);
-        }
-
-        if (attribution.click_platform) {
             query.set("click_platform", attribution.click_platform);
         }
 
@@ -127,5 +288,43 @@ document.addEventListener("DOMContentLoaded", function () {
         event.preventDefault();
         window.goToRegister();
     });
+
+    /*
+     * Normalize phone input
+     */
+    const phoneInput =
+        document.getElementById("phoneInput");
+
+    if (phoneInput) {
+        phoneInput.addEventListener(
+            "input",
+            function () {
+
+                let value =
+                    this.value.replace(/\D/g, "");
+
+                if (
+                    value.startsWith("639")
+                ) {
+                    value =
+                        "0" + value.slice(2);
+
+                } else if (
+                    value.startsWith("63")
+                ) {
+                    value =
+                        "0" + value.slice(2);
+
+                } else if (
+                    value.startsWith("9")
+                ) {
+                    value =
+                        "0" + value;
+                }
+
+                this.value = value;
+            }
+        );
+    }
 
 });
