@@ -50,23 +50,20 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Send in the 09XXXXXXXXX form the registration flow expects
-    const mobile = '0' + local;
-
     const attr = getAttribution();
     const query = new URLSearchParams();
-    query.set('mobile', mobile);
 
     // Always include the core UTM params (fall back to defaults when missing)
     query.set('utm_source', attr.utm_source || 'seo');
     query.set('utm_medium', attr.utm_medium || 'ggo');
 
     // The modal is the registration-bonus flow, so it should report the
-    // -reg-bonus campaign. attribution.js always stores a campaign (default
-    // …sub-seo), so the plain `|| fallback` never fires — swap the organic
-    // default for the bonus variant, but keep any real paid-link campaign.
+    // -reg-bonus-offer campaign. attribution.js always stores a campaign
+    // (default …sub-seo), so the plain `|| fallback` never fires — swap the
+    // organic default for the bonus variant, but keep any real paid-link
+    // campaign.
     var ORGANIC_CAMPAIGN = '2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo';
-    var BONUS_CAMPAIGN   = '2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo-reg-bonus';
+    var BONUS_CAMPAIGN   = '2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo-reg-bonus-offer';
     var campaign = attr.utm_campaign;
     if (!campaign || campaign === ORGANIC_CAMPAIGN) {
       campaign = BONUS_CAMPAIGN;
@@ -86,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     window.location.href =
-      'https://funalomax.com/en/profile/wallet?tab=deposit&' + query.toString();
+      'https://funalomax.com/en?' + query.toString();
   }
 
   /* Wire a phone input + submit button (+ optional terms checkbox) to the
@@ -136,11 +133,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    wirePhoneForm(
-      document.getElementById('fm-reg-phone'),
-      document.getElementById('fm-reg-submit'),
-      document.getElementById('fm-reg-terms')
-    );
+    /* The register modal's submit (#fm-reg-submit) carries the .fm-register-btn
+       class, so attribution.js's goToRegister() handles its redirect
+       (…/en?…sub-seo). Only normalize the phone field for display here. */
+    var regPhone = document.getElementById('fm-reg-phone');
+    if (regPhone) {
+      regPhone.addEventListener('input', function () { this.value = toLocal(this.value); });
+    }
   }
 
   /* ── Welcome bonus modal (no terms checkbox) ── */

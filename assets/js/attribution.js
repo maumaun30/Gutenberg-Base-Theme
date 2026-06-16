@@ -235,8 +235,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const query = new URLSearchParams();
 
-        query.set("mobile", "true");
-
         query.set(
             "utm_source",
             attribution.utm_source || "seo"
