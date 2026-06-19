@@ -60,7 +60,7 @@
 
 /* ── Content column ──────────────────────────────────────────────── */
 .mytheme-cta__title {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: clamp(2rem, 4vw, 3rem);
   color: #fff;
   letter-spacing: 0.02em;
@@ -69,7 +69,7 @@
 }
 
 .mytheme-cta__body {
-  font-family: 'Outfit', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.25rem;
   color: rgba(255, 255, 255, 0.7);
   line-height: 1.7;
@@ -189,7 +189,7 @@
 }
 
 .cta-editor__title {
-  font-family: 'Bebas Neue', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   font-size: clamp(2rem, 3vw, 2.75rem) !important;
   color: #fff !important;
   letter-spacing: 0.02em !important;

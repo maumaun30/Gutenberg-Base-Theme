@@ -41,6 +41,7 @@ if (! function_exists('gl_game_card')) :
                 <circle cx="9" cy="14" r="0.7" />
               </svg>
             <?php endif; ?>
+            <span class="game-card__placeholder-name"><?php echo esc_html($title_attr); ?></span>
           </div>
         <?php endif; ?>
         <div class="game-card__overlay" aria-hidden="true"></div>

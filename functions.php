@@ -35,6 +35,17 @@ add_action('after_setup_theme', 'mytheme_setup');
 
 function mytheme_enqueue_assets()
 {
+    // Load Montserrat globally so every template (including taxonomy/category
+    // pages) renders in the same font. Previously the font was pulled in via
+    // scattered @import rules in individual blocks/templates, so pages without
+    // those — like taxonomy-game_category.php — fell back to a system font.
+    wp_enqueue_style(
+        'mytheme-fonts',
+        'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap',
+        [],
+        null
+    );
+
     $critical_css = get_theme_file_path('/assets/css/critical.min.css');
     $main_css     = get_theme_file_path('/assets/css/main.min.css');
     $critical_js  = get_theme_file_path('/assets/js/critical.js');
@@ -96,6 +107,20 @@ function mytheme_enqueue_assets()
     }
 }
 add_action('wp_enqueue_scripts', 'mytheme_enqueue_assets');
+
+/**
+ * Preconnect to the Google Fonts hosts so Montserrat loads sooner and the
+ * header nav doesn't visibly reflow from a fallback font when it arrives.
+ */
+function mytheme_font_resource_hints($urls, $relation_type)
+{
+    if ('preconnect' === $relation_type) {
+        $urls[] = 'https://fonts.googleapis.com';
+        $urls[] = ['href' => 'https://fonts.gstatic.com', 'crossorigin'];
+    }
+    return $urls;
+}
+add_filter('wp_resource_hints', 'mytheme_font_resource_hints', 10, 2);
 
 function mytheme_editor_styles()
 {
@@ -375,7 +400,7 @@ function fnlmx_responsible_gaming_popup() {
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
         </svg>
         <span class="fm-welcome-modal__cc">+63</span>
-        <input type="tel" id="fm-welcome-phone" class="fm-welcome-modal__input"
+        <input type="tel" id="phoneInput1" class="phoneInput fm-welcome-modal__input"
           placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
       </div>
 
@@ -506,7 +531,7 @@ function fnlmx_register_modal() {
           <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
         </svg>
         <span class="fm-reg-modal__cc">+63</span>
-        <input type="tel" id="fm-reg-phone" class="fm-reg-modal__input"
+        <input type="tel" id="phoneInput2" class="phoneInput fm-reg-modal__input"
           placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
       </div>
 
@@ -1044,6 +1069,9 @@ if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
         $thumb  = get_the_post_thumbnail_url( $post_id, 'medium_large' );
         $title  = get_the_title( $post_id );
         $is_hot = has_term( 'hot', 'game-tag', $post_id );
+        // Show a DEMO badge when the game has a game code (playable demo).
+        // HOT and DEMO can appear together (HOT stacks first).
+        $has_demo = (bool) get_post_meta( $post_id, 'fnlmx_game_code', true );
         ?>
         <a href="<?php echo esc_url( get_permalink( $post_id ) ); ?>" class="fm-card" aria-label="<?php echo esc_attr( $title ); ?>">
 
@@ -1067,12 +1095,20 @@ if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
                     $fallback_logo = fnlmx_tile_fallback_logo();
                     echo $fallback_logo ?: esc_html( mb_substr( $title, 0, 1 ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     ?>
+                    <span class="fm-card__fallback-name"><?php echo esc_html( $title ); ?></span>
                 </div>
 
             <?php endif; ?>
 
-            <?php if ( $is_hot ) : ?>
-                <span class="fm-card__badge">HOT</span>
+            <?php if ( $is_hot || $has_demo ) : ?>
+                <div class="fm-card__badges">
+                    <?php if ( $is_hot ) : ?>
+                        <span class="fm-card__badge">HOT</span>
+                    <?php endif; ?>
+                    <?php if ( $has_demo ) : ?>
+                        <span class="fm-card__badge fm-card__badge--demo">DEMO</span>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
 
         </a>

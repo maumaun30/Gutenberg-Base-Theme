@@ -17,9 +17,11 @@
 
       <!-- Logo -->
       <div class="funalo-nav__logo">
-        <a href="<?php echo esc_url(home_url('/')); ?>">
+        <a href="https://funalomax.com/en?utm_source=seo&utm_medium=ggo&utm_campaign=2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo">
           <?php if (has_custom_logo()) : ?>
-            <?php the_custom_logo(); ?>
+            <?php // Output the logo image only — the_custom_logo() would wrap it in its own
+                  // <a> pointing to the homepage, overriding the link above. ?>
+            <?php echo wp_get_attachment_image(get_theme_mod('custom_logo'), 'full', false, ['class' => 'custom-logo']); ?>
           <?php else : ?>
             <span class="funalo-nav__logo-text"><?php bloginfo('name'); ?></span>
           <?php endif; ?>
@@ -137,9 +139,11 @@
 
     <!-- Drawer Header: Logo + Close -->
     <div class="funalo-drawer__header">
-      <a href="<?php echo esc_url(home_url('/')); ?>" class="drawer-logo">
+      <a href="https://funalomax.com/en?utm_source=seo&utm_medium=ggo&utm_campaign=2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo" class="drawer-logo">
         <?php if (has_custom_logo()) : ?>
-          <?php the_custom_logo(); ?>
+          <?php // Output the logo image only — the_custom_logo() would wrap it in its own
+                // <a> pointing to the homepage, overriding the link above. ?>
+          <?php echo wp_get_attachment_image(get_theme_mod('custom_logo'), 'full', false, ['class' => 'custom-logo']); ?>
         <?php else : ?>
           <span class="drawer-logo-text"><?php bloginfo('name'); ?></span>
         <?php endif; ?>

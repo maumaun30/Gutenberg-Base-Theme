@@ -1,7 +1,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap");
+/* Montserrat is loaded globally via wp_enqueue_style() in functions.php.
+   (A remote @import here is invalid after @tailwind and was being stripped
+   from main.min.css, so the font never loaded on pages without a block/
+   template that imported it — e.g. taxonomy-game_category.php.) */
 
 /* ============================================================
    CSS CUSTOM PROPERTIES
@@ -41,7 +44,7 @@
   /* Typography — font stack + fluid sizes with clamp() */
   --font-sans: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
-  --font-display: "Bebas Neue", "Montserrat", "Impact", sans-serif;
+  --font-display: "Montserrat", sans-serif;
   --text-hero: clamp(2.5rem, 5vw, 4.5rem);
   --text-h1: clamp(2rem, 4vw, 3.75rem);
   --text-h2: clamp(1.75rem, 3vw, 3rem);
@@ -109,7 +112,7 @@
 }
 
 .funalo-nav__logo-text {
-  font-family: "Bebas Neue", "Impact", sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 28px;
   color: #fff;
   letter-spacing: 1px;
@@ -570,7 +573,7 @@
 }
 
 .funalo-drawer__header .drawer-logo-text {
-  font-family: "Bebas Neue", "Impact", sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 24px;
   color: #fff;
   letter-spacing: 1px;
@@ -876,7 +879,7 @@ body.funalo-drawer-open {
 }
 
 .fm-reg-modal__brand-text {
-  font-family: "Bebas Neue", "Montserrat", sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 28px;
   font-weight: 800;
   color: #fff;
@@ -2828,6 +2831,37 @@ h1.page-title-404 {
   margin-bottom: 30px;
   border-radius: 6px;
   box-sizing: border-box;
+  /* Long unbreakable strings (URLs, links) should wrap instead of forcing
+     horizontal overflow on phones. Scoped to the page content box only. */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  overflow-x: hidden;
+}
+
+/* Break overly long links / inline text inside Gutenberg page content so they
+   wrap at any character when there is no normal break point (e.g. a raw URL). */
+.entry-content a,
+.entry-content p,
+.entry-content li,
+.entry-content h1,
+.entry-content h2,
+.entry-content h3,
+.entry-content h4,
+.entry-content h5,
+.entry-content h6 {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+}
+
+/* Media inside page content should never exceed its container either. */
+.entry-content img,
+.entry-content iframe,
+.entry-content video,
+.entry-content table {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Restore list markers inside page content (Tailwind preflight strips them).
