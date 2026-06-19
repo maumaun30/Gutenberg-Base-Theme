@@ -217,18 +217,13 @@ set_query_var('game_count',     $game_count);
       padding: 10px 20px;
     }
 
-    /* Smaller HOT badge on mobile */
-    .fm-card__badge {
-      top: 8px;
-      left: 8px;
-      padding: 2px 7px;
-      font-size: 8px;
-      line-height: 12px;
-    }
   }
 
   .fm-card {
     position: relative;
+    /* Query container so the badge scales with tile width, matching the
+       games-listing block's .game-card. */
+    container-type: inline-size;
     aspect-ratio: 111 / 140;
     border-radius: 12px;
     overflow: hidden;
@@ -285,20 +280,58 @@ set_query_var('game_count',     $game_count);
     font-weight: 700;
   }
 
-  .fm-card__badge {
+  /* Match the baked-in game-name styling on real thumbnails: bottom-anchored,
+     centered, white, uppercase, over a dark gradient. */
+  .fm-card__fallback-name {
     position: absolute;
-    top: 13px;
-    left: 13px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: center;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* Badge stack — HOT and DEMO sit one below the other in the top-left
+     corner. Positioning lives here so individual badges just style the pill. */
+  .fm-card__badges {
+    position: absolute;
+    top: clamp(0.25rem, 4cqi, 0.5rem);
+    left: clamp(0.25rem, 4cqi, 0.5rem);
     z-index: 3;
     /* above .fm-card__img (z-index 2), otherwise the image paints over it */
-    padding: 4px 10px;
-    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    /* stretch so both pills match the width of the widest one (DEMO) */
+    align-items: stretch;
+    gap: clamp(0.25rem, 2cqi, 0.375rem);
+  }
+
+  /* Sizing matches the games-listing block's .game-card__badge so the pill
+     scales fluidly with the tile width (cqi = % of the card's inline size). */
+  .fm-card__badge {
+    padding: clamp(0.1rem, 1.6cqi, 0.2rem) clamp(0.25rem, 4cqi, 0.5rem);
+    border-radius: clamp(0.2rem, 2.5cqi, 0.3rem);
     background: var(--color-primary);
     color: #fff;
-    font-size: 10px;
+    font-size: clamp(0.5rem, 6cqi, 0.7rem);
     font-weight: 700;
-    line-height: 15px;
+    line-height: 1.2;
     letter-spacing: .04em;
+    /* Centered text; the wrapper's align-items:stretch makes HOT and DEMO
+       share the same width regardless of label length. */
+    text-align: center;
   }
 
   .fm-card__title {
@@ -426,7 +459,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-info__sub {
     color: var(--fm-muted-2);
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 15px;
     line-height: 1.55;
     margin: 0 0 32px;
@@ -454,7 +487,7 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-feat__txt h3 {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 17px;
     color: rgb(183, 183, 184);
@@ -464,7 +497,7 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-feat__txt p {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 15px;
     color: var(--fm-muted-2);
     margin: 0;
@@ -502,7 +535,7 @@ set_query_var('game_count',     $game_count);
     align-items: center;
     gap: 18px;
     padding: 22px 24px;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 19px;
     color: rgb(202, 202, 203);
@@ -537,7 +570,7 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-faq__body {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-size: 15px;
     line-height: 1.55;
     color: var(--fm-muted-2);
@@ -656,7 +689,7 @@ set_query_var('game_count',     $game_count);
     border: 1px solid var(--fm-card-br);
     border-radius: 20px;
     padding: 32px;
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     color: rgba(255, 255, 255, .75);
     line-height: 1.7;
   }

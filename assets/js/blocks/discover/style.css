@@ -12,7 +12,7 @@
 
 /* Heading */
 .discover-heading {
-  font-family: 'Bebas Neue', sans-serif !important;
+  font-family: 'Montserrat', sans-serif !important;
   font-size: var(--text-h2) !important;
   color: #ffffff !important;
   letter-spacing: 0.02em !important;
@@ -50,7 +50,7 @@
 }
 
 .discover-stat__value {
-  font-family: 'Bebas Neue', sans-serif;
+  font-family: 'Montserrat', sans-serif;
   font-size: var(--text-h3);
   color: var(--color-primary);
   letter-spacing: 0.02em;

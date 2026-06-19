@@ -109,6 +109,10 @@ if ($primary_cat) {
         'title'     => get_the_title(),
         'permalink' => get_permalink(),
         'thumb'     => get_the_post_thumbnail_url(get_the_ID(), 'large'),
+        // Same badge logic as fnlmx_game_card_template(): HOT from game-tag,
+        // DEMO when the game has a playable game code.
+        'is_hot'    => has_term('hot', 'game-tag', get_the_ID()),
+        'has_demo'  => (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true),
       ];
     }
     wp_reset_postdata();
@@ -489,6 +493,9 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
   .sg-rcard {
     position: relative;
+    /* Query container so the badge scales with tile width, matching the
+       games-listing block's .game-card and the category template. */
+    container-type: inline-size;
     border-radius: var(--radius-md);
     aspect-ratio: 111 / 140;
     overflow: hidden;
@@ -540,6 +547,57 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     align-items: center;
     justify-content: center;
     background: #1E1E1E;
+  }
+
+  /* Match the baked-in game-name styling on real thumbnails: bottom-anchored,
+     centered, white, uppercase, over a dark gradient. */
+  .sg-rcard__fallback-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
+    color: #FFFFFF;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: center;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  /* Badge stack — HOT and DEMO sit one below the other in the top-left
+     corner. Mirrors the category template (.fm-card__badges). */
+  .sg-rcard__badges {
+    position: absolute;
+    top: clamp(0.25rem, 4cqi, 0.5rem);
+    left: clamp(0.25rem, 4cqi, 0.5rem);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    /* stretch so both pills match the width of the widest one (DEMO) */
+    align-items: stretch;
+    gap: clamp(0.25rem, 2cqi, 0.375rem);
+  }
+
+  /* Sizing matches the games-listing block's .game-card__badge so the pill
+     scales fluidly with the tile width (cqi = % of the card's inline size). */
+  .sg-rcard__badge {
+    padding: clamp(0.1rem, 1.6cqi, 0.2rem) clamp(0.25rem, 4cqi, 0.5rem);
+    border-radius: clamp(0.2rem, 2.5cqi, 0.3rem);
+    background: var(--color-primary);
+    color: #fff;
+    font-size: clamp(0.5rem, 6cqi, 0.7rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: .04em;
+    text-align: center;
   }
 
   /* Play pill — bottom-right corner */
@@ -1084,8 +1142,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     <section class="sg-related">
       <div class="sg-related-hd">
         <span>More <?php echo esc_html($related_label); ?> Games</span>
-        <?php if ($primary_cat) : ?>
-          <a href="<?php echo esc_url(get_term_link($primary_cat)); ?>" class="sg-viewall">View All →</a>
+        <?php if (! empty($top_term) && ! is_wp_error($top_term)) : ?>
+          <a href="<?php echo esc_url(get_term_link($top_term)); ?>" class="sg-viewall">View All →</a>
         <?php endif; ?>
       </div>
       <div class="sg-grid<?php echo $square_cards ? ' sg-grid--square' : ''; ?>">
@@ -1114,8 +1172,20 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
           $rc_fallback_logo = function_exists('fnlmx_tile_fallback_logo') ? fnlmx_tile_fallback_logo() : '';
           echo $rc_fallback_logo; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
           ?>
+          <span class="sg-rcard__fallback-name"><?php echo esc_html($rg['title']); ?></span>
         </div>
 
+    <?php endif; ?>
+
+    <?php if ($rg['is_hot'] || $rg['has_demo']) : ?>
+        <div class="sg-rcard__badges">
+            <?php if ($rg['is_hot']) : ?>
+                <span class="sg-rcard__badge">HOT</span>
+            <?php endif; ?>
+            <?php if ($rg['has_demo']) : ?>
+                <span class="sg-rcard__badge sg-rcard__badge--demo">DEMO</span>
+            <?php endif; ?>
+        </div>
     <?php endif; ?>
 
     <span class="sg-rcard__play">Play</span>
