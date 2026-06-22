@@ -1029,13 +1029,22 @@ body.funalo-drawer-open {
 /* Mobile: card spans full width but stays sized to its content */
 @media (max-width: 600px) {
   .fm-reg-modal {
-    padding: 16px;
+    padding: 0;
   }
 
   .fm-reg-modal__card {
+    width: 100%;
     max-width: 100%;
-    padding: 2.5rem 1.5rem 2rem;
-    border-radius: 18px;
+    height: 100vh; /* fallback */
+    height: 100dvh; /* fits visible viewport, accounts for mobile browser chrome */
+    max-height: none;
+    padding: 1rem;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto; /* scroll internally if content is taller than viewport */
+    border: unset;
   }
 
   .fm-reg-modal__title {
@@ -1274,9 +1283,23 @@ body.funalo-drawer-open {
 }
 
 @media (max-width: 600px) {
+  .fm-welcome-modal {
+    padding: 0;
+  }
+
   .fm-welcome-modal__card {
-    max-width: 320px;
+    width: 100%;
+    max-width: 100%;
+    height: 100vh; /* fallback */
+    height: 100dvh; /* fits visible viewport, accounts for mobile browser chrome */
+    max-height: none;
     padding: 2rem 1.5rem 1.75rem;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto; /* scroll internally if content is taller than viewport */
+    border: unset;
   }
 
   .fm-welcome-modal__hero {
@@ -1956,16 +1979,12 @@ body.funalo-drawer-open {
   width: 100%;
   max-width: 520px;
   background: /*#1a1730*/ #000000;
-  border-radius: 16px;
   overflow: hidden;
-  box-shadow:
-    0 32px 80px rgba(0, 0, 0, 0.75),
-    0 0 0 1px rgba(255, 255, 255, 0.07);
   display: flex;
   flex-direction: column;
   max-height: 90vh;
   max-height: 90dvh;
-  border: 2px solid #1e1e1e;
+  border: 2px solid #FFFFFF;
 }
 
 .fnlmx-rg-popup__title {
@@ -2003,15 +2022,15 @@ body.funalo-drawer-open {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  /*gap: 0.75rem;*/
 }
 
 .fnlmx-rg-popup__list li,
 .fnlmx-rg-popup__wysiwyg ul li,
 .fnlmx-rg-popup__wysiwyg ol li {
   font-family: "Montserrat", sans-serif;
-  font-size: 0.8125rem;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  color: #FFFFFF;
   line-height: 1.6;
   padding-left: 1.25rem;
   position: relative;
@@ -2032,7 +2051,7 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup__wysiwyg ul li a,
 .fnlmx-rg-popup__wysiwyg ol li a,
 .fnlmx-rg-popup__wysiwyg a {
-  color: var(--color-primary);
+  color: #ffdb00;
   font-weight: 500;
   transition: color 0.2s;
 }
@@ -2168,12 +2187,13 @@ body.funalo-drawer-open {
     padding: 0.5rem;
   }
   .fnlmx-rg-popup__panel {
-    border-radius: 12px;
     /* Fit the *visible* viewport. `dvh` accounts for the mobile browser's
        address bar, so the panel (and the buttons) are never pushed off
        screen the way `vh` does. The `vh` line is a fallback for old browsers. */
     max-height: 95vh;
     max-height: calc(100dvh - 1rem);
+    max-width: 340px;
+    border: unset;
   }
   .fnlmx-rg-popup__title {
     font-size: 0.9375rem;
@@ -2209,6 +2229,22 @@ body.funalo-drawer-open {
     font-size: 0.75rem;
     line-height: 1.35;
     padding: 0.75rem 1rem 0.875rem;
+  }
+
+  .fnlmx-rg-popup__btn {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .fnlmx-rg-popup__panel {
+    max-width: 330px;
+  }
+}
+
+@media (max-width: 350px) {
+  .fnlmx-rg-popup__panel {
+    max-width: 300px;
   }
 }
 

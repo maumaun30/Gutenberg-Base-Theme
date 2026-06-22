@@ -217,6 +217,14 @@ set_query_var('game_count',     $game_count);
       padding: 10px 20px;
     }
 
+    /* Smaller HOT badge on mobile 
+    .fm-card__badge {
+      top: 8px;
+      left: 8px;
+      padding: 2px 7px;
+      font-size: 8px;
+      line-height: 12px;
+    }*/
   }
 
   .fm-card {
