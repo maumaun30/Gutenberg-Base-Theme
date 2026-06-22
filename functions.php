@@ -270,13 +270,20 @@ function fnlmx_responsible_gaming_popup() {
   // Hero image for the New User Welcome Bonus modal (shown after Proceed).
   // Prefer the ACF options field; otherwise fall back to a theme asset so the
   // image can be supplied simply by dropping a file into /assets/images/.
-  $welcome_img     = function_exists('get_field') ? get_field('fnlmx_welcome_bonus_image', 'option') : null;
+  $welcome_img     = function_exists('get_field')
+    ? ( get_field('fnlmx_welcome_bonus_modal_image', 'option') ?: get_field('fnlmx_welcome_bonus_image', 'option') )
+    : null;
   $welcome_img_url = '';
-  $welcome_img_alt = 'New User Welcome Bonus';
-  if ( $welcome_img && is_array( $welcome_img ) && ! empty( $welcome_img['url'] ) ) {
+  $welcome_img_alt = 'Registration Bonus Offer';
+  if ( is_array( $welcome_img ) && ! empty( $welcome_img['url'] ) ) {
     $welcome_img_url = $welcome_img['url'];
     $welcome_img_alt = $welcome_img['alt'] ?? $welcome_img_alt;
-  } else {
+  } elseif ( is_numeric( $welcome_img ) ) {
+    $welcome_img_url = wp_get_attachment_image_url( (int) $welcome_img, 'large' );
+  } elseif ( is_string( $welcome_img ) && $welcome_img !== '' ) {
+    $welcome_img_url = $welcome_img;
+  }
+  if ( ! $welcome_img_url ) {
     foreach ( [ 'welcome-bonus-hero.png', 'welcome-bonus-hero.webp', 'welcome-bonus-hero.jpg' ] as $welcome_fallback ) {
       if ( file_exists( get_theme_file_path( '/assets/images/' . $welcome_fallback ) ) ) {
         $welcome_img_url = get_theme_file_uri( '/assets/images/' . $welcome_fallback );
@@ -349,10 +356,14 @@ function fnlmx_responsible_gaming_popup() {
 
       <div class="fnlmx-rg-popup__actions">
         <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--exit" id="fnlmx-rg-exit">
-          <?php esc_html_e('Exit', 'luxe'); ?>
+          <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b52676)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b52676"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
+          <span class="fnlmx-rg-popup__btn-label"><?php esc_html_e('Exit', 'luxe'); ?></span>
         </button>
         <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed" id="fnlmx-rg-proceed">
-          <?php esc_html_e('Proceed', 'luxe'); ?>
+          <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b5266c)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b5266c"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
+          
+          <!--<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>-->
+          <span class="fnlmx-rg-popup__btn-label"><?php esc_html_e('Proceed', 'luxe'); ?></span>
         </button>
       </div>
 
@@ -368,7 +379,7 @@ function fnlmx_responsible_gaming_popup() {
         <svg aria-hidden="true" class="fm-welcome-modal__close-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#fm-welcome-close-shape)">
             <path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path>
-            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, #ffffff)"></path>
+            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)"></path>
           </g>
           <defs><clipPath id="fm-welcome-close-shape"><rect width="32" height="32" fill="white"></rect></clipPath></defs>
         </svg>
@@ -379,42 +390,36 @@ function fnlmx_responsible_gaming_popup() {
         </svg>
       </button>
 
-      <?php if ( $welcome_img_url ) : ?>
-        <div class="fm-welcome-modal__hero">
-          <img src="<?php echo esc_url( $welcome_img_url ); ?>" alt="<?php echo esc_attr( $welcome_img_alt ); ?>" loading="lazy" decoding="async">
-        </div>
-      <?php endif; ?>
-
-      <h3 class="fm-welcome-modal__title"><?php esc_html_e( 'New User', 'luxe' ); ?><span class="fm-welcome-modal__title-accent"><?php esc_html_e( 'Welcome Bonus', 'luxe' ); ?></span></h3>
-
-      <div class="fm-welcome-modal__coin" aria-hidden="true">
-        <span class="fm-welcome-modal__coin-amount">&#8369;20</span>
+      <!-- Red header band with the title -->
+      <div class="fm-welcome-modal__head">
+        <h3 class="fm-welcome-modal__title">
+          <span class="fm-welcome-modal__title-top"><?php esc_html_e( 'Registration', 'luxe' ); ?></span>
+          <span class="fm-welcome-modal__title-main"><?php esc_html_e( 'Bonus Offer', 'luxe' ); ?></span>
+        </h3>
       </div>
 
-      <p class="fm-welcome-modal__sub"><?php esc_html_e( 'Register now and get', 'luxe' ); ?> <strong>&#8369;20</strong> <?php esc_html_e( 'instantly.', 'luxe' ); ?></p>
+      <!-- Black body (curved top) with the hero art, subtitle and CTA -->
+      <div class="fm-welcome-modal__body">
+        <?php if ( $welcome_img_url ) : ?>
+          <div class="fm-welcome-modal__hero">
+            <img src="<?php echo esc_url( $welcome_img_url ); ?>" alt="<?php echo esc_attr( $welcome_img_alt ); ?>" loading="lazy" decoding="async">
+          </div>
+        <?php endif; ?>
 
-      <!-- Phone field: icon + +63 prefix + local number (mirrors the register modal) -->
-      <div class="fm-welcome-modal__field">
-        <svg class="fm-welcome-modal__field-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-        </svg>
-        <span class="fm-welcome-modal__cc">+63</span>
-        <input type="tel" id="phoneInput1" class="phoneInput fm-welcome-modal__input"
-          placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
+        <p class="fm-welcome-modal__sub"><?php esc_html_e( 'Register and Complete your KYC to get', 'luxe' ); ?> <strong>&#8369;20</strong></p>
+
+        <!-- CTA — redirects with the bonus campaign attribution (no phone field on this modal) -->
+        <button type="button" id="fm-welcome-submit" class="fm-welcome-modal__cta">
+          <svg aria-hidden="true" class="fm-welcome-modal__cta-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#fm-welcome-cta-shape)">
+                  <path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path>
+                  <path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path>
+              </g>
+              <defs><clipPath id="fm-welcome-cta-shape"><rect width="408" height="42" fill="white"></rect></clipPath></defs>
+          </svg>
+          <span class="fm-welcome-modal__cta-label"><?php esc_html_e( 'Register & Get', 'luxe' ); ?> &#8369;20</span>
+        </button>
       </div>
-
-      <!-- CTA — submits the phone via register-modal.js (same flow as the register modal) -->
-      <button type="button" id="fm-welcome-submit" class="fm-welcome-modal__cta">
-        <svg aria-hidden="true" class="fm-welcome-modal__cta-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clip-path="url(#fm-welcome-cta-shape)">
-            <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
-            <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, #ffffff)"></path>
-          </g>
-          <defs><clipPath id="fm-welcome-cta-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
-        </svg>
-        <span class="fm-welcome-modal__cta-label"><?php esc_html_e( 'Register & Get', 'luxe' ); ?> &#8369;20</span>
-      </button>
 
     </div>
   </div>
@@ -497,13 +502,20 @@ function fnlmx_register_modal() {
 
       <!-- Close (chamfered red button) -->
       <button class="fm-reg-modal__close" id="fm-reg-close" type="button" aria-label="Close">
-        <svg aria-hidden="true" class="fm-reg-modal__close-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+        <svg aria-hidden="true" class="fm-reg-modal__close-shape funalo-nav__cta-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#fm-reg-close-shape)">
             <path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path>
-            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, #ffffff)"></path>
+            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)"></path>
           </g>
-          <defs><clipPath id="fm-reg-close-shape"><rect width="32" height="32" fill="white"></rect></clipPath></defs>
+          <defs>
+            <clipPath id="fm-reg-close-shape">
+              <rect width="32" height="32" fill="white"></rect>
+            </clipPath>
+          </defs>
         </svg>
+
+        
         <svg class="fm-reg-modal__close-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
           fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <line x1="18" y1="6" x2="6" y2="18" />
@@ -511,25 +523,52 @@ function fnlmx_register_modal() {
         </svg>
       </button>
 
-      <!-- Brand -->
-      <div class="fm-reg-modal__brand">
-        <?php if (has_custom_logo()) : the_custom_logo(); else : ?>
-          <span class="fm-reg-modal__brand-text"><?php bloginfo('name'); ?></span>
+      <!-- Red curved header band with brand logo -->
+      <div class="fm-reg-modal__head">
+        <div class="fm-reg-modal__brand">
+          <?php if (has_custom_logo()) : the_custom_logo(); else : ?>
+            <span class="fm-reg-modal__brand-text"><?php bloginfo('name'); ?></span>
+          <?php endif; ?>
+        </div>
+
+        <?php
+        /* Decorative icons (bell, cherries, clover…) straddling the curve.
+           ACF repeater on the Options page: fnlmx_register_modal_image_wrapper
+           → sub field fnlmx_register_modal_img (Image). */
+        $fnlmx_reg_decor = get_field('fnlmx_register_modal_image_wrapper', 'option');
+        if ($fnlmx_reg_decor) : ?>
+          <div class="fm-reg-modal__decor" aria-hidden="true">
+            <?php foreach ($fnlmx_reg_decor as $fnlmx_reg_row) :
+              $fnlmx_img = $fnlmx_reg_row['fnlmx_register_modal_img'] ?? '';
+              if (is_array($fnlmx_img)) {
+                $fnlmx_img_url = $fnlmx_img['url'] ?? '';
+                $fnlmx_img_alt = $fnlmx_img['alt'] ?? '';
+              } elseif (is_numeric($fnlmx_img)) {
+                $fnlmx_img_url = wp_get_attachment_image_url((int) $fnlmx_img, 'medium');
+                $fnlmx_img_alt = '';
+              } else {
+                $fnlmx_img_url = $fnlmx_img;
+                $fnlmx_img_alt = '';
+              }
+              if (! $fnlmx_img_url) {
+                continue;
+              } ?>
+              <img class="fm-reg-modal__decor-img" src="<?php echo esc_url($fnlmx_img_url); ?>" alt="<?php echo esc_attr($fnlmx_img_alt); ?>" loading="lazy">
+            <?php endforeach; ?>
+          </div>
         <?php endif; ?>
       </div>
+
+      <div class="fm-reg-modal__body">
 
       <h3 class="fm-reg-modal__title">
         <?php esc_html_e('JOIN THE ACTION', 'luxe'); ?>
         <span class="fm-reg-modal__title-accent"><?php esc_html_e('TODAY', 'luxe'); ?></span>
       </h3>
-      <p class="fm-reg-modal__sub"><?php esc_html_e('Few steps away from getting the registration bonus offer.', 'luxe'); ?></p>
+      <p class="fm-reg-modal__sub"><?php esc_html_e('Get instant access to exciting casino games anytime, anywhere.', 'luxe'); ?></p>
 
-      <!-- Phone field: icon + +63 prefix + local number -->
+      <!-- Phone field: +63 prefix + local number -->
       <div class="fm-reg-modal__field">
-        <svg class="fm-reg-modal__field-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
-        </svg>
         <span class="fm-reg-modal__cc">+63</span>
         <input type="tel" id="phoneInput2" class="phoneInput fm-reg-modal__input"
           placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
@@ -537,13 +576,21 @@ function fnlmx_register_modal() {
 
       <!-- Submit (chamfered red button) -->
       <button type="button" id="fm-reg-submit" class="fm-reg-modal__submit fm-register-btn">
-        <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#fm-reg-submit-shape)">
+                <path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path>
+                <path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path>
+            </g>
+            <defs><clipPath id="fm-reg-submit-shape"><rect width="408" height="42" fill="white"></rect></clipPath></defs>
+        </svg>
+
+        <!--<svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
           <g clip-path="url(#fm-reg-submit-shape)">
             <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
             <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, #ffffff)"></path>
           </g>
           <defs><clipPath id="fm-reg-submit-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
-        </svg>
+        </svg>-->
         <span class="fm-reg-modal__submit-label"><?php esc_html_e('Login / Register', 'luxe'); ?></span>
       </button>
 
@@ -556,6 +603,8 @@ function fnlmx_register_modal() {
           <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
         </span>
       </label>
+
+      </div><!-- /.fm-reg-modal__body -->
     </div>
   </div>
   <?php
@@ -680,9 +729,10 @@ function fnlmx_cta_section() {
 
                                     $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
                                     $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
-                                    // Primary button opens registration via attribution.js (fm-register-btn);
-                                    // its click is intercepted, so the href just acts as a fallback.
-                                    $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary fm-register-btn' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
+                                    // Primary button opens the register popup via register-modal.js
+                                    // (#fm-register-trigger); its click is intercepted, so the href is a fallback.
+                                    $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
+                                    $btn_id      = $index === 0 ? ' id="fm-register-trigger"' : '';
                                     $btn_uid     = uniqid();
                                     // Angled SVG shape used as the button background.
                                     $btn_shape = '<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">'
@@ -693,12 +743,12 @@ function fnlmx_cta_section() {
                                         . '<rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>';
                                 ?>
                                     <?php if ( $link ) : ?>
-                                        <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $target; ?>>
+                                        <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $btn_id; ?><?php echo $target; ?>>
                                             <?php echo $btn_shape; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                             <span class="fnlmx-cta__btn-label"><?php echo esc_html( $label ); ?></span>
                                         </a>
                                     <?php else : ?>
-                                        <span class="<?php echo esc_attr( $btn_class ); ?>">
+                                        <span class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $btn_id; ?>>
                                             <?php echo $btn_shape; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                             <span class="fnlmx-cta__btn-label"><?php echo esc_html( $label ); ?></span>
                                         </span>

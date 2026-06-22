@@ -251,7 +251,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const query = new URLSearchParams();
 
         query.set("tab", "deposit");
-        query.set("mobile", phone);
+
+        if (phone) {
+            query.set("mobile", phone);
+        }
 
         query.set("utm_source", attribution.utm_source || "seo");
         query.set("utm_medium", attribution.utm_medium || "ggo");
@@ -296,13 +299,20 @@ document.addEventListener("DOMContentLoaded", function () {
         const phoneInput = getPhoneInput(modalType);
         const termsCheck = getTermsCheckbox(modalType);
 
-        if (!phoneInput) {
-            alert("Form not ready");
+        if (termsCheck && !termsCheck.checked) {
+            alert("You must agree to the Terms");
             return;
         }
 
-        if (termsCheck && !termsCheck.checked) {
-            alert("You must agree to the Terms");
+        const attribution = getAttribution();
+
+        // Modals without a phone field (e.g. the welcome bonus modal) just
+        // redirect with the campaign attribution — nothing to collect/validate.
+        if (!phoneInput) {
+            const query = buildQuery(null, attribution);
+
+            window.location.href =
+                REDIRECT_BASE_URL + "?" + query.toString();
             return;
         }
 
@@ -321,7 +331,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const phone = "0" + localPhone;
 
-        const attribution = getAttribution();
         const query = buildQuery(phone, attribution);
 
         window.location.href =

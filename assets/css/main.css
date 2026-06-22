@@ -818,12 +818,57 @@ body.funalo-drawer-open {
 .fm-reg-modal__card {
   position: relative;
   width: 100%;
-  max-width: 460px;
-  padding: 3rem 2.5rem 2rem;
+  max-width: 400px;
   border-radius: 16px;
+  overflow: hidden;
   text-align: center;
   background: #000000;
   border: 1px solid var(--color-primary);
+}
+
+/* Red header band — logo sits here. The black body overlaps upward with a
+   rounded top, so the red's bottom edge reads as a concave curve (black
+   bulges up into the red in the centre). */
+.fm-reg-modal__head {
+  position: relative;
+  background: var(--color-primary);
+  padding: 3rem 2rem 5rem;
+}
+
+.fm-reg-modal__body {
+  position: relative;
+  z-index: 1;
+  margin-top: -34px;
+  padding: 2rem 2.5rem 2.5rem;
+  background: #000000;
+  border-radius: 50% 50% 0 0 / 34px 34px 0 0;
+}
+
+.fm-reg-modal__decor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -14px;
+  z-index: 3;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0 1.5rem;
+  pointer-events: none;
+}
+
+.fm-reg-modal__decor-img {
+  height: 74px;
+  width: auto;
+  display: block;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.45));
+}
+
+/* When there are exactly three icons, raise the centre one so the row follows
+   the concave curve (centre sits higher than the edges). */
+.fm-reg-modal__decor-img:nth-child(2):nth-last-child(2) {
+  transform: translateY(-18px);
 }
 
 /* Close — chamfered red button (matches header CTA shape) */
@@ -836,11 +881,11 @@ body.funalo-drawer-open {
   justify-content: center;
   width: 32px;
   height: 32px;
+  z-index: 2; /* sit above the red header band, which is later in the DOM */
   padding: 0;
   border: none;
   background: none;
-  color: var(--color-primary); /* fills the shape */
-  --decoration: #ffffff;
+  color: var(--color-funalomax-gradient); /* solid dark chamfer (matches nav CTA) over the red header */
   cursor: pointer;
   isolation: isolate;
   transition: filter 0.2s ease;
@@ -867,12 +912,12 @@ body.funalo-drawer-open {
 
 /* Brand */
 .fm-reg-modal__brand {
-  margin-bottom: 1.25rem;
+  margin: 0;
 }
 
 .fm-reg-modal__brand img,
 .fm-reg-modal__brand .custom-logo {
-  height: 52px;
+  height: 76px;
   width: auto;
   margin: 0 auto;
   display: block;
@@ -888,13 +933,13 @@ body.funalo-drawer-open {
 
 .fm-reg-modal__title {
   font-family: "Montserrat", sans-serif;
-  font-size: 38px;
+  font-size: 42px;
   font-weight: 800;
-  line-height: 1.05;
+  line-height: 1.08;
   color: #fff;
   text-transform: uppercase;
   letter-spacing: 0.01em;
-  margin: 0 0 12px;
+  margin: 0 0 18px;
 }
 
 .fm-reg-modal__title-accent {
@@ -904,12 +949,12 @@ body.funalo-drawer-open {
 
 .fm-reg-modal__sub {
   font-family: "Montserrat", sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.65);
-  margin: 0 auto 26px;
-  max-width: 320px;
+  margin: 0 auto 34px;
+  max-width: 300px;
 }
 
 /* Phone field: icon + +63 prefix + local number */
@@ -917,9 +962,9 @@ body.funalo-drawer-open {
   display: flex;
   align-items: center;
   gap: 12px;
-  height: 58px;
-  padding: 0 18px;
-  margin-bottom: 16px;
+  height: 62px;
+  padding: 0 20px;
+  margin-bottom: 18px;
   border-radius: 8px;
   background: #1a1a1a;
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -962,7 +1007,7 @@ body.funalo-drawer-open {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 54px;
+  height: 58px;
   margin-top: 4px;
   padding: 0;
   border: none;
@@ -1003,7 +1048,7 @@ body.funalo-drawer-open {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 18px;
+  margin-top: 24px;
   font-family: "Montserrat", sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -1038,17 +1083,39 @@ body.funalo-drawer-open {
     height: 100vh; /* fallback */
     height: 100dvh; /* fits visible viewport, accounts for mobile browser chrome */
     max-height: none;
-    padding: 1rem;
+    padding: 0;
     border-radius: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     overflow-y: auto; /* scroll internally if content is taller than viewport */
     border: unset;
   }
 
+  .fm-reg-modal__head {
+    padding: 3rem 2rem 5.25rem;
+  }
+
+  .fm-reg-modal__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    margin-top: -42px;
+    padding: 5.5rem 1.5rem 1.5rem;
+    border-radius: 50% 50% 0 0 / 42px 42px 0 0;
+  }
+
+  .fm-reg-modal__decor {
+    bottom: -20px;
+    padding: 0 1.75rem;
+  }
+
+  .fm-reg-modal__decor-img {
+    height: 84px;
+  }
+
   .fm-reg-modal__title {
-    font-size: 34px;
+    font-size: 46px;
   }
 
   .fm-reg-modal__terms {
@@ -1079,13 +1146,29 @@ body.funalo-drawer-open {
 .fm-welcome-modal__card {
   position: relative;
   width: 100%;
-  max-width: 550px;
-  padding: 3.25rem 3rem 2.75rem;
-  border-radius: 16px;
+  max-width: 560px;
+  border-radius: 20px;
+  overflow: hidden;
   text-align: center;
   background: #000000;
   border: 1px solid var(--color-primary);
-  overflow: hidden; /* clip the full-bleed hero to the rounded top corners */
+}
+
+/* Red header band — holds the title. The black body overlaps upward with a
+   curved top, mirroring the register modal. */
+.fm-welcome-modal__head {
+  position: relative;
+  background: var(--color-primary);
+  padding: 2.25rem 2rem 5rem;
+}
+
+.fm-welcome-modal__body {
+  position: relative;
+  z-index: 1;
+  margin-top: -30px; /* pull the curved top up into the red band */
+  padding: 0 2.5rem 2.25rem;
+  background: #000000;
+  border-radius: 50% 50% 0 0 / 30px 30px 0 0;
 }
 
 /* Close — chamfered red button (matches register modal) */
@@ -1102,8 +1185,7 @@ body.funalo-drawer-open {
   padding: 0;
   border: none;
   background: none;
-  color: var(--color-primary); /* fills the shape */
-  --decoration: #ffffff;
+  color: var(--color-funalomax-gradient); /* solid dark chamfer reads over the red card */
   cursor: pointer;
   isolation: isolate;
   transition: filter 0.2s ease;
@@ -1128,35 +1210,41 @@ body.funalo-drawer-open {
   color: #fff;
 }
 
-/* Hero image — full-bleed across the top of the card, bleeding into the
-   padding so it meets the rounded top corners (card has overflow:hidden).
-   Negative margins must match the card's padding. */
+/* Title — "REGISTRATION" (lighter) over "BONUS OFFER" (bold), white on red */
+.fm-welcome-modal__title {
+  font-family: "Montserrat", sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin: 0 0 0.5rem;
+  color: #ffffff;
+}
+
+.fm-welcome-modal__title-top {
+  display: block;
+  font-size: 30px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.fm-welcome-modal__title-main {
+  display: block;
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+/* Central hero art (slot machine / coins / cherries composite). Pulled up so
+   the top of the art rises into the red band, over the curve. */
 .fm-welcome-modal__hero {
-  margin: -3.25rem -3rem 1.5rem;
+  position: relative;
+  margin: -52px auto 0.75rem;
+  max-width: 380px;
 }
 
 .fm-welcome-modal__hero img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 0;
-}
-
-.fm-welcome-modal__title {
-  font-family: "Montserrat", sans-serif;
-  font-size: 42px;
-  font-weight: 800;
-  line-height: 1.05;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  margin: 0 0 22px;
-  color: #ffffff;
-}
-
-/* Second line accent — brand red (matches register modal title) */
-.fm-welcome-modal__title-accent {
-  display: block;
-  color: var(--color-primary);
 }
 
 /* Coin badge */
@@ -1183,16 +1271,17 @@ body.funalo-drawer-open {
 
 .fm-welcome-modal__sub {
   font-family: "Montserrat", sans-serif;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0 auto 26px;
-  max-width: 340px;
+  color: #ffffff;
+  margin: 0 auto 18px;
+  max-width: 420px;
 }
 
 .fm-welcome-modal__sub strong {
-  color: var(--color-primary);
+  color: #ff2e43; /* red accent on the black body, matches the design */
+  font-weight: 800;
 }
 
 /* Phone field — icon + +63 prefix + local number (mirrors the register modal) */
@@ -1254,11 +1343,12 @@ body.funalo-drawer-open {
   --decoration: #ffffff;
   cursor: pointer;
   isolation: isolate;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3)); /* lift off the red card */
   transition: filter 0.2s ease, transform 0.2s ease;
 }
 
 .fm-welcome-modal__cta:hover {
-  filter: brightness(1.12);
+  filter: brightness(1.12) drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
   transform: translateY(-1px);
 }
 
@@ -1293,58 +1383,53 @@ body.funalo-drawer-open {
     height: 100vh; /* fallback */
     height: 100dvh; /* fits visible viewport, accounts for mobile browser chrome */
     max-height: none;
-    padding: 2rem 1.5rem 1.75rem;
+    padding: 0;
     border-radius: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     overflow-y: auto; /* scroll internally if content is taller than viewport */
     border: unset;
   }
 
+  .fm-welcome-modal__head {
+    padding: 2.5rem 1.5rem 3.5rem;
+  }
+
+  .fm-welcome-modal__body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: -32px;
+    padding: 0 1.5rem 1.75rem;
+    border-radius: 50% 50% 0 0 / 32px 32px 0 0;
+  }
+
   .fm-welcome-modal__hero {
-    margin: -2rem -1.5rem 1.25rem;
+    margin: -40px auto 1rem;
+    max-width: 320px;
   }
 
-  .fm-welcome-modal__title {
+  .fm-welcome-modal__title-top {
     font-size: 24px;
-    margin-bottom: 14px;
   }
 
-  .fm-welcome-modal__coin {
-    width: 76px;
-    height: 76px;
-    margin: 4px auto 16px;
-    border-width: 2px;
-  }
-
-  .fm-welcome-modal__coin-amount {
-    font-size: 28px;
+  .fm-welcome-modal__title-main {
+    font-size: 36px;
   }
 
   .fm-welcome-modal__sub {
-    font-size: 13px;
-    margin-bottom: 20px;
-    max-width: 240px;
-  }
-
-  .fm-welcome-modal__field {
-    height: 50px;
-    padding: 0 14px;
-    margin-bottom: 14px;
-  }
-
-  .fm-welcome-modal__cc,
-  .fm-welcome-modal__input {
-    font-size: 14px;
+    font-size: 15px;
+    margin-bottom: 18px;
+    max-width: 300px;
   }
 
   .fm-welcome-modal__cta {
-    height: 48px;
+    height: 52px;
   }
 
   .fm-welcome-modal__cta-label {
-    font-size: 14px;
+    font-size: 15px;
   }
 
   .fm-welcome-modal__close {
@@ -2034,6 +2119,7 @@ body.funalo-drawer-open {
   line-height: 1.6;
   padding-left: 1.25rem;
   position: relative;
+  font-weight: 500;
 }
 
 .fnlmx-rg-popup__list li::before,
@@ -2134,52 +2220,47 @@ body.funalo-drawer-open {
 }
 
 .fnlmx-rg-popup__btn {
+  position: relative;
+  isolation: isolate;
   flex: 1;
+  min-width: 0;
   padding: 1rem 1rem;
   border: none;
+  background: none;
   font-family: "Montserrat", sans-serif;
   font-weight: 700;
   font-size: 0.9375rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   cursor: pointer;
-  /* Chamfer the top-left and bottom-right corners */
-  -webkit-clip-path: polygon(
-    14px 0,
-    100% 0,
-    100% calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    0 100%,
-    0 14px
-  );
-  clip-path: polygon(
-    14px 0,
-    100% 0,
-    100% calc(100% - 14px),
-    calc(100% - 14px) 100%,
-    0 100%,
-    0 14px
-  );
   transition:
     opacity 0.2s ease,
     transform 0.15s ease;
 }
+
 .fnlmx-rg-popup__btn:hover {
   opacity: 0.88;
-  /*transform: translateY(-4px);*/
 }
 
 .fnlmx-rg-popup__btn--exit {
-  background: #282828;
-  color: #fff;
-}
-.fnlmx-rg-popup__btn--exit:hover {
-  color: #fff;
+  color: #282828;
+  --decoration: #ffffff;
 }
 
 .fnlmx-rg-popup__btn--proceed {
-  background: var(--color-primary);
+  color: var(--color-primary);
+  --decoration: #ffffff;
+}
+
+.fnlmx-rg-popup__btn-label {
   color: #fff;
+  font-size: .875rem;
+  font-weight: 700;
+  padding: 14px 20px;
+  position: relative;
+  text-transform: uppercase;
+  white-space: nowrap;
+  z-index: 1;
 }
 
 @media (max-width: 560px) {
@@ -2216,7 +2297,7 @@ body.funalo-drawer-open {
   .fnlmx-rg-popup__list li,
   .fnlmx-rg-popup__wysiwyg ul li,
   .fnlmx-rg-popup__wysiwyg ol li {
-    font-size: 0.75rem;
+    font-size: 14px;
     line-height: 1.3;
   }
 
