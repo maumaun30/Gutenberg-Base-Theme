@@ -613,7 +613,7 @@ if (! empty($fg_term_ids_by_tax)) {
       </div>
 
       <div class="pr-cta-wrap">
-        <button type="button" class="pr-cta-btn fm-register-btn">
+        <button type="button" id="fm-register-trigger" class="pr-cta-btn">
           <?php echo esc_html($cta_label); ?>
         </button>
       </div>
