@@ -30,6 +30,12 @@ function gc_acf($key, $id)
   return function_exists('get_field') ? get_field($key, $id) : get_post_meta($id, $key, true);
 }
 
+/* Global ACF Options fields (Site Settings → Game Tooltip Data) */
+function gc_acf_option($key)
+{
+  return function_exists('get_field') ? get_field($key, 'option') : get_option($key);
+}
+
 $game_url   = gc_acf('game_url',                    $post_id);
 $hero_desc  = gc_acf('fnlmx_game_short_description', $post_id);
 $game_rules = gc_acf('fnlmx_game_rules',             $post_id);
@@ -48,26 +54,34 @@ $fnlmx_rtp        = gc_acf('fnlmx_rtp',        $post_id);
 $fnlmx_volatility = gc_acf('fnlmx_volatility',  $post_id);
 $fnlmx_provider   = gc_acf('fnlmx_provider',    $post_id);
 
+/* Tooltip copy lives in Site Settings (ACF Options), shared across all games */
+$tooltip_rtp        = gc_acf_option('fnlmnx_rtp_tooltip');
+$tooltip_volatility = gc_acf_option('fnlmx_volatility_tooltip');
+$tooltip_provider   = gc_acf_option('fnlmx_provider_tooltip');
+
 $stats = [];
 if (! empty($fnlmx_rtp)) {
   $stats[] = [
-    'label' => 'RTP',
-    'value' => esc_html($fnlmx_rtp) . ' %',
-    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
+    'label'   => 'RTP',
+    'value'   => esc_html($fnlmx_rtp) . ' %',
+    'tooltip' => $tooltip_rtp,
+    'icon'    => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>',
   ];
 }
 if (! empty($fnlmx_volatility) && $fnlmx_volatility !== 'Select Volatility') {
   $stats[] = [
-    'label' => 'Volatility',
-    'value' => esc_html($fnlmx_volatility),
-    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    'label'   => 'Volatility',
+    'value'   => esc_html($fnlmx_volatility),
+    'tooltip' => $tooltip_volatility,
+    'icon'    => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   ];
 }
 if (! empty($fnlmx_provider)) {
   $stats[] = [
-    'label' => 'Provider',
-    'value' => esc_html($fnlmx_provider),
-    'icon'  => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l1.5 1.5M4 2l1.5 1.5M12 2c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10c0-1.821-.487-3.53-1.338-5M17 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/><circle cx="12" cy="12" r="3"/></svg>',
+    'label'   => 'Provider',
+    'value'   => esc_html($fnlmx_provider),
+    'tooltip' => $tooltip_provider,
+    'icon'    => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l1.5 1.5M4 2l1.5 1.5M12 2c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10c0-1.821-.487-3.53-1.338-5M17 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/><circle cx="12" cy="12" r="3"/></svg>',
   ];
 }
 $has_stats = ! empty($stats);
@@ -295,7 +309,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     gap: 0;
     background: #111;
     border-radius: 10px;
-    overflow: hidden;
     margin-bottom: 1.5rem;
     border: 1px solid rgba(255, 255, 255, .08);
   }
@@ -359,6 +372,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     color: rgba(255, 255, 255, .5);
     white-space: nowrap;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
   }
 
   .sg-stat__value {
@@ -370,6 +385,93 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     letter-spacing: .02em;
     white-space: nowrap;
     line-height: 1.2;
+  }
+
+  /* ── STAT TOOLTIP ── */
+  .sg-tooltip {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: .8rem;
+    height: .8rem;
+    margin-left: .3rem;
+    vertical-align: -1px;
+    color: rgba(255, 255, 255, .35);
+    cursor: help;
+  }
+
+  .sg-tooltip__icon {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .sg-tooltip:hover,
+  .sg-tooltip:focus,
+  .sg-tooltip.is-open {
+    color: var(--color-primary);
+  }
+
+  .sg-tooltip__bubble {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    width: max-content;
+    min-width: 140px;
+    max-width: 220px;
+    background: #111;
+    border: 1px solid var(--border-strong);
+    border-radius: .5rem;
+    padding: .55rem .75rem;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .72rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #fff;
+    text-transform: none;
+    letter-spacing: normal;
+    white-space: normal;
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .5);
+    z-index: 20;
+  }
+
+  /* Outlined arrow: a slightly larger border-colored triangle sits behind
+     a smaller fill-colored one, so the pointer reads clearly against any
+     background instead of blending into it. */
+  .sg-tooltip__bubble::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: var(--border-strong);
+  }
+
+  .sg-tooltip__bubble::after {
+    content: '';
+    position: absolute;
+    top: calc(100% - 1px);
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #111;
+  }
+
+  .sg-tooltip:hover .sg-tooltip__bubble,
+  .sg-tooltip:focus .sg-tooltip__bubble,
+  .sg-tooltip.is-open .sg-tooltip__bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
   }
 
   /* ── CTA BUTTONS ── */
@@ -888,10 +990,11 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
       width: 100%;
       border-radius: 8px;
       flex-wrap: wrap;
+      justify-content: center;
     }
 
     .sg-stat {
-      width: calc(100% / 3 - ((3 - 1) * 15px) / 3);
+      width: calc(100% / 2 - ((2 - 1) * 15px) / 2);
       padding: .7rem 1rem;
       gap: 5px;
     }
@@ -907,6 +1010,17 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     .sg-stat__icon svg {
       width: 15px;
       height: 15px;
+    }
+
+    .sg-tooltip {
+      width: .65rem;
+      height: .65rem;
+      margin-left: .2rem;
+    }
+
+    .sg-tooltip__bubble {
+      font-size: .68rem;
+      max-width: 160px;
     }
   }
 
@@ -1093,7 +1207,19 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
               <div class="sg-stat">
                 <span class="sg-stat__icon" aria-hidden="true"><?php echo $stat['icon']; ?></span>
                 <div class="sg-stat__top">
-                  <span class="sg-stat__label"><?php echo $stat['label']; ?></span>
+                  <span class="sg-stat__label">
+                    <?php echo $stat['label']; ?>
+                    <?php if (! empty($stat['tooltip'])) : ?>
+                      <span class="sg-tooltip" tabindex="0">
+                        <svg class="sg-tooltip__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" />
+                          <line x1="12" y1="16" x2="12" y2="11.5" />
+                          <line x1="12" y1="8" x2="12.01" y2="8" />
+                        </svg>
+                        <span class="sg-tooltip__bubble"><?php echo esc_html($stat['tooltip']); ?></span>
+                      </span>
+                    <?php endif; ?>
+                  </span>
                   <span class="sg-stat__value"><?php echo $stat['value']; ?></span>
                 </div>
               </div>
@@ -1342,6 +1468,29 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         if (e.key === 'Escape') closeModal();
       });
     }
+
+    /* Stat tooltips — hover works via CSS on desktop; this adds tap-to-toggle
+       for touch devices, and closes any open tooltip on outside click.
+       Note: the icon also receives keyboard focus (tabindex="0"), and the
+       CSS shows the bubble on :focus too — so after toggling, we blur it,
+       otherwise a second tap would clear "is-open" but the bubble would
+       stay visible because the element is still focused. */
+    document.querySelectorAll('.sg-tooltip').forEach(function(t) {
+      t.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var wasOpen = t.classList.contains('is-open');
+        document.querySelectorAll('.sg-tooltip.is-open').forEach(function(o) {
+          o.classList.remove('is-open');
+        });
+        t.blur();
+        if (!wasOpen) t.classList.add('is-open');
+      });
+    });
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.sg-tooltip.is-open').forEach(function(o) {
+        o.classList.remove('is-open');
+      });
+    });
 
     /* Read More toggle — animates at the same speed in both directions
        by always transitioning between two explicit px values               */
