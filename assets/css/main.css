@@ -1087,7 +1087,7 @@ body.funalo-drawer-open {
     border-radius: 0;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* scroll internally if content is taller than viewport */
+    /*overflow-y: auto;  scroll internally if content is taller than viewport */
     border: unset;
   }
 
@@ -1101,8 +1101,12 @@ body.funalo-drawer-open {
     flex-direction: column;
     /*justify-content: center;*/
     margin-top: -42px;
-    padding: 5.5rem 1.5rem 1.5rem;
+    padding: 5.5rem 12px 12px;
     border-radius: 50% 50% 0 0 / 42px 42px 0 0;
+  }
+
+  .fm-reg-modal__sub {
+    max-width: 350px;
   }
 
   .fm-reg-modal__decor {
@@ -1387,7 +1391,7 @@ body.funalo-drawer-open {
     border-radius: 0;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* scroll internally if content is taller than viewport */
+    /*overflow-y: auto;  scroll internally if content is taller than viewport */
     border: unset;
   }
 

@@ -31,8 +31,9 @@ document.addEventListener("DOMContentLoaded", function () {
             submitSelector: "#fm-reg-submit"
         },
 
-        // Image-only welcome bonus modal (no phone field) — redirects with the
-        // bonus campaign attribution. Opened by elements with .fnlmax-play-bonus.
+        // Image-only welcome bonus modal (no phone field). Its CTA doesn't
+        // redirect — it opens the registration bonus modal (regbonus) so the
+        // visitor enters a phone number there. Opened by .fnlmax-play-bonus.
         bonus: {
             modalId: "fm-welcome-modal",
             closeId: "fm-welcome-close",
@@ -40,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function () {
             termsSelector: null,
             campaign: BONUS_CAMPAIGN,
             openSelector: ".fnlmax-play-bonus",
-            submitSelector: "#fm-welcome-submit"
+            submitSelector: "#fm-welcome-submit",
+            submitOpens: "regbonus"
         },
 
         // Registration bonus modal (register-modal layout + phone field + terms).
@@ -370,17 +372,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         setCampaignByModal(type);
 
-        const phoneInput = getPhoneInput(type);
-
         modal.classList.add("is-open");
         modal.setAttribute("aria-hidden", "false");
         document.body.classList.add("funalo-drawer-open");
 
-        setTimeout(function () {
-            if (phoneInput) {
-                phoneInput.focus();
-            }
-        }, 150);
+        // Intentionally do NOT auto-focus the phone field: focusing it pops up
+        // the on-screen keyboard on mobile the moment the modal opens. The
+        // visitor taps the field themselves when they're ready to type.
     }
 
     function closeModal(type) {
@@ -482,7 +480,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         event.stopImmediatePropagation();
                     }
 
-                    window.submitPhone(type);
+                    // Some modals hand off to another modal instead of
+                    // submitting (e.g. the welcome bonus modal opens the
+                    // phone-entry modal rather than redirecting).
+                    if (MODALS[type].submitOpens) {
+                        openModal(MODALS[type].submitOpens);
+                    } else {
+                        window.submitPhone(type);
+                    }
                     return;
                 }
             }
