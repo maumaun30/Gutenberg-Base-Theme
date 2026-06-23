@@ -1129,7 +1129,7 @@ body.funalo-drawer-open {
 .fm-welcome-modal {
   position: fixed;
   inset: 0;
-  z-index: 9997;
+  z-index: 9998;
   display: none;
   align-items: center;
   justify-content: center;
@@ -2034,7 +2034,7 @@ body.funalo-drawer-open {
 .fnlmx-rg-popup {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  z-index: 9997;
   display: flex;
   align-items: center;
   justify-content: center;

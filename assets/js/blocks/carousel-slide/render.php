@@ -94,8 +94,7 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
           <?php if ( $show_primary_btn && $primary_btn_text ) : ?>
             <button
               type="button"
-              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary"
-              id="fnlmx-rg-proceed"
+              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--primary fnlmax-play-bonus"
             >
               <?php mytheme_carousel_btn_shape( 'primary-' . $slide_uid ); ?>
               <span class="mytheme-carousel-slide__btn-label"><?php echo esc_html( $primary_btn_text ); ?></span>
