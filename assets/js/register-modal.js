@@ -11,6 +11,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const REDIRECT_BASE_URL =
         "https://funalomax.com/en/profile/wallet";
 
+    // The registration bonus campaign lands on the profile page (not the wallet
+    // deposit tab). Per-modal overrides live in MODALS[type].redirectUrl.
+    const PROFILE_REDIRECT_URL =
+        "https://funalomax.com/en/profile";
+
     // The Responsible Gaming Guidelines popup (functions.php ->
     // fnlmx_responsible_gaming_popup()) is a separate overlay, not one of the
     // MODALS below — but it can be open underneath them, so it needs to be
@@ -55,7 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
             termsSelector: "#fm-bonus-terms",
             campaign: BONUS_CAMPAIGN,
             openSelector: "#fnlmx-rg-proceed",
-            submitSelector: "#fm-bonus-submit"
+            submitSelector: "#fm-bonus-submit",
+            redirectUrl: PROFILE_REDIRECT_URL,
+            depositTab: false
         }
     };
 
@@ -270,10 +277,14 @@ document.addEventListener("DOMContentLoaded", function () {
         input.value = digits;
     }
 
-    function buildQuery(phone, attribution) {
+    function buildQuery(phone, attribution, includeDepositTab) {
         const query = new URLSearchParams();
 
-        query.set("tab", "deposit");
+        // Wallet redirects open straight on the deposit tab; the profile-page
+        // redirect (bonus offer) omits it.
+        if (includeDepositTab !== false) {
+            query.set("tab", "deposit");
+        }
 
         if (phone) {
             query.set("mobile", phone);
@@ -328,14 +339,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         const attribution = getAttribution();
+        const redirectUrl = config.redirectUrl || REDIRECT_BASE_URL;
 
         // Modals without a phone field (e.g. the welcome bonus modal) just
         // redirect with the campaign attribution — nothing to collect/validate.
         if (!phoneInput) {
-            const query = buildQuery(null, attribution);
+            const query = buildQuery(null, attribution, config.depositTab);
 
             window.location.href =
-                REDIRECT_BASE_URL + "?" + query.toString();
+                redirectUrl + "?" + query.toString();
             return;
         }
 
@@ -354,10 +366,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const phone = "0" + localPhone;
 
-        const query = buildQuery(phone, attribution);
+        const query = buildQuery(phone, attribution, config.depositTab);
 
         window.location.href =
-            REDIRECT_BASE_URL + "?" + query.toString();
+            redirectUrl + "?" + query.toString();
     };
 
     function openModal(type) {
