@@ -59,6 +59,21 @@ $tooltip_rtp        = gc_acf_option('fnlmnx_rtp_tooltip');
 $tooltip_volatility = gc_acf_option('fnlmx_volatility_tooltip');
 $tooltip_provider   = gc_acf_option('fnlmx_provider_tooltip');
 
+/* Value-specific volatility tooltip — copy depends on whether the game's
+   volatility is Low / Medium / High (also from Site Settings options) */
+$tooltip_volatility_value = '';
+switch (strtolower(trim((string) $fnlmx_volatility))) {
+  case 'low':
+    $tooltip_volatility_value = gc_acf_option('fnlmx_volatility_low_tooltip');
+    break;
+  case 'medium':
+    $tooltip_volatility_value = gc_acf_option('fnlmx_volatility_medium_tooltip');
+    break;
+  case 'high':
+    $tooltip_volatility_value = gc_acf_option('fnlmx_volatility_high_tooltip');
+    break;
+}
+
 $stats = [];
 if (! empty($fnlmx_rtp)) {
   $stats[] = [
@@ -70,10 +85,11 @@ if (! empty($fnlmx_rtp)) {
 }
 if (! empty($fnlmx_volatility) && $fnlmx_volatility !== 'Select Volatility') {
   $stats[] = [
-    'label'   => 'Volatility',
-    'value'   => esc_html($fnlmx_volatility),
-    'tooltip' => $tooltip_volatility,
-    'icon'    => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    'label'         => 'Volatility',
+    'value'         => esc_html($fnlmx_volatility),
+    'tooltip'       => $tooltip_volatility,
+    'value_tooltip' => $tooltip_volatility_value,
+    'icon'          => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   ];
 }
 if (! empty($fnlmx_provider)) {
@@ -468,6 +484,32 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   .sg-tooltip:hover .sg-tooltip__bubble,
   .sg-tooltip:focus .sg-tooltip__bubble,
   .sg-tooltip.is-open .sg-tooltip__bubble {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Value tooltip — hover the High/Medium/Low value itself */
+  .sg-vtip {
+    position: relative;
+    align-self: flex-start;
+    cursor: help;
+    outline: none;
+    border-bottom: 1px dashed rgba(255, 255, 255, .35);
+    transition: color .2s, border-color .2s;
+  }
+
+  .sg-vtip:hover,
+  .sg-vtip:focus,
+  .sg-vtip.is-open {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+  }
+
+  .sg-vtip:hover .sg-tooltip__bubble,
+  .sg-vtip:focus .sg-tooltip__bubble,
+  .sg-vtip.is-open .sg-tooltip__bubble {
     opacity: 1;
     visibility: visible;
     transform: translateX(-50%) translateY(0);
@@ -1220,7 +1262,14 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
                       </span>
                     <?php endif; ?>
                   </span>
-                  <span class="sg-stat__value"><?php echo $stat['value']; ?></span>
+                  <?php if (! empty($stat['value_tooltip'])) : ?>
+                    <span class="sg-stat__value sg-vtip" tabindex="0">
+                      <?php echo $stat['value']; ?>
+                      <span class="sg-tooltip__bubble"><?php echo esc_html($stat['value_tooltip']); ?></span>
+                    </span>
+                  <?php else : ?>
+                    <span class="sg-stat__value"><?php echo $stat['value']; ?></span>
+                  <?php endif; ?>
                 </div>
               </div>
             <?php endforeach; ?>
@@ -1475,11 +1524,11 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
        CSS shows the bubble on :focus too — so after toggling, we blur it,
        otherwise a second tap would clear "is-open" but the bubble would
        stay visible because the element is still focused. */
-    document.querySelectorAll('.sg-tooltip').forEach(function(t) {
+    document.querySelectorAll('.sg-tooltip, .sg-vtip').forEach(function(t) {
       t.addEventListener('click', function(e) {
         e.stopPropagation();
         var wasOpen = t.classList.contains('is-open');
-        document.querySelectorAll('.sg-tooltip.is-open').forEach(function(o) {
+        document.querySelectorAll('.sg-tooltip.is-open, .sg-vtip.is-open').forEach(function(o) {
           o.classList.remove('is-open');
         });
         t.blur();
@@ -1487,7 +1536,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
       });
     });
     document.addEventListener('click', function() {
-      document.querySelectorAll('.sg-tooltip.is-open').forEach(function(o) {
+      document.querySelectorAll('.sg-tooltip.is-open, .sg-vtip.is-open').forEach(function(o) {
         o.classList.remove('is-open');
       });
     });

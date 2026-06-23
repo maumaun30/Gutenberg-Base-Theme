@@ -267,7 +267,7 @@ function fnlmx_responsible_gaming_popup() {
   $subparagraph       = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_subparagraph', 'option') : '';
   $exit_url = 'https://www.google.com';
 
-  // Hero image for the New User Welcome Bonus modal (shown after Proceed).
+  // Hero image for the New User Welcome Bonus modal.
   // Prefer the ACF options field; otherwise fall back to a theme asset so the
   // image can be supplied simply by dropping a file into /assets/images/.
   $welcome_img     = function_exists('get_field')
@@ -359,7 +359,7 @@ function fnlmx_responsible_gaming_popup() {
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b52676)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b52676"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           <span class="fnlmx-rg-popup__btn-label"><?php esc_html_e('Exit', 'luxe'); ?></span>
         </button>
-        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed" id="fnlmx-rg-proceed">
+        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed fnlmax-play-bonus"> <!--id="fnlmx-rg-proceed"-->
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b5266c)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b5266c"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           
           <!--<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>-->
@@ -370,7 +370,7 @@ function fnlmx_responsible_gaming_popup() {
     </div>
   </div>
 
-  <!-- ── New User Welcome Bonus Modal (opens after Proceed) ── -->
+  <!-- ── New User Welcome Bonus Modal ── -->
   <div class="fm-welcome-modal" id="fm-welcome-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="New User Welcome Bonus">
     <div class="fm-welcome-modal__card" role="document">
 
@@ -409,7 +409,7 @@ function fnlmx_responsible_gaming_popup() {
         <p class="fm-welcome-modal__sub"><?php esc_html_e( 'Register and Complete your KYC to get', 'luxe' ); ?> <strong>&#8369;20</strong></p>
 
         <!-- CTA — redirects with the bonus campaign attribution (no phone field on this modal) -->
-        <button type="button" id="fm-welcome-submit" class="fm-welcome-modal__cta">
+        <button type="button" id="fnlmx-rg-proceed" class="fm-welcome-modal__cta">
           <svg aria-hidden="true" class="fm-welcome-modal__cta-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clip-path="url(#fm-welcome-cta-shape)">
                   <path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path>
@@ -424,30 +424,110 @@ function fnlmx_responsible_gaming_popup() {
     </div>
   </div>
 
+  <!-- ── Registration Bonus Modal (opens after Proceed on the RG popup) ──
+       Mirrors the register modal layout (logo header, phone field, terms),
+       but submits with the bonus campaign attribution — see register-modal.js. -->
+  <div class="fm-reg-modal" id="fm-bonus-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Registration Bonus Offer">
+    <div class="fm-reg-modal__card" role="document">
+
+      <!-- Close (chamfered red button) -->
+      <button class="fm-reg-modal__close" id="fm-bonus-close" type="button" aria-label="Close">
+        <svg aria-hidden="true" class="fm-reg-modal__close-shape funalo-nav__cta-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clip-path="url(#fm-bonus-close-shape)">
+            <path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path>
+            <path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)"></path>
+          </g>
+          <defs><clipPath id="fm-bonus-close-shape"><rect width="32" height="32" fill="white"></rect></clipPath></defs>
+        </svg>
+        <svg class="fm-reg-modal__close-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+
+      <!-- Red curved header band with brand logo -->
+      <div class="fm-reg-modal__head">
+        <div class="fm-reg-modal__brand">
+          <?php if (has_custom_logo()) : the_custom_logo(); else : ?>
+            <span class="fm-reg-modal__brand-text"><?php bloginfo('name'); ?></span>
+          <?php endif; ?>
+        </div>
+
+        <?php
+        /* Decorative icons (bell, cherries, clover…) straddling the curve.
+           ACF repeater on the Options page: fnlmx_register_modal_image_wrapper
+           → sub field fnlmx_register_modal_img (Image). Shared with the register modal. */
+        $fnlmx_bonus_decor = get_field('fnlmx_register_modal_image_wrapper', 'option');
+        if ($fnlmx_bonus_decor) : ?>
+          <div class="fm-reg-modal__decor" aria-hidden="true">
+            <?php foreach ($fnlmx_bonus_decor as $fnlmx_bonus_row) :
+              $fnlmx_bonus_img = $fnlmx_bonus_row['fnlmx_register_modal_img'] ?? '';
+              if (is_array($fnlmx_bonus_img)) {
+                $fnlmx_bonus_img_url = $fnlmx_bonus_img['url'] ?? '';
+                $fnlmx_bonus_img_alt = $fnlmx_bonus_img['alt'] ?? '';
+              } elseif (is_numeric($fnlmx_bonus_img)) {
+                $fnlmx_bonus_img_url = wp_get_attachment_image_url((int) $fnlmx_bonus_img, 'medium');
+                $fnlmx_bonus_img_alt = '';
+              } else {
+                $fnlmx_bonus_img_url = $fnlmx_bonus_img;
+                $fnlmx_bonus_img_alt = '';
+              }
+              if (! $fnlmx_bonus_img_url) {
+                continue;
+              } ?>
+              <img class="fm-reg-modal__decor-img" src="<?php echo esc_url($fnlmx_bonus_img_url); ?>" alt="<?php echo esc_attr($fnlmx_bonus_img_alt); ?>" loading="lazy">
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <div class="fm-reg-modal__body">
+
+        <h3 class="fm-reg-modal__title">
+          <?php esc_html_e('JOIN THE ACTION', 'luxe'); ?>
+          <span class="fm-reg-modal__title-accent"><?php esc_html_e('TODAY', 'luxe'); ?></span>
+        </h3>
+        <p class="fm-reg-modal__sub"><?php esc_html_e('Few steps away from getting the registration bonus offer.', 'luxe'); ?></p>
+
+        <!-- Phone field: +63 prefix + local number -->
+        <div class="fm-reg-modal__field">
+          <span class="fm-reg-modal__cc">+63</span>
+          <input type="tel" id="phoneInput3" class="phoneInput fm-reg-modal__input"
+            placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10">
+        </div>
+
+        <!-- Submit (chamfered red button) -->
+        <button type="button" id="fm-bonus-submit" class="fm-reg-modal__submit fm-register-btn">
+          <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#fm-bonus-submit-shape)">
+                  <path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path>
+                  <path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path>
+              </g>
+              <defs><clipPath id="fm-bonus-submit-shape"><rect width="408" height="42" fill="white"></rect></clipPath></defs>
+          </svg>
+          <span class="fm-reg-modal__submit-label"><?php esc_html_e('Login / Register', 'luxe'); ?></span>
+        </button>
+
+        <label class="fm-reg-modal__terms" for="fm-bonus-terms">
+          <input type="checkbox" id="fm-bonus-terms" checked>
+          <span>
+            <?php esc_html_e('I Agree To The', 'luxe'); ?>
+            <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Terms Of Use', 'luxe'); ?></a>
+            <?php esc_html_e('And', 'luxe'); ?>
+            <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
+          </span>
+        </label>
+
+      </div><!-- /.fm-reg-modal__body -->
+    </div>
+  </div>
+
   <script>
         document.addEventListener('DOMContentLoaded', function () {
             const rgPopup   = document.getElementById('fnlmx-rg-popup');
             const rgProceed = document.getElementById('fnlmx-rg-proceed');
             const rgExit    = document.getElementById('fnlmx-rg-exit');
-            const welcomeModal = document.getElementById('fm-welcome-modal');
-            const welcomeClose = document.getElementById('fm-welcome-close');
-
-            function openWelcome() {
-                if (!welcomeModal) return;
-                welcomeModal.classList.add('is-open');
-                welcomeModal.setAttribute('aria-hidden', 'false');
-                document.body.classList.add('funalo-drawer-open');
-            }
-            function closeWelcome() {
-                if (!welcomeModal) return;
-                welcomeModal.classList.remove('is-open');
-                welcomeModal.setAttribute('aria-hidden', 'true');
-                document.body.classList.remove('funalo-drawer-open');
-            }
-            if (welcomeClose) welcomeClose.addEventListener('click', closeWelcome);
-            document.addEventListener('keydown', function (e) {
-                if (e.key === 'Escape' && welcomeModal && welcomeModal.classList.contains('is-open')) closeWelcome();
-            });
 
             if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
             setTimeout(function () {
@@ -460,15 +540,13 @@ function fnlmx_responsible_gaming_popup() {
             if (rgProceed) {
             rgProceed.addEventListener('click', function () {
                 sessionStorage.setItem('fnlmx_rg_accepted', '1');
-                rgPopup.classList.remove('is-open');
-                rgPopup.setAttribute('aria-hidden', 'true');
-                // Show the New User Welcome Bonus modal next; keep body locked
-                // while it's open, otherwise release the scroll lock.
-                if (welcomeModal) {
-                    openWelcome();
-                } else {
-                    document.body.classList.remove('funalo-drawer-open');
+                if (rgPopup) {
+                    rgPopup.classList.remove('is-open');
+                    rgPopup.setAttribute('aria-hidden', 'true');
                 }
+                // The registration bonus modal (#fm-bonus-modal) is opened by
+                // register-modal.js, which listens for #fnlmx-rg-proceed and
+                // keeps the body scroll-locked while it's open.
             });
             }
 
@@ -531,32 +609,7 @@ function fnlmx_register_modal() {
           <?php endif; ?>
         </div>
 
-        <?php
-        /* Decorative icons (bell, cherries, clover…) straddling the curve.
-           ACF repeater on the Options page: fnlmx_register_modal_image_wrapper
-           → sub field fnlmx_register_modal_img (Image). */
-        $fnlmx_reg_decor = get_field('fnlmx_register_modal_image_wrapper', 'option');
-        if ($fnlmx_reg_decor) : ?>
-          <div class="fm-reg-modal__decor" aria-hidden="true">
-            <?php foreach ($fnlmx_reg_decor as $fnlmx_reg_row) :
-              $fnlmx_img = $fnlmx_reg_row['fnlmx_register_modal_img'] ?? '';
-              if (is_array($fnlmx_img)) {
-                $fnlmx_img_url = $fnlmx_img['url'] ?? '';
-                $fnlmx_img_alt = $fnlmx_img['alt'] ?? '';
-              } elseif (is_numeric($fnlmx_img)) {
-                $fnlmx_img_url = wp_get_attachment_image_url((int) $fnlmx_img, 'medium');
-                $fnlmx_img_alt = '';
-              } else {
-                $fnlmx_img_url = $fnlmx_img;
-                $fnlmx_img_alt = '';
-              }
-              if (! $fnlmx_img_url) {
-                continue;
-              } ?>
-              <img class="fm-reg-modal__decor-img" src="<?php echo esc_url($fnlmx_img_url); ?>" alt="<?php echo esc_attr($fnlmx_img_alt); ?>" loading="lazy">
-            <?php endforeach; ?>
-          </div>
-        <?php endif; ?>
+        
       </div>
 
       <div class="fm-reg-modal__body">

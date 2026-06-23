@@ -11,6 +11,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const REDIRECT_BASE_URL =
         "https://funalomax.com/en/profile/wallet";
 
+    // The Responsible Gaming Guidelines popup (functions.php ->
+    // fnlmx_responsible_gaming_popup()) is a separate overlay, not one of the
+    // MODALS below — but it can be open underneath them, so it needs to be
+    // closed in lockstep or it's left stacked behind every other modal.
+    const RG_POPUP_ID = "fnlmx-rg-popup";
+    const RG_ACCEPTED_KEY = "fnlmx_rg_accepted";
+
     let activeModalType = "register";
 
     const MODALS = {
@@ -24,15 +31,29 @@ document.addEventListener("DOMContentLoaded", function () {
             submitSelector: "#fm-reg-submit"
         },
 
+        // Image-only welcome bonus modal (no phone field) — redirects with the
+        // bonus campaign attribution. Opened by elements with .fnlmax-play-bonus.
         bonus: {
             modalId: "fm-welcome-modal",
             closeId: "fm-welcome-close",
             phoneSelector: ".phoneInput",
             termsSelector: null,
             campaign: BONUS_CAMPAIGN,
-            openSelector:
-                "#fnlmx-rg-proceed.fnlmax-play-bonus, #fnlmx-rg-proceed, .fnlmax-play-bonus",
+            openSelector: ".fnlmax-play-bonus",
             submitSelector: "#fm-welcome-submit"
+        },
+
+        // Registration bonus modal (register-modal layout + phone field + terms).
+        // Opened by Proceed on the Responsible Gaming popup (#fnlmx-rg-proceed);
+        // submits with the bonus campaign attribution and the collected phone.
+        regbonus: {
+            modalId: "fm-bonus-modal",
+            closeId: "fm-bonus-close",
+            phoneSelector: ".phoneInput",
+            termsSelector: "#fm-bonus-terms",
+            campaign: BONUS_CAMPAIGN,
+            openSelector: "#fnlmx-rg-proceed",
+            submitSelector: "#fm-bonus-submit"
         }
     };
 
@@ -343,6 +364,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!config || !modal) return;
 
+        // Close anything else that might be open first (including the RG
+        // popup) so the new modal never opens on top of another one.
+        closeAllModals();
+
         setCampaignByModal(type);
 
         const phoneInput = getPhoneInput(type);
@@ -367,6 +392,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         document.body.classList.remove("funalo-drawer-open");
+    }
+
+    function closeResponsibleGamingPopup() {
+        const rgPopup = document.getElementById(RG_POPUP_ID);
+
+        if (rgPopup) {
+            rgPopup.classList.remove("is-open");
+            rgPopup.setAttribute("aria-hidden", "true");
+        }
+
+        try {
+            sessionStorage.setItem(RG_ACCEPTED_KEY, "1");
+        } catch (error) {
+            // sessionStorage unavailable (e.g. private browsing) — ignore
+        }
+    }
+
+    function closeAllModals() {
+        Object.keys(MODALS).forEach(closeModal);
+        closeResponsibleGamingPopup();
     }
 
     function wirePhoneInput(type) {
@@ -401,65 +446,45 @@ document.addEventListener("DOMContentLoaded", function () {
 
         closeButton.addEventListener("click", function (event) {
             event.preventDefault();
-            closeModal(type);
+            closeAllModals();
         });
     }
 
     captureAttribution();
 
     document.addEventListener("click", function (event) {
-        const registerTrigger = event.target.closest(
-            MODALS.register.openSelector
-        );
+        const types = Object.keys(MODALS);
 
-        if (registerTrigger) {
-            event.preventDefault();
-            openModal("register");
-            return;
-        }
+        for (let i = 0; i < types.length; i++) {
+            const type = types[i];
 
-        const bonusTrigger = event.target.closest(
-            MODALS.bonus.openSelector
-        );
-
-        if (bonusTrigger) {
-            event.preventDefault();
-            openModal("bonus");
+            if (event.target.closest(MODALS[type].openSelector)) {
+                event.preventDefault();
+                openModal(type);
+                return;
+            }
         }
     });
 
     document.addEventListener(
         "click",
         function (event) {
-            const registerSubmit = event.target.closest(
-                MODALS.register.submitSelector
-            );
+            const types = Object.keys(MODALS);
 
-            if (registerSubmit) {
-                event.preventDefault();
-                event.stopPropagation();
+            for (let i = 0; i < types.length; i++) {
+                const type = types[i];
 
-                if (event.stopImmediatePropagation) {
-                    event.stopImmediatePropagation();
+                if (event.target.closest(MODALS[type].submitSelector)) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    if (event.stopImmediatePropagation) {
+                        event.stopImmediatePropagation();
+                    }
+
+                    window.submitPhone(type);
+                    return;
                 }
-
-                window.submitPhone("register");
-                return;
-            }
-
-            const bonusSubmit = event.target.closest(
-                MODALS.bonus.submitSelector
-            );
-
-            if (bonusSubmit) {
-                event.preventDefault();
-                event.stopPropagation();
-
-                if (event.stopImmediatePropagation) {
-                    event.stopImmediatePropagation();
-                }
-
-                window.submitPhone("bonus");
             }
         },
         true
@@ -467,8 +492,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener("keydown", function (event) {
         if (event.key === "Escape") {
-            closeModal("register");
-            closeModal("bonus");
+            closeAllModals();
             return;
         }
 
