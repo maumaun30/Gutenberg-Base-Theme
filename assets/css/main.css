@@ -792,6 +792,14 @@
   }
 }
 
+/* Always reserve the scrollbar gutter so that locking body scroll when a modal
+   or drawer opens doesn't remove the scrollbar, widen the viewport, and shift
+   centered content sideways (the carousel was jumping on the x-axis on modal
+   open/close). The gutter stays reserved whether or not a scrollbar is shown. */
+html {
+  scrollbar-gutter: stable;
+}
+
 /* Prevent body scroll when drawer open */
 body.funalo-drawer-open {
   overflow: hidden;
