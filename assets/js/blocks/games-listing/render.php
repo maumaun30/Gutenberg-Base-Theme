@@ -63,7 +63,7 @@ if (! function_exists('gl_nav_btns')) :
         data-scroll-target="<?php echo esc_attr($target_id); ?>"
         data-scroll-dir="-1">
         <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="8,0 8,12 0,6" />
+          <polyline points="6,1 1.5,6 6,11" />
         </svg>
       </button>
       <button class="games-listing__nav-btn"
@@ -71,7 +71,7 @@ if (! function_exists('gl_nav_btns')) :
         data-scroll-target="<?php echo esc_attr($target_id); ?>"
         data-scroll-dir="1">
         <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="0,0 0,12 8,6" />
+          <polyline points="2,1 6.5,6 2,11" />
         </svg>
       </button>
     </div>
@@ -123,7 +123,8 @@ if (! empty($category_order)) {
       if (! function_exists('gl_tab_shape')) :
         function gl_tab_shape($uid)
         { ?>
-          <svg aria-hidden="true" class="games-listing__tab-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Desktop shape: wide 148x42 chamfer (icon beside label). -->
+          <svg aria-hidden="true" class="games-listing__tab-shape games-listing__tab-shape--desktop" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#gl-tab-<?php echo esc_attr($uid); ?>)">
               <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
               <path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path>
@@ -131,6 +132,19 @@ if (! empty($category_order)) {
             <defs>
               <clipPath id="gl-tab-<?php echo esc_attr($uid); ?>">
                 <rect width="148" height="42" fill="white"></rect>
+              </clipPath>
+            </defs>
+          </svg>
+          <!-- Mobile shape: 75x60 chamfer matching the vertical (icon-over-label)
+               tab so the angled corners aren't stretched out of proportion. -->
+          <svg aria-hidden="true" class="games-listing__tab-shape games-listing__tab-shape--mobile" viewBox="0 0 75 60" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#gl-tab-m-<?php echo esc_attr($uid); ?>)">
+              <path d="M75 48.4 L63.4 60 H0 V7 L7 0 H75 V48.4 Z" fill="currentColor"></path>
+              <path d="M75 52 V60 H67 L75 52 Z" fill="var(--decoration, currentColor)"></path>
+            </g>
+            <defs>
+              <clipPath id="gl-tab-m-<?php echo esc_attr($uid); ?>">
+                <rect width="75" height="60" fill="white"></rect>
               </clipPath>
             </defs>
           </svg>
@@ -319,16 +333,33 @@ if (! empty($category_order)) {
 
     /* ── Scroll buttons ── */
     document.querySelectorAll('.games-listing__nav-btn').forEach(function(btn) {
+      var grid = document.getElementById(btn.getAttribute('data-scroll-target'));
+      if (!grid) return;
+      var wrap = grid.closest('.games-listing__scroll-wrap') || grid;
+      var dir  = parseInt(btn.getAttribute('data-scroll-dir'), 10);
+
       btn.addEventListener('click', function() {
-        var grid = document.getElementById(btn.getAttribute('data-scroll-target'));
-        if (!grid) return;
-        var wrap = grid.closest('.games-listing__scroll-wrap') || grid;
+        if (btn.classList.contains('is-disabled')) return;
         var cardWidth = (grid.querySelector('.game-card')?.offsetWidth ?? 160) + 10;
         wrap.scrollBy({
-          left: parseInt(btn.getAttribute('data-scroll-dir'), 10) * cardWidth * 1,
+          left: dir * cardWidth * 1,
           behavior: 'smooth'
         }); /*3*/
       });
+
+      /* Disable a button when there's nothing more to scroll its way. */
+      function updateState() {
+        var maxScroll = wrap.scrollWidth - wrap.clientWidth;
+        var atStart   = wrap.scrollLeft <= 1;
+        var atEnd     = wrap.scrollLeft >= maxScroll - 1;
+        var disabled  = maxScroll <= 1 || (dir < 0 ? atStart : atEnd);
+        btn.classList.toggle('is-disabled', disabled);
+        btn.setAttribute('aria-disabled', disabled ? 'true' : 'false');
+      }
+
+      wrap.addEventListener('scroll', updateState, { passive: true });
+      window.addEventListener('resize', updateState);
+      updateState();
     });
 
     /* ── Category tab filtering ── */

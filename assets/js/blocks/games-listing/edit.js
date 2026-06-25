@@ -232,10 +232,10 @@ export default function Edit({ attributes, setAttributes }) {
   const NavBtns = () => (
     <div className="games-listing__nav-btns">
       <button className="games-listing__nav-btn" aria-label="Previous">
-        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="8,0 8,12 0,6"/></svg>
+        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polyline points="6,1 1.5,6 6,11"/></svg>
       </button>
       <button className="games-listing__nav-btn" aria-label="Next">
-        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 0,12 8,6"/></svg>
+        <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><polyline points="2,1 6.5,6 2,11"/></svg>
       </button>
     </div>
   );
