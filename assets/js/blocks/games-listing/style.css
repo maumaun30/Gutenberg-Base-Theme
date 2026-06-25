@@ -68,7 +68,7 @@
   padding: 0;
   isolation: isolate;
   color: #1E1E1E; /* inactive fill of the SVG shape */
-  --decoration: rgba(255, 255, 255, 0.25); /* bottom-right accent triangle */
+  --decoration: var(--color-primary); /* bottom-right accent triangle */
   transition: color 0.2s, filter 0.2s;
 }
 
@@ -80,6 +80,12 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+
+/* Desktop uses the wide 148x42 shape; the 75x60 mobile shape is hidden until
+   the tabs switch to the vertical (icon-over-label) layout. */
+.wp-block-mytheme-games-listing .games-listing__tab-shape--mobile {
+  display: none;
 }
 
 .wp-block-mytheme-games-listing .games-listing__tab-content {
@@ -188,7 +194,7 @@
   align-items: center;
   justify-content: center;
   color: var(--color-primary); /* fills the SVG shape */
-  --decoration: #ffffff; /* bottom-right accent triangle */
+  --decoration: #282828; /* bottom-right accent triangle */
   isolation: isolate;
   text-decoration: none;
   transition: filter 0.2s ease;
@@ -227,37 +233,60 @@
   gap: 0.25rem;
 }
 
+/* Matches the game-slider nav buttons on the live homepage:
+   32px square, 2px radius, dark "layer-3" fill, muted arrow. */
 .wp-block-mytheme-games-listing .games-listing__nav-btn {
-  width: 1.7rem;
-  height: 1.7rem;
-  background: #FFFFFF;
-  color: #000000;
+  width: 2rem;
+  height: 2rem;
+  background: #292929; /* --layer-3 */
+  color: #B0B0B0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  transition: background 0.2s, color 0.2s;
   font-size: 0.7rem;
   font-family: 'Montserrat', sans-serif;
   border: none;
+  border-radius: 0.125rem;
 }
 
 .wp-block-mytheme-games-listing .games-listing__nav-btn svg {
   width: 0.5rem;
   height: 0.5rem;
-  fill: #000000;
+  fill: none;
+  stroke: #B0B0B0;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   display: block;
-  transition: fill 0.2s;
-}
-
-.wp-block-mytheme-games-listing .games-listing__nav-btn:hover svg {
-  fill: #ffffff;
+  transition: stroke 0.2s;
 }
 
 .wp-block-mytheme-games-listing .games-listing__nav-btn:hover {
-  background: var(--color-primary, #f71dc2);
-  color: #fff;
-  border-color: var(--color-primary, #f71dc2);
+  background: oklch(30.52% 0 0); /* --dark-btn-hover */
+  color: #F6F2EE;
+}
+
+.wp-block-mytheme-games-listing .games-listing__nav-btn:hover svg {
+  stroke: #ffffff;
+}
+
+.wp-block-mytheme-games-listing .games-listing__nav-btn:active {
+  background: oklch(22.21% 0 0); /* --dark-btn-active */
+}
+
+/* Disabled state — nothing left to scroll in that direction. */
+.wp-block-mytheme-games-listing .games-listing__nav-btn.is-disabled {
+  background: oklch(22.21% 0 0); /* --dark-btn-disabled */
+  color: #7C7C7C;
+  cursor: default;
+  pointer-events: none;
+}
+
+.wp-block-mytheme-games-listing .games-listing__nav-btn.is-disabled svg {
+  fill: none;
+  stroke: #7C7C7C;
 }
 
 /* ── Separator line ── */
@@ -331,17 +360,34 @@
   }
   .wp-block-mytheme-games-listing .games-listing__tabs {
     flex-wrap: nowrap;
-    justify-content: start;
-    gap: 10px;
+    justify-content: stretch;
+    gap: 4px;
+  }
+  /* Swap to the proportional 75x60 chamfer for the vertical tabs. */
+  .wp-block-mytheme-games-listing .games-listing__tab-shape--desktop {
+    display: none;
+  }
+  .wp-block-mytheme-games-listing .games-listing__tab-shape--mobile {
+    display: block;
   }
   .wp-block-mytheme-games-listing .games-listing__tab-icon {
-    width: 15px;
-    height: 15px;
+    width: 28px;
+    height: 28px;
   }
+  /* Stretch the 5 tabs to fill the row as one contiguous strip (Root layout). */
   .wp-block-mytheme-games-listing .games-listing__tab {
-    padding: 0.25rem 0.20rem;
-    flex-direction: row;
-    gap: 2px;
+    padding: 0;
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  /* Root-domain layout: stack the icon above the category name (vertical),
+     giving the taller 68x60-ish chamfered tab instead of the wide row. */
+  .wp-block-mytheme-games-listing .games-listing__tab-content {
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 4px;
+    font-size: 10px;
+    letter-spacing: 0.02em;
   }
 }
 
@@ -357,13 +403,20 @@
 
 @media (max-width: 410px) {
   .wp-block-mytheme-games-listing .games-listing__tabs {
-    gap: 8px;
+    gap: 3px;
   }
   .wp-block-mytheme-games-listing .games-listing__tab {
-    padding: 0.25rem 0.20rem;
-    flex-direction: row;
-    gap: 2px;
-    font-size: 10px;
+    padding: 0;
+    font-size: 9px;
+  }
+  .wp-block-mytheme-games-listing .games-listing__tab-content {
+    padding: 9px 2px;
+    gap: 5px;
+    font-size: 9px;
+  }
+  .wp-block-mytheme-games-listing .games-listing__tab-icon {
+    width: 24px;
+    height: 24px;
   }
 }
 

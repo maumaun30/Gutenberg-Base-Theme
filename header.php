@@ -4,6 +4,9 @@
 <head>
   <meta charset="<?php bloginfo('charset'); ?>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tint the mobile browser chrome / status-bar area black to match the
+       Root domain (otherwise it defaults to white). -->
+  <meta name="theme-color" content="#000000">
   <?php wp_head(); ?>
 </head>
 
@@ -56,7 +59,7 @@
 
         <div class="funalo-nav__cta" id="fm-register-trigger" role="button" tabindex="0">
           <a>
-            <?php esc_html_e('Login / Register', 'luxe'); ?>
+            <?php esc_html_e('Login / Sign Up', 'luxe'); ?>
           </a>
           <svg aria-hidden="true" class="funalo-nav__cta-shape" viewBox="0 0 124 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#_R_mcnuliivb_)">

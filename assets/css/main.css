@@ -19,6 +19,7 @@
   --color-funalomax-gradient: #1e1e1e;
   --color-nav-active: #ffffff;
   --color-amber-gradient: linear-gradient(90deg, #936000 0%, #e9c349 100%);
+  --color-hyperlink: #ffdb00;
 
   /* Background scale */
   --bg-dark-1: #0a0a0b;
@@ -504,6 +505,8 @@
   .funalo-nav__logo img,
   .funalo-nav__logo .custom-logo {
     display: block;
+    /* Root-domain mobile logo size: ~95.64 x 30 (was 100 x 52). */
+    height: 30px;
     max-width: 100px;
     object-fit: contain;
   }
@@ -737,11 +740,11 @@
   }
 
   .funalo-nav {
-    height: 60px;
+    height: 56px;
   }
 
   .funalo-nav__inner {
-    height: 60px;
+    height: 56px;
   }
 }
 
@@ -1585,9 +1588,10 @@ body.funalo-drawer-open {
 .fnlmx-footer__desc {
   font-size: 12px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.55);
+  color: #FFFFFF;
   margin: 0;
   max-width: 52ch;
+  font-weight: 500;
 }
 
 /* Right side — two pills side by side */
@@ -2256,7 +2260,7 @@ body.funalo-drawer-open {
 
 .fnlmx-rg-popup__btn--exit {
   color: #282828;
-  --decoration: #ffffff;
+  --decoration: #282828;
 }
 
 .fnlmx-rg-popup__btn--proceed {
@@ -2280,58 +2284,76 @@ body.funalo-drawer-open {
     padding: 0.5rem;
   }
   .fnlmx-rg-popup__panel {
-    /* Fit the *visible* viewport. `dvh` accounts for the mobile browser's
-       address bar, so the panel (and the buttons) are never pushed off
-       screen the way `vh` does. The `vh` line is a fallback for old browsers. */
+    /* Match the Root-domain ("Actual Gaming Site") size: 328 wide, ~596 tall.
+       The ~596 height is reached by tightening the inner spacing below — no
+       fixed height, so there's no scrollbar. `max-height` still clamps to the
+       visible viewport (dvh accounts for the mobile address bar) on short
+       screens so the buttons are never pushed off screen. */
+    width: 100%;
+    max-width: 328px;
     max-height: 95vh;
     max-height: calc(100dvh - 1rem);
-    max-width: 340px;
     border: unset;
   }
   .fnlmx-rg-popup__title {
     font-size: 0.9375rem;
-    padding: 1rem 1.25rem 0.75rem;
+    padding: 0.625rem 1.25rem 0.5rem;
   }
   .fnlmx-rg-popup__body {
-    padding: 0.875rem 1.25rem;
+    padding: 0.5rem 1.25rem;
   }
   .fnlmx-rg-popup__actions {
-    padding: 0.875rem 1.25rem 1rem;
+    /* Narrow side padding so the two buttons land at ~148px each
+       (148*2 + 0.75rem gap + 2*10px ≈ 328px panel width). */
+    padding: 0.625rem 0.625rem 0.75rem;
   }
 
   .fnlmx-rg-popup__list,
   .fnlmx-rg-popup__wysiwyg ul,
   .fnlmx-rg-popup__wysiwyg ol {
-    gap: 6px;
-    margin-bottom: 0.875rem;
+    gap: 4px;
+    margin-bottom: 0.5rem;
   }
 
   .fnlmx-rg-popup__list li,
   .fnlmx-rg-popup__wysiwyg ul li,
   .fnlmx-rg-popup__wysiwyg ol li {
-    font-size: 14px;
-    line-height: 1.3;
+    font-size: 13px;
+    line-height: 1.25;
   }
 
   .fnlmx-rg-popup__badge-item {
-    min-height: 48px;
-    padding: 0.625rem 1rem;
+    min-height: 38px;
+    padding: 0.45rem 1rem;
   }
 
   .fnlmx-rg-popup__disclaimer {
-    font-size: 0.75rem;
-    line-height: 1.35;
-    padding: 0.75rem 1rem 0.875rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    padding: 0.45rem 1rem 0.5rem;
   }
 
   .fnlmx-rg-popup__btn {
     font-size: 12px;
+    /* Fix the button to the chamfer SVG's native 148x42 ratio so the
+       clipped corner isn't vertically stretched (Root-domain spec: 148x42). */
+    padding: 0;
+    height: 42px;
+  }
+  .fnlmx-rg-popup__btn-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0;
   }
 }
 
 @media (max-width: 400px) {
   .fnlmx-rg-popup__panel {
-    max-width: 330px;
+    /* Keep the Root width (328) on common phones; width:100% + the popup's
+       0.5rem side padding still lets it shrink below 344px-wide screens. */
+    max-width: 328px;
   }
 }
 
@@ -2710,7 +2732,7 @@ h1.page-title-404 {
   }
 
   a {
-    color: var(--color-primary);
+    color: var(--color-hyperlink);
     transition: color 0.2s ease;
     text-decoration: underline;
   }
@@ -2965,6 +2987,7 @@ h1.page-title-404 {
   overflow-wrap: break-word;
   word-wrap: break-word;
   overflow-x: hidden;
+  color: #FFFFFF;
 }
 
 /* Break overly long links / inline text inside Gutenberg page content so they
