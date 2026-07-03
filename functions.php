@@ -354,12 +354,17 @@ function fnlmx_responsible_gaming_popup() {
 
       </div>
 
+      <label class="fnlmx-rg-popup__remember" for="fnlmx-rg-remember">
+        <input type="checkbox" id="fnlmx-rg-remember" class="fnlmx-rg-popup__remember-check">
+        <span class="fnlmx-rg-popup__remember-label"><?php esc_html_e( "Don't show this again for 24 hours", 'luxe' ); ?></span>
+      </label>
+
       <div class="fnlmx-rg-popup__actions">
         <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--exit" id="fnlmx-rg-exit">
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b52676)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b52676"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           <span class="fnlmx-rg-popup__btn-label"><?php esc_html_e('Exit', 'luxe'); ?></span>
         </button>
-        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed fnlmax-play-bonus"> <!--id="fnlmx-rg-proceed"-->
+        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed fnlmax-play-bonus" id="fnlmx-rg-accept"> <!--id="fnlmx-rg-proceed"-->
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b5266c)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b5266c"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           
           <!--<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>-->
@@ -527,14 +532,58 @@ function fnlmx_responsible_gaming_popup() {
         document.addEventListener('DOMContentLoaded', function () {
             const rgPopup   = document.getElementById('fnlmx-rg-popup');
             const rgProceed = document.getElementById('fnlmx-rg-proceed');
+            const rgAccept  = document.getElementById('fnlmx-rg-accept');
             const rgExit    = document.getElementById('fnlmx-rg-exit');
+            const rgRemember = document.getElementById('fnlmx-rg-remember');
 
-            if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted')) {
+            // "Don't show again for 24 hours" — persisted in localStorage as an
+            // expiry timestamp so it survives across sessions/tabs on the same
+            // browser (unlike the per-session fnlmx_rg_accepted flag).
+            const RG_HIDE_KEY = 'fnlmx_rg_hide_until';
+
+            function rgHiddenFor24h() {
+                try {
+                    const until = parseInt(localStorage.getItem(RG_HIDE_KEY) || '0', 10);
+                    if (until && Date.now() < until) {
+                        return true;
+                    }
+                    // Expired — clean up so the key doesn't linger.
+                    if (until) {
+                        localStorage.removeItem(RG_HIDE_KEY);
+                    }
+                } catch (error) {
+                    // localStorage unavailable (e.g. private browsing) — ignore
+                }
+                return false;
+            }
+
+            // If the visitor ticked the box, remember the dismissal for 24h.
+            function rememberRgDismissal() {
+                if (!rgRemember || !rgRemember.checked) return;
+                try {
+                    localStorage.setItem(
+                        RG_HIDE_KEY,
+                        String(Date.now() + 24 * 60 * 60 * 1000)
+                    );
+                } catch (error) {
+                    // localStorage unavailable — ignore
+                }
+            }
+
+            if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted') && !rgHiddenFor24h()) {
             setTimeout(function () {
                 rgPopup.classList.add('is-open');
                 rgPopup.setAttribute('aria-hidden', 'false');
                 document.body.classList.add('funalo-drawer-open');
             }, 300);
+            }
+
+            // The RG popup "Proceed" button is the ONLY action that activates the
+            // 24h hide — Exit must never suppress the popup on the next visit.
+            if (rgAccept) {
+            rgAccept.addEventListener('click', function () {
+                rememberRgDismissal();
+            });
             }
 
             if (rgProceed) {

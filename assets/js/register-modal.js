@@ -412,6 +412,9 @@ document.addEventListener("DOMContentLoaded", function () {
             rgPopup.setAttribute("aria-hidden", "true");
         }
 
+        // The 24h "don't show again" hide is intentionally NOT set here: closing
+        // via Escape/close behaves like Exit — only the RG popup "Proceed" button
+        // activates the 24h hide (see functions.php).
         try {
             sessionStorage.setItem(RG_ACCEPTED_KEY, "1");
         } catch (error) {

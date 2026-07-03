@@ -8,14 +8,21 @@ $recommended_per_page = (int) ($attributes['recommendedPerPage']  ?? 12);
 
 /* ── Helper: render a single game card ── */
 if (! function_exists('gl_game_card')) :
-  function gl_game_card($button_url, $thumb, $title_attr, $price, $has_demo = false)
+  function gl_game_card($button_url, $thumb, $title_attr, $price, $has_demo = false, $is_hot = false)
   { ?>
     <a href="<?php echo esc_url($button_url); ?>"
       class="game-card"
       title="<?php echo esc_attr($title_attr); ?>">
       <div class="game-card__image-wrap">
-        <?php if ($has_demo) : ?>
-          <span class="game-card__badge">DEMO</span>
+        <?php if ($is_hot || $has_demo) : ?>
+          <div class="game-card__badges">
+            <?php if ($is_hot) : ?>
+              <span class="game-card__badge">HOT</span>
+            <?php endif; ?>
+            <?php if ($has_demo) : ?>
+              <span class="game-card__badge game-card__badge--demo">DEMO</span>
+            <?php endif; ?>
+          </div>
         <?php endif; ?>
         <?php if ($thumb) : ?>
 
@@ -264,7 +271,8 @@ if (! empty($category_order)) {
                   get_the_post_thumbnail_url(get_the_ID(), 'large'),
                   get_the_title(),
                   get_post_meta(get_the_ID(), 'game_price', true),
-                  (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true)
+                  (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true),
+                  has_term('hot', 'game-tag', get_the_ID())
                 );
               endwhile;
               wp_reset_postdata(); ?>
@@ -313,7 +321,8 @@ if (! empty($category_order)) {
                     get_the_post_thumbnail_url(get_the_ID(), 'large'),
                     get_the_title(),
                     get_post_meta(get_the_ID(), 'game_price', true),
-                    (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true)
+                    (bool) get_post_meta(get_the_ID(), 'fnlmx_game_code', true),
+                    has_term('hot', 'game-tag', get_the_ID())
                   );
                 endwhile;
                 wp_reset_postdata(); ?>
