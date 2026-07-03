@@ -41,9 +41,9 @@ $hero_desc  = gc_acf('fnlmx_game_short_description', $post_id);
 $game_rules = gc_acf('fnlmx_game_rules',             $post_id);
 $game_code = get_field('fnlmx_game_code', $post_id);
 
-/* Demo embed. Desktop opens it in the modal; mobile opens the game's iframe URL
-   in a new tab (handled client-side — see the modal script below).
-   wp_is_mobile() reads the User-Agent server-side just to set the shortcode device. */
+/* Demo embed. Both desktop and mobile open it in the in-page modal (see the
+   modal script below). wp_is_mobile() reads the User-Agent server-side so the
+   shortcode serves the device-appropriate game build. */
 $device     = wp_is_mobile() ? 'MOBILE' : 'DESKTOP';
 $game_embed = $game_code
   ? do_shortcode('[st8_game game="' . esc_attr($game_code) . '" fun_mode="true" device="' . $device . '"]')
@@ -1031,14 +1031,23 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     .sg-stats {
       width: 100%;
       border-radius: 8px;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       justify-content: center;
     }
 
     .sg-stat {
-      width: calc(100% / 2 - ((2 - 1) * 15px) / 2);
-      padding: .7rem 1rem;
-      gap: 5px;
+      flex: 1 1 0;
+      min-width: 0;
+      justify-content: center;
+      padding: .6rem .5rem;
+      gap: 6px;
+    }
+
+    /* Let the label/value stack shrink and wrap so a long value (e.g. a
+       provider name) stays inside its column instead of overflowing the
+       bar and creating horizontal scroll. */
+    .sg-stat__top {
+      min-width: 0;
     }
 
     .sg-stat__label {
@@ -1047,6 +1056,13 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
     .sg-stat__value {
       font-size: 10px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .sg-stat__icon {
+      width: 1rem;
+      height: 1rem;
     }
 
     .sg-stat__icon svg {
@@ -1067,16 +1083,19 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   }
 
   @media(max-width:399px) {
-    .sg-stats {
-      justify-content: center;
-    }
-
     .sg-stat {
-      width: calc(100% / 2 - ((2 - 1) * 15px) / 2);
+      padding: .55rem .35rem;
+      gap: 4px;
     }
 
-    .sg-stat+.sg-stat::before {
-      background: unset;
+    .sg-stat__icon {
+      width: .85rem;
+      height: .85rem;
+    }
+
+    .sg-stat__icon svg {
+      width: 13px;
+      height: 13px;
     }
   }
 
@@ -1467,7 +1486,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
     if (modal) {
       var gameFrame = modal.querySelector('.sg-modal__iframe-wrap iframe');
-      var isMobile = /Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
       function hideLoading() {
         if (modalLoad) modalLoad.style.display = 'none';
@@ -1497,15 +1515,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
       document.querySelectorAll('.js-open-modal').forEach(function(btn) {
         btn.addEventListener('click', function() {
-          // On mobile, open the game in a new tab instead of the cramped modal.
-          if (isMobile) {
-            var frame = modal.querySelector('.sg-modal__iframe-wrap iframe');
-            var src = frame ? frame.src : '';
-            if (src && src !== 'about:blank') {
-              window.open(src, '_blank', 'noopener');
-              return;
-            }
-          }
           openModal(this.dataset.title);
         });
       });
