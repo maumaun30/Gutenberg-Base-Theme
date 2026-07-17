@@ -536,38 +536,23 @@ function fnlmx_responsible_gaming_popup() {
             const rgExit    = document.getElementById('fnlmx-rg-exit');
             const rgRemember = document.getElementById('fnlmx-rg-remember');
 
-            // "Don't show again for 24 hours" — persisted in localStorage as an
-            // expiry timestamp so it survives across sessions/tabs on the same
-            // browser (unlike the per-session fnlmx_rg_accepted flag).
-            const RG_HIDE_KEY = 'fnlmx_rg_hide_until';
+            // "Don't show again for 24 hours" — persisted as a browser cookie
+            // that the browser auto-expires after 24h (per-browser, same-device).
+            // Set only when the visitor ticks the box AND clicks Proceed.
+            const RG_HIDE_COOKIE = 'fnlmx_rg_hide';
 
             function rgHiddenFor24h() {
-                try {
-                    const until = parseInt(localStorage.getItem(RG_HIDE_KEY) || '0', 10);
-                    if (until && Date.now() < until) {
-                        return true;
-                    }
-                    // Expired — clean up so the key doesn't linger.
-                    if (until) {
-                        localStorage.removeItem(RG_HIDE_KEY);
-                    }
-                } catch (error) {
-                    // localStorage unavailable (e.g. private browsing) — ignore
-                }
-                return false;
+                return document.cookie.split('; ').some(function (pair) {
+                    return pair.indexOf(RG_HIDE_COOKIE + '=') === 0;
+                });
             }
 
             // If the visitor ticked the box, remember the dismissal for 24h.
             function rememberRgDismissal() {
                 if (!rgRemember || !rgRemember.checked) return;
-                try {
-                    localStorage.setItem(
-                        RG_HIDE_KEY,
-                        String(Date.now() + 24 * 60 * 60 * 1000)
-                    );
-                } catch (error) {
-                    // localStorage unavailable — ignore
-                }
+                const expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toUTCString();
+                document.cookie =
+                    RG_HIDE_COOKIE + '=1; expires=' + expires + '; path=/; SameSite=Lax';
             }
 
             if (rgPopup && !sessionStorage.getItem('fnlmx_rg_accepted') && !rgHiddenFor24h()) {
