@@ -518,9 +518,9 @@ function fnlmx_responsible_gaming_popup() {
           <input type="checkbox" id="fm-bonus-terms" checked>
           <span>
             <?php esc_html_e('I Agree To The', 'luxe'); ?>
-            <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Terms Of Use', 'luxe'); ?></a>
+            <a href="<?php echo esc_url('https://games.funalomax.com/terms-and-conditions/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Terms Of Use', 'luxe'); ?></a>
             <?php esc_html_e('And', 'luxe'); ?>
-            <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
+            <a href="<?php echo esc_url('https://games.funalomax.com/privacy-cookie-policy/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
           </span>
         </label>
 
@@ -685,9 +685,9 @@ function fnlmx_register_modal() {
         <input type="checkbox" id="fm-reg-terms" checked>
         <span>
           <?php esc_html_e('I Agree To The', 'luxe'); ?>
-          <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Terms Of Use', 'luxe'); ?></a>
+          <a href="<?php echo esc_url('https://games.funalomax.com/terms-and-conditions/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Terms Of Use', 'luxe'); ?></a>
           <?php esc_html_e('And', 'luxe'); ?>
-          <a href="<?php echo esc_url('https://funalomax.com/en'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
+          <a href="<?php echo esc_url('https://games.funalomax.com/privacy-cookie-policy/'); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Privacy Policy', 'luxe'); ?></a>
         </span>
       </label>
 

@@ -673,7 +673,7 @@
   transition: filter 0.2s ease;
 }
 
-.funalo-drawer__cta a {
+.funalo-drawer__cta a, .funalo-drawer__cta button {
   position: relative;
   z-index: 1; /* above the shape */
   display: block;
