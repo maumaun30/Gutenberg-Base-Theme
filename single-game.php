@@ -1296,7 +1296,7 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <?php endif; ?>
 
         <div class="sg-cta">
-          <a class="sg-btn-play fm-open-register" href="https://funalomax.com/en">
+          <button type="button" class="sg-btn-play fm-open-register">
             <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
               <g clip-path="url(#sg-btn-play-shape)">
                 <path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path>
@@ -1305,9 +1305,9 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
               <defs><clipPath id="sg-btn-play-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
             </svg>
             <span class="sg-btn-label">Play For Real</span>
-          </a>
+          </button>
           <?php if ($game_code) : ?>
-            <button class="sg-btn-demo js-open-modal"
+            <button type="button" class="sg-btn-demo js-open-modal"
               data-title="<?php echo esc_attr($title); ?> — Demo">
               <svg aria-hidden="true" class="sg-btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clip-path="url(#sg-btn-demo-shape)">
