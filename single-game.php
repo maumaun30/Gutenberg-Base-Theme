@@ -269,11 +269,6 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     aspect-ratio: 111 / 140;
   }
 
-  /* Square thumbnail for Slot & E-Games */
-  .sg-thumb-wrap--square {
-    aspect-ratio: 1 / 1;
-  }
-
   .sg-thumb {
     width: 100%;
     height: 100%;
@@ -1236,7 +1231,8 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
   <section class="sg-hero">
     <div class="sg-hero__inner">
 
-      <div class="sg-thumb-wrap<?php echo $square_cards ? ' sg-thumb-wrap--square' : ''; ?>">
+      <!-- Hero thumbnail always keeps the 111/140 portrait ratio, even for Slot / E-Games -->
+      <div class="sg-thumb-wrap">
         <?php if ($thumb_lg) : ?>
           <img src="<?php echo esc_url($thumb_lg); ?>" alt="<?php echo esc_attr($title); ?>" class="sg-thumb">
         <?php else : ?>
