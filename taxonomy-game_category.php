@@ -451,6 +451,17 @@ set_query_var('game_count',     $game_count);
     align-self: stretch;
   }
 
+  /* Whichever of the two info columns is shorter gets pinned while the taller
+     one scrolls past. The .fm-info__sticky class is applied by JS at runtime
+     (desktop only) to whichever column measures shorter. */
+  @media (min-width: 901px) {
+    .fm-info__sticky {
+      position: sticky;
+      top: 100px;
+      align-self: start;
+    }
+  }
+
   .fm-info h2 {
     font-weight: 700;
     font-size: clamp(28px, 3.2vw, 40px);
@@ -765,8 +776,8 @@ set_query_var('game_count',     $game_count);
           <?php if ($has_left) : ?>
             <div>
               <h2 class="fm-info__title">
-                Why Play <?php echo esc_html(strtoupper($term_name)); ?><br>
-                On <span class="fm-pink">FunaloMAX?</span>
+                Why Play <span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?><br>
+                Games</span> with Us
               </h2>
 
               <?php if ($sub_para) : ?>
@@ -803,7 +814,7 @@ set_query_var('game_count',     $game_count);
           <!-- RIGHT: Quick Guide FAQ -->
           <?php if ($has_right) : ?>
             <div>
-              <h2 class="fm-faq-title">Quick Guide To<br><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> GAMES</span></h2>
+              <h2 class="fm-faq-title"><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> Games</span><br>Quick Guide</h2>
 
               <div class="fm-faq">
                 <?php foreach ($faq_rows as $idx => $faq) :
@@ -899,6 +910,24 @@ set_query_var('game_count',     $game_count);
           label.textContent = original;
         }
       });
+    }
+
+    // Sticky info column: pin whichever of the two columns is shorter while
+    // the taller one scrolls (desktop only, when both columns are present).
+    const infoGrid = document.querySelector('.fm-info__grid:not(.fm-info__grid--full)');
+    if (infoGrid) {
+      const cols = infoGrid.querySelectorAll(':scope > div:not(.fm-info__divider)');
+      if (cols.length === 2) {
+        const desktop = window.matchMedia('(min-width: 901px)');
+        const applySticky = () => {
+          cols.forEach(c => c.classList.remove('fm-info__sticky'));
+          if (!desktop.matches) return;
+          const shorter = cols[0].offsetHeight <= cols[1].offsetHeight ? cols[0] : cols[1];
+          shorter.classList.add('fm-info__sticky');
+        };
+        applySticky();
+        window.addEventListener('resize', applySticky);
+      }
     }
 
     document.querySelectorAll('.fm-faq').forEach(faq => {
