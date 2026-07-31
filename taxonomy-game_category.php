@@ -165,7 +165,7 @@ set_query_var('game_count',     $game_count);
     font-size: 18px;
     line-height: 1.6;
     color: #FFFFFF;
-    max-width: 576px;
+    max-width: 705px;
     margin: 0;
   }
 
@@ -788,14 +788,14 @@ set_query_var('game_count',     $game_count);
                 <?php foreach ($icon_rows as $row) :
                   $icon_img = $row['fnlmx_game_category_content_icon'] ?? [];
                   $icon_url = $icon_img['url'] ?? '';
+                  if (!$icon_url) {
+                    $icon_url = get_theme_file_uri('/assets/images/category-template/default_feature_circle_icon.svg');
+                  }
                   $subtitle = $row['fnlmx_game_category_content_subtitle'] ?? '';
                   $supara   = $row['fnlmx_game_category_content_suparagraph'] ?? '';
                 ?>
                   <div class="fm-feat__row">
-                    <div class="fm-feat__icon"
-                      <?php if ($icon_url) : ?>
-                      style="background-image:url('<?php echo esc_url($icon_url); ?>');"
-                      <?php endif; ?>>
+                    <div class="fm-feat__icon" style="background-image:url('<?php echo esc_url($icon_url); ?>');">
                     </div>
                     <div class="fm-feat__txt">
                       <?php if ($subtitle) : ?><h3><?php echo esc_html($subtitle); ?></h3><?php endif; ?>
@@ -820,21 +820,15 @@ set_query_var('game_count',     $game_count);
                 <?php foreach ($faq_rows as $idx => $faq) :
                   $faq_icon_img = $faq['fnlmx_game_category_faq_icon'] ?? [];
                   $faq_icon_url = $faq_icon_img['url'] ?? '';
+                  if (!$faq_icon_url) {
+                    $faq_icon_url = get_theme_file_uri('/assets/images/category-template/Red-question-mark-icon.svg');
+                  }
                   $question     = $faq['fnlmx_game_category_faq_question'] ?? '';
                   $answer       = $faq['fnlmx_game_category_faq_answer'] ?? '';
                 ?>
                   <details <?php echo $idx === 0 ? 'open' : ''; ?>>
                     <summary>
-                      <span class="fm-faq__ico"
-                        <?php if ($faq_icon_url) : ?>
-                        style="background-image:url('<?php echo esc_url($faq_icon_url); ?>');"
-                        <?php endif; ?>>
-                        <?php if (!$faq_icon_url) : ?>
-                          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M12 8v4m0 4h.01" />
-                          </svg>
-                        <?php endif; ?>
+                      <span class="fm-faq__ico" style="background-image:url('<?php echo esc_url($faq_icon_url); ?>');">
                       </span>
                       <?php echo esc_html($question); ?>
                       <svg class="fm-faq__chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
