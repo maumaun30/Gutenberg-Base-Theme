@@ -172,7 +172,7 @@ function fm_search_type_label($post_type)
     z-index: 2;
     padding: 4px 10px;
     border-radius: 4px;
-    background: rgba(0, 0, 0, .6);
+    background: var(--color-primary);
     color: #fff;
     font-size: 10px;
     font-weight: 700;
@@ -222,12 +222,12 @@ function fm_search_type_label($post_type)
   }
 
   .fm-pagination a:hover {
-    border-color: var(--fm-pink);
-    color: var(--fm-pink);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
   }
 
   .fm-pagination .current {
-    background: linear-gradient(var(--fm-pink-2) 0%, var(--fm-pink) 100%);
+    background: var(--color-primary);
     border-color: transparent;
     color: #fff;
   }
