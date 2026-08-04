@@ -1,0 +1,68 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/hero-banner",
+  "title": "Hero Banner",
+  "category": "design",
+  "icon": "align-pull-right",
+  "description": "A static hero banner: text on the left, image on the right. On tablet and mobile the image moves below the text.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageId": {
+      "type": "number",
+      "default": 0
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "title": {
+      "type": "string",
+      "default": "Download The"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": "FUNaloMAX App"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": "Add your supporting paragraph here."
+    },
+    "features": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "string"
+      }
+    },
+    "primaryButtonText": {
+      "type": "string",
+      "default": ""
+    },
+    "showPrimaryButton": {
+      "type": "boolean",
+      "default": false
+    },
+    "secondaryButtonText": {
+      "type": "string",
+      "default": ""
+    },
+    "secondaryButtonUrl": {
+      "type": "string",
+      "default": "#"
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "overlayOpacity": {
+      "type": "number",
+      "default": 85
+    }
+  }
+}

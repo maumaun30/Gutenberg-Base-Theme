@@ -1,0 +1,403 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Editor Preview ────────────────────────────────────────────── */
+.feature-section-editor {
+  position: relative;
+  width: 100%;
+  padding: 40px 24px;
+  background-color: #0a0a0b;
+  border-radius: 8px;
+}
+
+.feature-section-editor__content {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.feature-section-editor--media-left .feature-section-editor__content {
+  flex-direction: row-reverse;
+}
+
+.feature-section-editor__col {
+  flex: 1 1 55%;
+  min-width: 0;
+}
+
+.feature-section-editor__media {
+  flex: 1 1 45%;
+  min-width: 0;
+}
+
+.feature-section-editor__media-btn {
+  width: 100%;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.feature-section-editor__media-btn img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.feature-section-editor__media-placeholder {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+.feature-section-editor__title {
+  color: #fff !important;
+  font-size: clamp(1.75rem, 3.5vw, 2.75rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  margin: 0 0 16px !important;
+}
+
+.feature-section-editor__subtitle {
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 1rem !important;
+  margin: 0 0 24px !important;
+}
+
+.feature-section-editor__list {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.feature-section-editor__item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.feature-section-editor__bullet {
+  flex: 0 0 auto;
+  width: 20px;
+  color: #ba001d;
+  font-weight: 700;
+}
+
+.feature-section-editor__bullet img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+.feature-section-editor__item-title {
+  color: #fff !important;
+  font-weight: 700 !important;
+}
+
+.feature-section-editor__item-text {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.feature-section-editor__empty {
+  color: rgba(255, 255, 255, 0.55) !important;
+  font-style: italic;
+  margin: 0 0 24px !important;
+}
+
+.feature-section-editor__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.feature-section-editor__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #ba001d;
+  border-radius: 10px;
+  padding: 10px 18px;
+  color: #fff;
+}
+
+.feature-section-editor__btn-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+
+.feature-section-editor__btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.feature-section-editor__btn-small {
+  font-size: 0.75rem;
+}
+
+.feature-section-editor__btn-main {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
+/* ─── Frontend Section ───────────────────────────────────────────── */
+.wp-block-mytheme-feature-section.mytheme-feature-section {
+  display: block;
+  width: 100%;
+  padding: 72px 0;
+  background-color: #0a0a0b;
+}
+
+/* Capped, but always keeping a gutter so it never touches the viewport edge. */
+.mytheme-feature-section__container {
+  width: 100%;
+  max-width: min(1440px, calc(100% - 48px));
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.mytheme-feature-section--media-left .mytheme-feature-section__container {
+  flex-direction: row-reverse;
+}
+
+.mytheme-feature-section__col {
+  flex: 1 1 55%;
+  min-width: 0;
+}
+
+.mytheme-feature-section__media {
+  flex: 1 1 45%;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.mytheme-feature-section__image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.mytheme-feature-section__title {
+  color: #ffffff;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1.25;
+  margin: 0 0 24px;
+}
+
+.mytheme-feature-section__title .highlight-text {
+  color: #ba001d;
+}
+
+.mytheme-feature-section__subtitle {
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0 0 32px;
+}
+
+.mytheme-feature-section__list {
+  list-style: none;
+  margin: 0 0 40px;
+  padding: 0;
+}
+
+.mytheme-feature-section__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mytheme-feature-section__item:last-child {
+  margin-bottom: 0;
+}
+
+/* Bullet: the uploaded icon when there is one, otherwise the inline SVG check
+   from render.php, tinted by `color`. */
+.mytheme-feature-section__bullet {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 3px;
+  color: #ba001d;
+  display: block;
+}
+
+.mytheme-feature-section__bullet svg,
+.mytheme-feature-section__bullet img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.mytheme-feature-section__item-body {
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.mytheme-feature-section__item-title {
+  color: #ffffff;
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+.mytheme-feature-section__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.mytheme-feature-section__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #ba001d;
+  border-radius: 10px;
+  padding: 12px 20px;
+  text-decoration: none;
+  color: #ffffff;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.mytheme-feature-section__btn:hover {
+  transform: translateY(-3px);
+  background-color: #d1032a;
+}
+
+.mytheme-feature-section__btn-icon {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mytheme-feature-section__btn-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.mytheme-feature-section__btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.mytheme-feature-section__btn-small {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.mytheme-feature-section__btn-main {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ─── Tablet & Mobile: image drops below the text ────────────────── */
+@media (max-width: 1023px) {
+  .wp-block-mytheme-feature-section.mytheme-feature-section {
+    padding: 56px 0;
+  }
+
+  .mytheme-feature-section__container,
+  .mytheme-feature-section--media-left .mytheme-feature-section__container,
+  .feature-section-editor__content,
+  .feature-section-editor--media-left .feature-section-editor__content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 32px;
+  }
+
+  .mytheme-feature-section__col,
+  .mytheme-feature-section__media,
+  .feature-section-editor__col,
+  .feature-section-editor__media {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .mytheme-feature-section__image {
+    margin: 0 auto;
+    max-height: 620px;
+    width: auto;
+  }
+
+  .mytheme-feature-section__title {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 767px) {
+  .wp-block-mytheme-feature-section.mytheme-feature-section {
+    padding: 40px 0;
+  }
+
+  .mytheme-feature-section__container {
+    max-width: calc(100% - 32px);
+  }
+
+  .mytheme-feature-section__title {
+    font-size: 26px;
+    margin-bottom: 16px;
+  }
+
+  .mytheme-feature-section__subtitle,
+  .mytheme-feature-section__item-body {
+    font-size: 14px;
+  }
+
+  .mytheme-feature-section__item {
+    margin-bottom: 18px;
+  }
+
+  .mytheme-feature-section__list {
+    margin-bottom: 28px;
+  }
+
+  .mytheme-feature-section__buttons {
+    gap: 12px;
+  }
+
+  .mytheme-feature-section__btn {
+    padding: 10px 16px;
+    gap: 10px;
+  }
+
+  .mytheme-feature-section__btn-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mytheme-feature-section__btn-small {
+    font-size: 11px;
+  }
+
+  .mytheme-feature-section__btn-main {
+    font-size: 14px;
+  }
+
+  .mytheme-feature-section__image {
+    max-height: 460px;
+  }
+}

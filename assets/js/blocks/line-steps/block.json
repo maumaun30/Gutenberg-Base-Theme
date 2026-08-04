@@ -1,0 +1,45 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/line-steps",
+  "title": "Line Steps",
+  "category": "design",
+  "icon": "editor-ol",
+  "description": "A numbered step sequence joined by a connecting line. Steps start empty and are added one at a time; numbers are generated automatically.",
+  "keywords": ["steps", "timeline", "how to", "process", "numbered"],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "How to Download the"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": "FUNaloMAX App"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "steps": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "padNumbers": {
+      "type": "boolean",
+      "default": true
+    },
+    "showLine": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

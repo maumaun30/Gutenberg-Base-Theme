@@ -1,0 +1,319 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Editor Preview ────────────────────────────────────────────── */
+.line-steps-editor {
+  position: relative;
+  width: 100%;
+  padding: 40px 24px;
+  background-color: #0a0a0b;
+  border-radius: 8px;
+}
+
+.line-steps-editor__header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 32px;
+}
+
+.line-steps-editor__title {
+  color: #fff !important;
+  font-size: clamp(1.75rem, 4vw, 3rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  margin: 0 0 12px !important;
+}
+
+.line-steps-editor__subtitle {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+}
+
+.line-steps-editor__list {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  counter-reset: none;
+}
+
+.line-steps-editor__step {
+  position: relative;
+  flex: 1 1 0;
+  text-align: center;
+  padding: 0 12px;
+}
+
+.line-steps-editor__marker {
+  position: relative;
+  z-index: 1;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #ba001d;
+}
+
+.line-steps-editor__number {
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.125rem;
+}
+
+/* Connector between markers; the last step has nothing to point at. */
+.line-steps-editor__step::after {
+  content: '';
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background-color: #ba001d;
+}
+
+.line-steps-editor__step:last-child::after,
+.line-steps-editor--no-line .line-steps-editor__step::after {
+  display: none;
+}
+
+.line-steps-editor__step-title {
+  color: #fff !important;
+  font-size: 1.125rem !important;
+  font-weight: 700 !important;
+  margin: 0 0 12px !important;
+}
+
+.line-steps-editor__step-text {
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+
+.line-steps-editor__add {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ─── Frontend Section ───────────────────────────────────────────── */
+.wp-block-mytheme-line-steps.mytheme-line-steps {
+  display: block;
+  width: 100%;
+  padding: 72px 0;
+  background-color: #0a0a0b;
+}
+
+/* Capped, but always keeping a gutter so it never touches the viewport edge. */
+.mytheme-line-steps__container {
+  width: 100%;
+  max-width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.mytheme-line-steps__header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 56px;
+}
+
+.mytheme-line-steps__title {
+  color: #ffffff;
+  font-size: 48px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0;
+}
+
+/* The highlighted half of the heading drops to its own line, as in the design. */
+.mytheme-line-steps__title .highlight-text {
+  color: #ba001d;
+  display: block;
+}
+
+.mytheme-line-steps__subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 16px 0 0;
+}
+
+.mytheme-line-steps__list {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+}
+
+.mytheme-line-steps__step {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  padding: 0 16px;
+}
+
+/* Numbered circle with the soft red glow from the design. */
+.mytheme-line-steps__marker {
+  position: relative;
+  z-index: 1;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #ba001d;
+  box-shadow: 0 0 24px rgba(232, 19, 47, 0.55);
+}
+
+.mytheme-line-steps__number {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.5px;
+}
+
+/* Connector runs from this marker to the next one. Sitting at half the marker
+   height keeps it centred whatever the marker size, and the last step has
+   nothing to connect to. */
+.mytheme-line-steps__step::after {
+  content: '';
+  position: absolute;
+  top: 36px;
+  left: 50%;
+  width: 100%;
+  height: 1px;
+  background-color: #ba001d;
+  z-index: 0;
+}
+
+.mytheme-line-steps__step:last-child::after,
+.mytheme-line-steps--no-line .mytheme-line-steps__step::after {
+  display: none;
+}
+
+.mytheme-line-steps__step-title {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 20px;
+}
+
+.mytheme-line-steps__step-text {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ─── Tablet ─────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .wp-block-mytheme-line-steps.mytheme-line-steps {
+    padding: 56px 0;
+  }
+
+  .mytheme-line-steps__title {
+    font-size: 36px;
+  }
+
+  .mytheme-line-steps__header {
+    margin-bottom: 40px;
+  }
+
+  .mytheme-line-steps__step {
+    padding: 0 10px;
+  }
+
+  .mytheme-line-steps__step-title {
+    font-size: 17px;
+    margin-bottom: 14px;
+  }
+
+  .mytheme-line-steps__step-text {
+    font-size: 14px;
+  }
+
+  .mytheme-line-steps__marker {
+    width: 60px;
+    height: 60px;
+  }
+
+  .mytheme-line-steps__step::after {
+    top: 30px;
+  }
+}
+
+/* ─── Mobile: the row becomes a vertical timeline ────────────────── */
+@media (max-width: 767px) {
+  .wp-block-mytheme-line-steps.mytheme-line-steps {
+    padding: 40px 0;
+  }
+
+  .mytheme-line-steps__container {
+    max-width: calc(100% - 32px);
+  }
+
+  .mytheme-line-steps__title {
+    font-size: 28px;
+  }
+
+  .mytheme-line-steps__list,
+  .line-steps-editor__list {
+    flex-direction: column;
+  }
+
+  /* Text sits to the right of the marker, so the connector becomes the vertical
+     line running down the left-hand gutter. */
+  .mytheme-line-steps__step,
+  .line-steps-editor__step {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    column-gap: 16px;
+    text-align: left;
+    padding: 0 0 28px;
+  }
+
+  .mytheme-line-steps__step:last-child {
+    padding-bottom: 0;
+  }
+
+  .mytheme-line-steps__marker,
+  .line-steps-editor__marker {
+    grid-row: 1 / span 2;
+    width: 52px;
+    height: 52px;
+    margin: 0;
+  }
+
+  .mytheme-line-steps__number {
+    font-size: 16px;
+  }
+
+  .mytheme-line-steps__step::after,
+  .line-steps-editor__step::after {
+    top: 52px;
+    left: 26px;
+    width: 1px;
+    height: calc(100% - 52px);
+  }
+
+  .mytheme-line-steps__step-title {
+    font-size: 16px;
+    margin: 0 0 8px;
+    align-self: center;
+  }
+
+  .mytheme-line-steps__step-text {
+    font-size: 14px;
+  }
+}
