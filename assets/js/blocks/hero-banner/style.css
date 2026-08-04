@@ -1,0 +1,371 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Editor Preview ────────────────────────────────────────────── */
+.hero-banner-editor {
+  position: relative;
+  width: 100%;
+  min-height: 400px;
+  overflow: hidden;
+  border-radius: 6px;
+  background-color: #0a0a0b;
+  background-image: radial-gradient(60% 90% at 12% 30%, rgba(232, 19, 47, 0.18) 0%, rgba(232, 19, 47, 0) 70%);
+}
+
+.hero-banner-editor__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero-banner-editor__content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding: 48px;
+}
+
+.hero-banner-editor__inner {
+  flex: 0 1 46%;
+  min-width: 0;
+}
+
+.hero-banner-editor__media {
+  flex: 1 1 54%;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  align-self: stretch;
+}
+
+.hero-banner-editor__image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.hero-banner-editor__placeholder {
+  width: 100%;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+}
+
+.hero-banner-editor__title {
+  font-size: clamp(2rem, 5vw, 3.5rem) !important;
+  color: #fff !important;
+  line-height: 1.1 !important;
+  margin: 0 0 16px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+}
+
+.hero-banner-editor__subtitle {
+  font-size: 1.125rem !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  margin: 0 0 24px !important;
+}
+
+.hero-banner-editor__buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.hero-banner-editor__btn {
+  display: inline-block;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: default;
+}
+
+.hero-banner-editor__btn--primary {
+  background-color: #ba001d;
+  color: #fff;
+}
+
+.hero-banner-editor__btn--secondary {
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.hero-banner-editor__features {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 12px 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.hero-banner-editor__feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 0.9375rem;
+  white-space: nowrap;
+}
+
+.hero-banner-editor__check {
+  color: #ba001d;
+  font-weight: 700;
+}
+
+/* ─── Frontend Banner ────────────────────────────────────────────── */
+.wp-block-mytheme-hero-banner.mytheme-hero-banner {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  background-color: #0a0a0b;
+  /* Radial fill from the design: #E8132F at 18% fading to fully transparent at
+     70%. The end stop keeps the same hue so it fades out instead of greying. */
+  background-image: radial-gradient(55% 100% at 10% 35%, rgba(232, 19, 47, 0.18) 0%, rgba(232, 19, 47, 0) 70%);
+}
+
+.mytheme-hero-banner__overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.mytheme-hero-banner__content {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 64px 24px 0;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+/* The text column is capped so the leftover width — and it is the larger
+   share — always goes to the image. */
+.mytheme-hero-banner__inner {
+  flex: 0 1 46%;
+  min-width: 0;
+  padding-bottom: 64px;
+}
+
+.mytheme-hero-banner__media {
+  flex: 1 1 54%;
+  min-width: 0;
+  align-self: flex-end;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* The image fills its column and sits on the banner's bottom edge on desktop. */
+.mytheme-hero-banner__image {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: bottom right;
+}
+
+.mytheme-hero-banner__title {
+  color: #fff;
+  line-height: 1.1;
+  margin: 0 0 20px;
+  font-weight: 700;
+  font-size: 48px;
+  max-width: 700px;
+  text-transform: uppercase;
+}
+
+.mytheme-hero-banner__title .highlight-text,
+.mytheme-hero-banner .highlight-text {
+  color: #ba001d;
+}
+
+.mytheme-hero-banner__subtitle {
+  color: #FFFFFF;
+  margin: 0 0 32px;
+  font-size: 16px;
+  max-width: 672px;
+}
+
+.mytheme-hero-banner__buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: nowrap;
+  margin-bottom: 32px;
+}
+
+/* The SVG (.mytheme-hero-banner__btn-shape) is the button background, filled via
+   `color` (fill: currentColor); .mytheme-hero-banner__btn-label sits on top. */
+.mytheme-hero-banner__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  text-decoration: none;
+  isolation: isolate;
+  --decoration: #ffffff; /* bottom-right accent triangle */
+  transition: transform 0.2s ease, filter 0.2s ease;
+  /* reset so the <button> primary matches the <a> secondary */
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.mytheme-hero-banner__btn-shape {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.mytheme-hero-banner__btn-label {
+  position: relative;
+  z-index: 1; /* above the shape */
+  padding: 14px 32px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: -1.2px;
+  color: #ffffff;
+  text-align: center;
+}
+
+.mytheme-hero-banner__btn:hover {
+  transform: translateY(-5px);
+}
+
+.mytheme-hero-banner__btn--primary {
+  color: #ba001d; /* fills the SVG shape */
+}
+
+.mytheme-hero-banner__btn--secondary {
+  color: rgba(57, 57, 60, 0.6); /* fills the SVG shape */
+  --decoration: rgba(255, 255, 255, 0.5);
+}
+
+/* Four items per row on desktop, on a single line — the labels never wrap,
+   the row shrinks to fit instead. */
+.mytheme-hero-banner__features {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  gap: 14px 20px;
+  margin: 0;
+  padding: 0;
+}
+
+.mytheme-hero-banner__feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #FFFFFF;
+  font-size: clamp(14px, 1.15vw, 18px);
+  white-space: nowrap;
+}
+
+.mytheme-hero-banner__check {
+  color: #ba001d;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* ─── Tablet & Mobile: image stacks below the text ───────────────── */
+@media (max-width: 1023px) {
+  .mytheme-hero-banner__content {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 48px 24px 0;
+  }
+
+  .mytheme-hero-banner__inner {
+    flex: 1 1 auto;
+    width: 100%;
+    padding-bottom: 0;
+    text-align: center;
+  }
+
+  .mytheme-hero-banner__media {
+    flex: 1 1 auto;
+    width: 100%;
+    align-self: auto;
+    justify-content: center;
+  }
+
+  .mytheme-hero-banner__image {
+    margin: 0 auto;
+    max-height: 520px;
+    width: auto;
+  }
+
+  .mytheme-hero-banner__title,
+  .mytheme-hero-banner__subtitle {
+    max-width: none;
+  }
+
+  .mytheme-hero-banner__buttons {
+    justify-content: center;
+  }
+
+  /* Stacked layout has no room for a fixed 4-up row — let the items wrap. */
+  .mytheme-hero-banner__features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .mytheme-hero-banner__content {
+    padding: 32px 20px 0;
+  }
+
+  .mytheme-hero-banner__title {
+    font-size: 32px;
+  }
+
+  .mytheme-hero-banner__subtitle {
+    font-size: 14px;
+    margin-bottom: 24px;
+  }
+
+  .mytheme-hero-banner__features {
+    gap: 10px 20px;
+  }
+
+  .mytheme-hero-banner__feature {
+    font-size: 14px;
+  }
+
+  .mytheme-hero-banner__btn {
+    width: 150px;
+  }
+
+  .mytheme-hero-banner__btn-label {
+    font-size: 12px;
+    padding: 15px 25px;
+  }
+
+  .mytheme-hero-banner__image {
+    max-height: 380px;
+  }
+}

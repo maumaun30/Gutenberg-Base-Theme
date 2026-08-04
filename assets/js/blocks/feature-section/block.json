@@ -1,0 +1,60 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/feature-section",
+  "title": "Feature Section",
+  "category": "design",
+  "icon": "align-pull-left",
+  "description": "A reusable section: heading, description, a dynamic checklist, an uploaded image on the right, and any number of link or file-download buttons. Image drops below the text on tablet and mobile.",
+  "keywords": ["section", "feature", "media", "text", "download", "list"],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Section Title"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": ""
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "imageUrl": {
+      "type": "string",
+      "default": ""
+    },
+    "imageId": {
+      "type": "number",
+      "default": 0
+    },
+    "imageAlt": {
+      "type": "string",
+      "default": ""
+    },
+    "items": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "buttons": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "mediaPosition": {
+      "type": "string",
+      "default": "right"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/grid-card",
+  "title": "Grid Card",
+  "category": "design",
+  "icon": "grid-view",
+  "description": "A section with a heading and a grid of cards. Each card has an uploadable icon, a title and a description. Cards start empty and are added one at a time.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Proceed with the"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": "FUNaloMAX App Download"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "cards": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "columns": {
+      "type": "number",
+      "default": 3
+    }
+  }
+}

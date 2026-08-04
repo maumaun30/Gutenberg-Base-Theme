@@ -74,6 +74,269 @@
   --nav-height: 72px;
 }
 
+/* ---- GLOBAL APP DOWNLOAD BAR --------------- */
+
+/* Sticky strip above the nav. Sits in normal flow directly before .funalo-nav,
+   so both stick: the bar at top 0, the nav offset by the bar's measured height
+   (--fnlmx-appbar-h, set by the inline script in functions.php).
+
+   The whole bar is a rebuild of the 1200x200 banner artwork, so every dimension
+   is derived from --appbar-h (= content width / 6) instead of being a fixed px
+   value. That keeps the icon / heading / phone / button in the same proportions
+   the flat banner has, at any viewport width. */
+.fnlmx-appbar {
+  --appbar-w: min(100vw, 1200px);
+  /* 6:1 like the artwork, but capped — at full 1200px the banner would be
+     200px tall, far too much standing viewport. The cap keeps every element
+     scaling together, just smaller. */
+  --appbar-h: clamp(52px, calc(var(--appbar-w) / 6), 104px);
+  /* Floored at 22px so it stays a usable tap target on the short mobile bar. */
+  --appbar-close: clamp(22px, calc(var(--appbar-h) * 0.28), 30px);
+  /* Docked to the bottom of the viewport at every size: the CTA stays visible
+     for the whole session without pushing the hero down. */
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  z-index: 1000;
+  /* Clears the iOS home indicator; the extra height is picked up by the
+     ResizeObserver, so the body padding stays correct. */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  /* Not clipped here — the close button straddles the bar's top edge. The
+     phone mockup's bleed is clipped by .fnlmx-appbar__inner instead. */
+  overflow: visible;
+
+  /* Two layers:
+     1. BG.png — the artwork's curved white/red wedge, stretched to exactly the
+        content box (--appbar-w) so the curve lands where the design puts it.
+     2. A hard-stop gradient underneath that continues white to the left of the
+        artwork and red to its right, so the bar full-bleeds on wide screens. */
+  background-image: url("../images/appbar-bg.png"),
+    linear-gradient(
+      to right,
+      #ffffff 0,
+      #ffffff calc(50% + var(--appbar-w) / 2),
+      var(--nav-bg) calc(50% + var(--appbar-w) / 2),
+      var(--nav-bg) 100%
+    );
+  background-position: center top, center top;
+  background-size: var(--appbar-w) 100%, 100% 100%;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.fnlmx-appbar.is-hidden {
+  display: none;
+}
+
+.fnlmx-appbar__inner {
+  position: relative;
+  z-index: 1;
+  width: var(--appbar-w);
+  height: var(--appbar-h);
+  margin: 0 auto;
+  /* Crops the phone mockup's bleed, the job the bar itself used to do before
+     the close button had to overhang the top edge. */
+  overflow: hidden;
+  /* Right padding reserves the column the corner close button sits in, so the
+     CTA is never overlapped by it. */
+  padding: 0 calc(var(--appbar-close) + var(--appbar-h) * 0.2) 0
+    calc(var(--appbar-h) * 0.25);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--appbar-h) * 0.14);
+}
+
+.fnlmx-appbar__icon {
+  width: calc(var(--appbar-h) * 0.62);
+  height: calc(var(--appbar-h) * 0.62);
+  flex: 0 0 auto;
+  border-radius: calc(var(--appbar-h) * 0.14);
+  object-fit: cover;
+}
+
+.fnlmx-appbar__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
+  font-size: calc(var(--appbar-h) * 0.19);
+  color: #000000;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.fnlmx-appbar__line1,
+.fnlmx-appbar__line2 {
+  display: block;
+}
+
+.fnlmx-appbar__accent {
+  color: var(--nav-bg);
+}
+
+/* Pushed hard right so it straddles the wedge, and bled slightly past the
+   bar's height the way the artwork crops it. */
+.fnlmx-appbar__phone {
+  height: calc(var(--appbar-h) * 1.06);
+  width: auto;
+  margin-left: auto;
+  object-fit: contain;
+  /* Shrinkable so the CTA is never pushed out of the bar on narrow tablets. */
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+/* White pill with a red label, sitting on the bar's red wedge. The chamfered
+   SVG shape the nav CTA uses is hidden here — the pill is a plain rounded
+   background instead. */
+.fnlmx-appbar__btn {
+  position: relative;
+  flex: 0 0 auto;
+  margin-left: calc(var(--appbar-h) * 0.2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--appbar-h) * 0.11) calc(var(--appbar-h) * 0.3);
+  background-color: #ffffff;
+  border-radius: 999px;
+  text-decoration: none;
+  isolation: isolate;
+  transition: background-color 0.2s ease;
+}
+
+.fnlmx-appbar__btn .funalo-nav__cta-shape {
+  display: none;
+}
+
+.fnlmx-appbar__btn-label {
+  position: relative;
+  z-index: 1;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: calc(var(--appbar-h) * 0.14);
+  letter-spacing: 0.08em;
+  color: #ba001d; /* label color */
+  white-space: nowrap;
+}
+
+.fnlmx-appbar__btn:hover,
+.fnlmx-appbar__btn:focus {
+  background-color: #f3f3f3;
+}
+
+.fnlmx-appbar__btn:hover .fnlmx-appbar__btn-label,
+.fnlmx-appbar__btn:focus .fnlmx-appbar__btn-label {
+  color: #ba001d;
+}
+
+/* White circle with a red X straddling the bar's top-right edge — roughly half
+   of it overhangs the bar. Centred on the corner of the content column, so on
+   wide screens it tracks the content rather than the viewport edge. */
+.fnlmx-appbar__close {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(
+    calc(var(--appbar-w) / 2 - 100% - var(--appbar-h) * 0.07),
+    -50%
+  );
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--appbar-close);
+  height: var(--appbar-close);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: #ffffff;
+  cursor: pointer;
+  isolation: isolate;
+  transition: background-color 0.2s ease;
+}
+
+/* The chamfered SVG background is unused now that the button is a circle. */
+.fnlmx-appbar__close .funalo-nav__cta-shape {
+  display: none;
+}
+
+.fnlmx-appbar__close-icon {
+  position: relative;
+  z-index: 1;
+  width: 52%;
+  height: 52%;
+  stroke: #ba001d;
+  stroke-width: 2.5;
+}
+
+.fnlmx-appbar__close:hover {
+  background-color: #f3f3f3;
+}
+
+/* Keep the page clear of the docked bar. --fnlmx-appbar-h is the bar's measured
+   height, set by the script in functions.php, and drops to 0 when dismissed.
+   The `body` prefix on the back-to-top rule only outranks its base rule, which
+   is declared further down this file and would win on source order. */
+body {
+  padding-bottom: var(--fnlmx-appbar-h, 0px);
+}
+
+body .fnlmx-back-to-top {
+  bottom: calc(var(--fnlmx-appbar-h, 0px) + 1rem);
+}
+
+/* Below the artwork's own width the 52px floor kicks in, so the bar stops
+   shrinking while its contents keep their desktop ratios — which overflowed the
+   row and clipped the CTA. Tighten the gaps and type here so the icon, heading,
+   phone and CTA all still fit at 390px. */
+@media (max-width: 600px) {
+  .fnlmx-appbar__inner {
+    padding: 0 calc(var(--appbar-close) + var(--appbar-h) * 0.12) 0
+      calc(var(--appbar-h) * 0.18);
+    gap: calc(var(--appbar-h) * 0.1);
+  }
+
+  .fnlmx-appbar__icon {
+    width: calc(var(--appbar-h) * 0.56);
+    height: calc(var(--appbar-h) * 0.56);
+    border-radius: calc(var(--appbar-h) * 0.12);
+  }
+
+  .fnlmx-appbar__heading {
+    font-size: calc(var(--appbar-h) * 0.185);
+    line-height: 1.12;
+  }
+
+  /* Capped by width rather than height so it gives up space before the CTA
+     does, and never crowds the heading. */
+  .fnlmx-appbar__phone {
+    height: auto;
+    max-height: calc(var(--appbar-h) * 1.02);
+    /*max-width: 17vw;*/
+  }
+
+  .fnlmx-appbar__btn {
+    margin-left: calc(var(--appbar-h) * 0.1);
+    padding: calc(var(--appbar-h) * 0.12) calc(var(--appbar-h) * 0.2);
+  }
+
+  .fnlmx-appbar__btn-label {
+    font-size: calc(var(--appbar-h) * 0.155);
+    letter-spacing: 0.04em;
+  }
+
+  .fnlmx-appbar__close {
+    transform: translate(
+      calc(var(--appbar-w) / 2 - 100% - var(--appbar-h) * 0.05),
+      -50%
+    );
+  }
+}
+
 /* ---- HEADER STYLE --------------- */
 
 /* ── Base Nav Shell ── */

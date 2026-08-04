@@ -1,0 +1,70 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/counter",
+  "title": "Counter",
+  "category": "design",
+  "icon": "chart-bar",
+  "description": "A row of stat counters, each with an uploadable icon, an animated value and a label. Items are added and removed freely.",
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php",
+  "attributes": {
+    "items": {
+      "type": "array",
+      "default": [
+        {
+          "iconUrl": "",
+          "iconId": 0,
+          "iconAlt": "",
+          "value": "1M+",
+          "label": "App Downloads",
+          "animate": true
+        },
+        {
+          "iconUrl": "",
+          "iconId": 0,
+          "iconAlt": "",
+          "value": "100+",
+          "label": "Casino Games",
+          "animate": true
+        },
+        {
+          "iconUrl": "",
+          "iconId": 0,
+          "iconAlt": "",
+          "value": "4.8★",
+          "label": "User Rating",
+          "animate": true
+        },
+        {
+          "iconUrl": "",
+          "iconId": 0,
+          "iconAlt": "",
+          "value": "24/7",
+          "label": "Live Support",
+          "animate": true
+        }
+      ],
+      "items": {
+        "type": "object"
+      }
+    },
+    "animate": {
+      "type": "boolean",
+      "default": true
+    },
+    "duration": {
+      "type": "number",
+      "default": 2000
+    },
+    "columns": {
+      "type": "number",
+      "default": 4
+    },
+    "showBorder": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

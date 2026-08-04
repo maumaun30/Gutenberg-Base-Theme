@@ -1,0 +1,198 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Editor Preview ────────────────────────────────────────────── */
+.counter-editor {
+  position: relative;
+  width: 100%;
+  padding: 32px 24px;
+  border-radius: 16px;
+  background-color: #0a0a0b;
+}
+
+.counter-editor--bordered {
+  border: 1px solid rgba(186, 0, 29, 0.55);
+}
+
+.counter-editor__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--counter-columns, 4), 1fr);
+  gap: 24px;
+}
+
+.counter-editor__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+.counter-editor__icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  background-color: #1a1a1c;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.counter-editor__icon img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.counter-editor__icon-placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.counter-editor__value {
+  color: #ba001d !important;
+  font-size: 2.25rem !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+}
+
+.counter-editor__label {
+  color: #fff !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+}
+
+.counter-editor__empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6) !important;
+  margin: 0 !important;
+}
+
+/* ─── Frontend Counter ───────────────────────────────────────────── */
+/* The card is capped at 1280px, but below that it also has to keep a gutter so
+   it never runs edge-to-edge against the viewport — hence the calc(): whichever
+   of the two is smaller wins. */
+.wp-block-mytheme-counter.mytheme-counter {
+  position: relative;
+  width: 100%;
+  max-width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 20px;
+  border-radius: 16px;
+  background-color: #0a0a0b;
+  box-sizing: border-box;
+}
+
+.mytheme-counter--bordered {
+  border: 1px solid rgba(186, 0, 29, 0.55);
+}
+
+.mytheme-counter__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--counter-columns, 4), 1fr);
+  gap: 24px;
+}
+
+.mytheme-counter__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+}
+
+/* Rounded dark tile behind the uploaded icon */
+.mytheme-counter__icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: #1a1a1c;
+  padding: 12px;
+}
+
+.mytheme-counter__icon-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.mytheme-counter__value {
+  color: #ba001d;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -1px;
+  /* Digits keep a constant width so the count-up doesn't jitter the layout. */
+  font-variant-numeric: tabular-nums;
+}
+
+.mytheme-counter__number,
+.mytheme-counter__affix {
+  display: inline;
+}
+
+/* Suffixes are just typed text ("+", "M+", "/7", "★") and inherit the value's
+   colour and weight. Montserrat has no glyph for symbols like ★, so name the
+   fallbacks explicitly rather than leaving it to whatever the browser picks. */
+.mytheme-counter__affix {
+  font-family: Montserrat, 'Segoe UI Symbol', 'Apple Symbols', 'Noto Sans Symbols 2', sans-serif;
+}
+
+.mytheme-counter__label {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* ─── Tablet ─────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .mytheme-counter__grid,
+  .counter-editor__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px 16px;
+  }
+
+  .mytheme-counter__value {
+    font-size: 30px;
+  }
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 575px) {
+  .wp-block-mytheme-counter.mytheme-counter {
+    max-width: calc(100% - 32px);
+    padding: 24px 16px;
+    border-radius: 12px;
+  }
+
+  .mytheme-counter__grid {
+    gap: 24px 12px;
+  }
+
+  .mytheme-counter__icon {
+    width: 48px;
+    height: 48px;
+    padding: 10px;
+  }
+
+  .mytheme-counter__value {
+    font-size: 28px;
+  }
+
+  .mytheme-counter__label {
+    font-size: 14px;
+  }
+}

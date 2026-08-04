@@ -737,6 +737,271 @@ function fnlmx_back_to_top_button() {
 }
 add_action( 'wp_footer', 'fnlmx_back_to_top_button' );
 
+/**
+ * ── Global App Download Bar ──────────────────────────────────────────────────
+ *
+ * Sticky bar pinned above the nav on every page. The app icon and the phone
+ * mockup are ACF image fields so they can be swapped without touching code.
+ */
+
+// Options page holding the bar's fields.
+add_action( 'acf/init', function () {
+    if ( ! function_exists( 'acf_add_options_page' ) ) {
+        return;
+    }
+
+    acf_add_options_page([
+        'page_title' => __( 'App Download Bar', 'luxe' ),
+        'menu_title' => __( 'App Download Bar', 'luxe' ),
+        'menu_slug'  => 'fnlmx-app-download-bar',
+        'capability' => 'edit_theme_options',
+        'icon_url'   => 'dashicons-smartphone',
+        'position'   => 59,
+        'redirect'   => false,
+    ]);
+});
+
+add_action( 'acf/init', function () {
+    if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+        return;
+    }
+
+    acf_add_local_field_group([
+        'key'      => 'group_fnlmx_appbar',
+        'title'    => __( 'App Download Bar', 'luxe' ),
+        'location' => [
+            [
+                [ 'param' => 'options_page', 'operator' => '==', 'value' => 'fnlmx-app-download-bar' ],
+            ],
+        ],
+        'fields'   => [
+            [
+                'key'           => 'field_fnlmx_appbar_enable',
+                'label'         => __( 'Show the bar', 'luxe' ),
+                'name'          => 'fnlmx_appbar_enable',
+                'type'          => 'true_false',
+                'ui'            => 1,
+                'default_value' => 1,
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_icon',
+                'label'         => __( 'App icon', 'luxe' ),
+                'name'          => 'fnlmx_appbar_icon',
+                'type'          => 'image',
+                'return_format' => 'array',
+                'preview_size'  => 'medium',
+                'instructions'  => __( 'Square app icon shown at the far left.', 'luxe' ),
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_phone',
+                'label'         => __( 'Phone mockup', 'luxe' ),
+                'name'          => 'fnlmx_appbar_phone',
+                'type'          => 'image',
+                'return_format' => 'array',
+                'preview_size'  => 'medium',
+                'instructions'  => __( 'Transparent PNG of the app on a phone. Sits between the heading and the button.', 'luxe' ),
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_line1',
+                'label'         => __( 'Heading — line 1', 'luxe' ),
+                'name'          => 'fnlmx_appbar_line1',
+                'type'          => 'text',
+                'default_value' => 'DOWNLOAD',
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_line2_accent',
+                'label'         => __( 'Heading — line 2 (accent / red)', 'luxe' ),
+                'name'          => 'fnlmx_appbar_line2_accent',
+                'type'          => 'text',
+                'default_value' => 'FUNALOMAX',
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_line2_rest',
+                'label'         => __( 'Heading — line 2 (rest)', 'luxe' ),
+                'name'          => 'fnlmx_appbar_line2_rest',
+                'type'          => 'text',
+                'default_value' => 'APP',
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_btn_label',
+                'label'         => __( 'Button label', 'luxe' ),
+                'name'          => 'fnlmx_appbar_btn_label',
+                'type'          => 'text',
+                'default_value' => 'DOWNLOAD',
+            ],
+            [
+                'key'   => 'field_fnlmx_appbar_btn_link',
+                'label' => __( 'Button link', 'luxe' ),
+                'name'  => 'fnlmx_appbar_btn_link',
+                'type'  => 'url',
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_dismissible',
+                'label'         => __( 'Allow visitors to close it', 'luxe' ),
+                'name'          => 'fnlmx_appbar_dismissible',
+                'type'          => 'true_false',
+                'ui'            => 1,
+                'default_value' => 1,
+                'instructions'  => __( 'Adds a close button; the bar stays hidden for the rest of the browsing session.', 'luxe' ),
+            ],
+        ],
+    ]);
+});
+
+/**
+ * Render the bar. Hooked to wp_body_open so it lands immediately before the
+ * nav — both are sticky siblings, so the nav pins underneath the bar.
+ */
+function fnlmx_app_download_bar() {
+    if ( ! function_exists( 'get_field' ) ) {
+        return;
+    }
+
+    $enabled = get_field( 'fnlmx_appbar_enable', 'option' );
+    if ( $enabled === false ) {
+        return;
+    }
+
+    $icon        = get_field( 'fnlmx_appbar_icon', 'option' );
+    $phone       = get_field( 'fnlmx_appbar_phone', 'option' );
+    $line1       = get_field( 'fnlmx_appbar_line1', 'option' );
+    $accent      = get_field( 'fnlmx_appbar_line2_accent', 'option' );
+    $rest        = get_field( 'fnlmx_appbar_line2_rest', 'option' );
+    $btn_label   = get_field( 'fnlmx_appbar_btn_label', 'option' );
+    $btn_link    = get_field( 'fnlmx_appbar_btn_link', 'option' );
+    $dismissible = get_field( 'fnlmx_appbar_dismissible', 'option' );
+
+    // Nothing configured yet — don't render an empty red strip.
+    if ( ! $icon && ! $phone && ! $line1 && ! $accent ) {
+        return;
+    }
+    ?>
+    <div class="fnlmx-appbar" id="fnlmx-appbar">
+      <div class="fnlmx-appbar__inner">
+
+        <?php if ( ! empty( $icon['url'] ) ) : ?>
+          <img class="fnlmx-appbar__icon"
+               src="<?php echo esc_url( $icon['url'] ); ?>"
+               alt="<?php echo esc_attr( $icon['alt'] ?: '' ); ?>"
+               width="<?php echo esc_attr( $icon['width'] ?? 96 ); ?>"
+               height="<?php echo esc_attr( $icon['height'] ?? 96 ); ?>">
+        <?php endif; ?>
+
+        <p class="fnlmx-appbar__heading">
+          <?php if ( $line1 ) : ?>
+            <span class="fnlmx-appbar__line1"><?php echo esc_html( $line1 ); ?></span>
+          <?php endif; ?>
+          <span class="fnlmx-appbar__line2">
+            <?php if ( $accent ) : ?><span class="fnlmx-appbar__accent"><?php echo esc_html( $accent ); ?></span><?php endif; ?>
+            <?php if ( $rest ) : ?><?php echo esc_html( $rest ); ?><?php endif; ?>
+          </span>
+        </p>
+
+        <?php if ( ! empty( $phone['url'] ) ) : ?>
+          <img class="fnlmx-appbar__phone"
+               src="<?php echo esc_url( $phone['url'] ); ?>"
+               alt="<?php echo esc_attr( $phone['alt'] ?: '' ); ?>"
+               width="<?php echo esc_attr( $phone['width'] ?? 300 ); ?>"
+               height="<?php echo esc_attr( $phone['height'] ?? 300 ); ?>">
+        <?php endif; ?>
+
+        <?php if ( $btn_label ) : ?>
+          <a class="fnlmx-appbar__btn"
+             href="<?php echo $btn_link ? esc_url( $btn_link ) : '#'; ?>"
+             <?php echo $btn_link ? 'rel="noopener noreferrer"' : ''; ?>>
+            <?php // Same chamfered shape as the nav's Login / Sign Up CTA. ?>
+            <svg aria-hidden="true" class="funalo-nav__cta-shape" viewBox="0 0 124 32" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g clip-path="url(#_R_appbarcta_)">
+                <path d="M124 20.4 L112.4 32 H0 V7 L7 0 H124 V20.4 Z" fill="currentColor"></path>
+                <path d="M124 24 V32 H116 L124 24 Z" fill="var(--decoration, currentColor)"></path>
+              </g>
+              <defs>
+                <clipPath id="_R_appbarcta_">
+                  <rect width="124" height="32" fill="white"></rect>
+                </clipPath>
+              </defs>
+            </svg>
+            <span class="fnlmx-appbar__btn-label"><?php echo esc_html( $btn_label ); ?></span>
+          </a>
+        <?php endif; ?>
+
+      </div>
+
+      <?php
+      // Sits outside .fnlmx-appbar__inner: the inner element clips the phone
+      // mockup's bleed, and the close button has to straddle the bar's top edge
+      // rather than be cropped by it.
+      ?>
+      <?php if ( $dismissible ) : ?>
+        <button type="button" class="fnlmx-appbar__close" id="fnlmx-appbar-close"
+                aria-label="<?php esc_attr_e( 'Close', 'luxe' ); ?>">
+          <svg class="fnlmx-appbar__close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      <?php endif; ?>
+    </div>
+
+    <script>
+      (function () {
+        var bar = document.getElementById('fnlmx-appbar');
+        if (!bar) return;
+
+        var lastW = null;
+
+        var sync = function () {
+          // clientWidth excludes the scrollbar; 100vw does not. Driving the
+          // bar's own width from it keeps the artwork and the content centred
+          // on the same axis as the rest of the page. Only written when it
+          // actually changes, so the ResizeObserver below can't feed itself.
+          var w = Math.min(bar.clientWidth, 1200);
+          if (w !== lastW) {
+            lastW = w;
+            bar.style.setProperty('--appbar-w', w + 'px');
+          }
+
+          // Drives the body's bottom padding so the footer clears the docked
+          // bar. getBoundingClientRect is sub-pixel accurate where offsetHeight
+          // rounds; ceil it so the padding is never a fraction short.
+          var h = bar.classList.contains('is-hidden')
+            ? 0
+            : Math.ceil(bar.getBoundingClientRect().height);
+
+          document.documentElement.style.setProperty('--fnlmx-appbar-h', h + 'px');
+        };
+
+        sync();
+        window.addEventListener('resize', sync, { passive: true });
+        window.addEventListener('orientationchange', sync);
+        window.addEventListener('load', sync);
+
+        if (window.ResizeObserver) {
+          new ResizeObserver(sync).observe(bar);
+        }
+
+        var close = document.getElementById('fnlmx-appbar-close');
+        if (!close) return;
+
+        // Session-scoped: the bar comes back on the visitor's next visit.
+        try {
+          if (sessionStorage.getItem('fnlmxAppbarClosed') === '1') {
+            bar.classList.add('is-hidden');
+            sync();
+          }
+        } catch (e) {}
+
+        close.addEventListener('click', function () {
+          bar.classList.add('is-hidden');
+          sync();
+          try { sessionStorage.setItem('fnlmxAppbarClosed', '1'); } catch (e) {}
+        });
+      })();
+    </script>
+    <?php
+}
+add_action( 'wp_body_open', 'fnlmx_app_download_bar', 5 );
+
 // CTA SECTION
 
 function fnlmx_cta_section() {
@@ -1033,9 +1298,30 @@ add_filter( 'wp_check_filetype_and_ext', function($data, $file, $filename, $mime
 
 function cc_mime_types( $mimes ){
   $mimes['svg'] = 'image/svg+xml';
+  // Needed for the Feature Section block's "Download file" buttons, which point
+  // at an APK uploaded to the Media Library.
+  $mimes['apk'] = 'application/vnd.android.package-archive';
   return $mimes;
 }
 add_filter( 'upload_mimes', 'cc_mime_types' );
+
+/**
+ * WordPress re-checks the real file contents against its extension on upload,
+ * and an APK (a zip underneath) is reported as application/zip, so the upload is
+ * rejected before upload_mimes is consulted. Trust the .apk extension instead.
+ */
+add_filter( 'wp_check_filetype_and_ext', function ( $data, $file, $filename, $mimes ) {
+    if ( ! empty( $data['ext'] ) ) {
+        return $data;
+    }
+
+    if ( 'apk' === strtolower( (string) pathinfo( $filename, PATHINFO_EXTENSION ) ) ) {
+        $data['ext']  = 'apk';
+        $data['type'] = 'application/vnd.android.package-archive';
+    }
+
+    return $data;
+}, 20, 4 );
 
 function fix_svg() {
   echo '<style type="text/css">
