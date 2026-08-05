@@ -265,6 +265,43 @@
     build();
   }
 
+  /**
+   * Runs autoplay only while the slider is actually on screen.
+   *
+   * A slider further down the page would otherwise have cycled through several
+   * slides before the visitor ever reaches it, so they arrive part-way through
+   * with no idea it started at the first image. Stopping it again on the way
+   * out also keeps a long page from running timers for sliders nobody is
+   * looking at.
+   *
+   * Where IntersectionObserver is missing the slider simply keeps Swiper's own
+   * behaviour and plays from load.
+   */
+  function watchInView(el, swiper) {
+    if (typeof window.IntersectionObserver !== 'function') {
+      return;
+    }
+
+    swiper.autoplay.stop();
+
+    var observer = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            swiper.autoplay.start();
+          } else {
+            swiper.autoplay.stop();
+          }
+        });
+      },
+      // A quarter of the slider showing is enough to count as arrived — waiting
+      // for all of it would never fire for one taller than the viewport.
+      { threshold: 0.25 }
+    );
+
+    observer.observe(el);
+  }
+
   function init() {
     var sliders = document.querySelectorAll('[data-portrait-slider]');
 
@@ -362,6 +399,10 @@
 
       if (config.pagination && pagination) {
         createDots(pagination, swiper, slideCount, continuous);
+      }
+
+      if (options.autoplay) {
+        watchInView(el, swiper);
       }
 
       // Reveals the slider; until now the markup is held in its pre-init state

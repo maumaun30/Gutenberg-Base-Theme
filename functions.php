@@ -886,16 +886,39 @@ add_action( 'acf/init', function () {
                 'instructions'  => __( 'Adds a close button. How long it stays closed is set below.', 'luxe' ),
             ],
             [
+                // Field name kept as `_hours` so values saved before the unit
+                // select existed are not orphaned; they are hours, which is
+                // also what the unit field defaults to.
                 'key'               => 'field_fnlmx_appbar_reshow_hours',
-                'label'             => __( 'Show again after (hours)', 'luxe' ),
+                'label'             => __( 'Show again after', 'luxe' ),
                 'name'              => 'fnlmx_appbar_reshow_hours',
                 'type'              => 'number',
                 'default_value'     => 24,
                 'min'               => 0,
-                'max'               => 8760,
                 'step'              => 1,
-                'append'            => __( 'hours', 'luxe' ),
                 'instructions'      => __( 'Once a visitor closes the bar, how long before it comes back. 0 brings it back on their next visit (it stays closed for the rest of the current browsing session).', 'luxe' ),
+                'wrapper'           => [ 'width' => '50' ],
+                'conditional_logic' => [
+                    [
+                        [ 'field' => 'field_fnlmx_appbar_dismissible', 'operator' => '==', 'value' => '1' ],
+                    ],
+                ],
+            ],
+            [
+                'key'               => 'field_fnlmx_appbar_reshow_unit',
+                'label'             => __( 'Unit', 'luxe' ),
+                'name'              => 'fnlmx_appbar_reshow_unit',
+                'type'              => 'select',
+                'choices'           => [
+                    'seconds' => __( 'Seconds', 'luxe' ),
+                    'minutes' => __( 'Minutes', 'luxe' ),
+                    'hours'   => __( 'Hours', 'luxe' ),
+                    'days'    => __( 'Days', 'luxe' ),
+                ],
+                'default_value'     => 'hours',
+                'return_format'     => 'value',
+                'instructions'      => __( 'What the number to the left counts in.', 'luxe' ),
+                'wrapper'           => [ 'width' => '50' ],
                 'conditional_logic' => [
                     [
                         [ 'field' => 'field_fnlmx_appbar_dismissible', 'operator' => '==', 'value' => '1' ],
@@ -988,15 +1011,29 @@ function fnlmx_app_download_bar() {
 
     // 0 (or blank) keeps the old behaviour: closed for the session, back on the
     // visitor's next visit. Anything higher is remembered across visits.
-    $reshow_hours = get_field( 'fnlmx_appbar_reshow_hours', 'option' );
-    $reshow_hours = is_numeric( $reshow_hours ) ? max( 0, (float) $reshow_hours ) : 0;
+    // Converted to milliseconds here so the script has nothing to work out.
+    $reshow_amount = get_field( 'fnlmx_appbar_reshow_hours', 'option' );
+    $reshow_amount = is_numeric( $reshow_amount ) ? max( 0, (float) $reshow_amount ) : 0;
+
+    $reshow_unit = get_field( 'fnlmx_appbar_reshow_unit', 'option' );
+    $unit_ms     = [
+        'seconds' => 1000,
+        'minutes' => 60 * 1000,
+        'hours'   => 60 * 60 * 1000,
+        'days'    => 24 * 60 * 60 * 1000,
+    ];
+
+    // Hours is the fallback: it is what the field held before the unit select
+    // existed, so a value saved back then still means what it meant.
+    $reshow_ms = (int) round( $reshow_amount * ( $unit_ms[ $reshow_unit ] ?? $unit_ms['hours'] ) );
 
     // Nothing configured yet — don't render an empty red strip.
     if ( ! $icon && ! $phone && ! $line1 && ! $accent ) {
         return;
     }
     ?>
-    <div class="fnlmx-appbar" id="fnlmx-appbar">
+    <?php // is-preload suppresses the slide transition until the first frame. ?>
+    <div class="fnlmx-appbar is-preload" id="fnlmx-appbar">
       <div class="fnlmx-appbar__inner">
 
         <?php if ( ! empty( $icon['url'] ) ) : ?>
@@ -1068,7 +1105,7 @@ function fnlmx_app_download_bar() {
         var bar = document.getElementById('fnlmx-appbar');
         if (!bar) return;
 
-        var reshowHours = <?php echo wp_json_encode( $reshow_hours ); ?>;
+        var reshowMs = <?php echo wp_json_encode( $reshow_ms ); ?>;
         var lastW = null;
 
         var sync = function () {
@@ -1114,7 +1151,7 @@ function fnlmx_app_download_bar() {
         // closed is stored instead, and checked against the delay on each load.
         var store = function () {
           try {
-            if (reshowHours > 0) {
+            if (reshowMs > 0) {
               localStorage.setItem(KEY, String(Date.now()));
             } else {
               sessionStorage.setItem(KEY, '1');
@@ -1122,18 +1159,34 @@ function fnlmx_app_download_bar() {
           } catch (e) {}
         };
 
+        // Milliseconds still to wait, or 0 if the bar is due back now.
+        var remaining = function () {
+          try {
+            var closedAt = parseInt(localStorage.getItem(KEY), 10);
+
+            if (!closedAt) {
+              return 0;
+            }
+
+            // Negative would mean a clock moved backwards; treat it as due
+            // rather than letting the bar stay hidden indefinitely.
+            var left = reshowMs - (Date.now() - closedAt);
+
+            return left > 0 ? left : 0;
+          } catch (e) {
+            return 0;
+          }
+        };
+
         var isClosed = function () {
           try {
-            if (reshowHours > 0) {
-              var closedAt = parseInt(localStorage.getItem(KEY), 10);
-
-              if (!closedAt) {
+            if (reshowMs > 0) {
+              if (!localStorage.getItem(KEY)) {
                 return false;
               }
 
-              // Expired — clear it so the value cannot linger and a clock
-              // change can't keep the bar hidden indefinitely.
-              if (Date.now() - closedAt >= reshowHours * 3600000) {
+              // Expired — clear it so the value cannot linger.
+              if (remaining() === 0) {
                 localStorage.removeItem(KEY);
                 return false;
               }
@@ -1147,15 +1200,70 @@ function fnlmx_app_download_bar() {
           }
         };
 
+        var timer = null;
+
+        var reveal = function () {
+          try { localStorage.removeItem(KEY); } catch (e) {}
+          bar.classList.remove('is-hidden');
+          sync();
+        };
+
+        // Brings the bar back while the page is still open, rather than only on
+        // the next load. setTimeout tops out at ~24.8 days, so a longer wait is
+        // served in instalments — each one re-checks and re-arms.
+        var schedule = function () {
+          if (reshowMs <= 0) {
+            return;
+          }
+
+          clearTimeout(timer);
+
+          var left = remaining();
+
+          if (left <= 0) {
+            return;
+          }
+
+          timer = setTimeout(function () {
+            if (remaining() <= 0) {
+              reveal();
+            } else {
+              schedule();
+            }
+          }, Math.min(left, 2147483647));
+        };
+
         if (isClosed()) {
           bar.classList.add('is-hidden');
           sync();
+          schedule();
         }
+
+        // Two frames: the first lets the initial state — hidden or not — be
+        // painted, the second re-enables the transition for anything after it.
+        requestAnimationFrame(function () {
+          requestAnimationFrame(function () {
+            bar.classList.remove('is-preload');
+          });
+        });
 
         close.addEventListener('click', function () {
           bar.classList.add('is-hidden');
           sync();
           store();
+          schedule();
+        });
+
+        // A backgrounded tab has its timers throttled, so the moment the page is
+        // looked at again is the point to re-check rather than trust the clock.
+        document.addEventListener('visibilitychange', function () {
+          if (document.hidden || !bar.classList.contains('is-hidden')) {
+            return;
+          }
+
+          if (reshowMs > 0 && remaining() <= 0) {
+            reveal();
+          }
         });
       })();
     </script>
@@ -1388,6 +1496,9 @@ add_action( 'after_setup_theme', function () {
         // Header (already registered)
         'primary'      => __( 'Primary Menu',   'luxe' ),
         'secondary'    => __( 'Secondary Menu', 'luxe' ),
+        // Mobile drawer. Optional: left unassigned, the drawer falls back to
+        // the header menus, which is how it behaved before this existed.
+        'mobile'       => __( 'Mobile Drawer Menu', 'luxe' ),
         // Footer
         'footer-links' => __( 'Footer: Quick Links',    'luxe' ),
         'footer-help'  => __( 'Footer: Help & Support', 'luxe' ),

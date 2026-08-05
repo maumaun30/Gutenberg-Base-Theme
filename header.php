@@ -175,19 +175,29 @@
     <!-- Drawer Nav Links -->
     <nav class="funalo-drawer__nav" aria-label="Mobile menu">
       <?php
-      wp_nav_menu([
-        'theme_location' => 'primary',
-        'container'      => false,
-        'fallback_cb'    => function () {
-          echo '<ul><li><a href="/">Home</a></li></ul>';
-        },
-      ]);
+      // A menu assigned to "Mobile Drawer Menu" replaces the header menus here
+      // entirely, so the drawer can carry a different set of links. With that
+      // location left empty the drawer shows the header menus, as it always has.
+      if ( has_nav_menu( 'mobile' ) ) :
+        wp_nav_menu([
+          'theme_location' => 'mobile',
+          'container'      => false,
+        ]);
+      else :
+        wp_nav_menu([
+          'theme_location' => 'primary',
+          'container'      => false,
+          'fallback_cb'    => function () {
+            echo '<ul><li><a href="/">Home</a></li></ul>';
+          },
+        ]);
 
-      wp_nav_menu([
-        'theme_location' => 'secondary',
-        'container'      => false,
-        'fallback_cb'    => false,
-      ]);
+        wp_nav_menu([
+          'theme_location' => 'secondary',
+          'container'      => false,
+          'fallback_cb'    => false,
+        ]);
+      endif;
       ?>
     </nav>
 
