@@ -221,6 +221,47 @@ function mytheme_enqueue_carousel_assets() {
 add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_carousel_assets' );
 
 /**
+ * Enqueue Swiper + the Portrait Slider initializer.
+ *
+ * Registered here rather than as the block's `viewScript` so the initializer can
+ * declare Swiper as a dependency and is therefore guaranteed to run after it.
+ * The shared 'swiper' handles mean this costs nothing extra on pages that
+ * already load Swiper for the carousel.
+ */
+function mytheme_enqueue_portrait_slider_assets() {
+    if ( ! has_block( 'mytheme/portrait-slider' ) ) {
+        return;
+    }
+
+    wp_enqueue_style(
+        'swiper',
+        'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css',
+        [],
+        '11'
+    );
+
+    wp_enqueue_script(
+        'swiper',
+        'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js',
+        [],
+        '11',
+        true
+    );
+
+    $script_rel  = '/assets/js/blocks/portrait-slider/portrait-slider.js';
+    $script_path = get_theme_file_path( $script_rel );
+
+    wp_enqueue_script(
+        'mytheme-portrait-slider',
+        get_theme_file_uri( $script_rel ),
+        [ 'swiper' ],
+        file_exists( $script_path ) ? filemtime( $script_path ) : wp_get_theme()->get( 'Version' ),
+        true
+    );
+}
+add_action( 'wp_enqueue_scripts', 'mytheme_enqueue_portrait_slider_assets' );
+
+/**
  * Enqueue Swiper + the Featured Games initializer on single blog posts.
  *
  * mytheme_enqueue_carousel_assets() above short-circuits unless the page has
@@ -842,11 +883,72 @@ add_action( 'acf/init', function () {
                 'type'          => 'true_false',
                 'ui'            => 1,
                 'default_value' => 1,
-                'instructions'  => __( 'Adds a close button; the bar stays hidden for the rest of the browsing session.', 'luxe' ),
+                'instructions'  => __( 'Adds a close button. How long it stays closed is set below.', 'luxe' ),
+            ],
+            [
+                'key'               => 'field_fnlmx_appbar_reshow_hours',
+                'label'             => __( 'Show again after (hours)', 'luxe' ),
+                'name'              => 'fnlmx_appbar_reshow_hours',
+                'type'              => 'number',
+                'default_value'     => 24,
+                'min'               => 0,
+                'max'               => 8760,
+                'step'              => 1,
+                'append'            => __( 'hours', 'luxe' ),
+                'instructions'      => __( 'Once a visitor closes the bar, how long before it comes back. 0 brings it back on their next visit (it stays closed for the rest of the current browsing session).', 'luxe' ),
+                'conditional_logic' => [
+                    [
+                        [ 'field' => 'field_fnlmx_appbar_dismissible', 'operator' => '==', 'value' => '1' ],
+                    ],
+                ],
+            ],
+            [
+                'key'           => 'field_fnlmx_appbar_hidden_pages',
+                'label'         => __( 'Hide the bar on these pages', 'luxe' ),
+                'name'          => 'fnlmx_appbar_hidden_pages',
+                'type'          => 'post_object',
+                'multiple'      => 1,
+                'ui'            => 1,
+                'allow_null'    => 1,
+                'return_format' => 'id',
+                'instructions'  => __( 'The bar is shown everywhere by default. Anything picked here is excluded — search by title, or paste an ID.', 'luxe' ),
             ],
         ],
     ]);
 });
+
+/**
+ * Page IDs the bar is suppressed on, from the App Download Bar options page.
+ *
+ * ACF returns the field in whatever shape the saved data happens to take — a
+ * single ID, an array of IDs, or post objects if the return format is ever
+ * changed — so everything is normalised to a list of ints here.
+ */
+function fnlmx_appbar_hidden_page_ids() {
+    if ( ! function_exists( 'get_field' ) ) {
+        return [];
+    }
+
+    $value = get_field( 'fnlmx_appbar_hidden_pages', 'option' );
+
+    if ( empty( $value ) ) {
+        return [];
+    }
+
+    $ids = [];
+
+    foreach ( (array) $value as $item ) {
+        if ( $item instanceof WP_Post ) {
+            $ids[] = (int) $item->ID;
+        } elseif ( is_array( $item ) && isset( $item['ID'] ) ) {
+            $ids[] = (int) $item['ID'];
+        } elseif ( is_numeric( $item ) ) {
+            $ids[] = (int) $item;
+        }
+    }
+
+    return array_filter( $ids );
+}
 
 /**
  * Render the bar. Hooked to wp_body_open so it lands immediately before the
@@ -862,6 +964,19 @@ function fnlmx_app_download_bar() {
         return;
     }
 
+    // Excluded pages. get_queried_object_id() covers a static front page and any
+    // singular post type; on archives and search it is not a page ID, so the
+    // check is limited to singular views where an ID means what the field means.
+    $hidden_ids = fnlmx_appbar_hidden_page_ids();
+
+    if ( $hidden_ids && ( is_singular() || is_front_page() ) ) {
+        $current_id = (int) get_queried_object_id();
+
+        if ( $current_id && in_array( $current_id, $hidden_ids, true ) ) {
+            return;
+        }
+    }
+
     $icon        = get_field( 'fnlmx_appbar_icon', 'option' );
     $phone       = get_field( 'fnlmx_appbar_phone', 'option' );
     $line1       = get_field( 'fnlmx_appbar_line1', 'option' );
@@ -870,6 +985,11 @@ function fnlmx_app_download_bar() {
     $btn_label   = get_field( 'fnlmx_appbar_btn_label', 'option' );
     $btn_link    = get_field( 'fnlmx_appbar_btn_link', 'option' );
     $dismissible = get_field( 'fnlmx_appbar_dismissible', 'option' );
+
+    // 0 (or blank) keeps the old behaviour: closed for the session, back on the
+    // visitor's next visit. Anything higher is remembered across visits.
+    $reshow_hours = get_field( 'fnlmx_appbar_reshow_hours', 'option' );
+    $reshow_hours = is_numeric( $reshow_hours ) ? max( 0, (float) $reshow_hours ) : 0;
 
     // Nothing configured yet — don't render an empty red strip.
     if ( ! $icon && ! $phone && ! $line1 && ! $accent ) {
@@ -948,17 +1068,21 @@ function fnlmx_app_download_bar() {
         var bar = document.getElementById('fnlmx-appbar');
         if (!bar) return;
 
+        var reshowHours = <?php echo wp_json_encode( $reshow_hours ); ?>;
         var lastW = null;
 
         var sync = function () {
-          // clientWidth excludes the scrollbar; 100vw does not. Driving the
-          // bar's own width from it keeps the artwork and the content centred
-          // on the same axis as the rest of the page. Only written when it
-          // actually changes, so the ResizeObserver below can't feed itself.
-          var w = Math.min(bar.clientWidth, 1200);
+          // clientWidth excludes the scrollbar; 100vw does not. This publishes
+          // the true width for the stylesheet to use in place of 100vw, so the
+          // artwork and the content stay centred on the same axis as the rest
+          // of the page. The caps themselves live in the stylesheet — writing
+          // --appbar-w here would be an inline style that no rule could
+          // override. Only written when it changes, so the ResizeObserver below
+          // can't feed itself.
+          var w = bar.clientWidth;
           if (w !== lastW) {
             lastW = w;
-            bar.style.setProperty('--appbar-w', w + 'px');
+            bar.style.setProperty('--appbar-vw', w + 'px');
           }
 
           // Drives the body's bottom padding so the footer clears the docked
@@ -983,18 +1107,55 @@ function fnlmx_app_download_bar() {
         var close = document.getElementById('fnlmx-appbar-close');
         if (!close) return;
 
-        // Session-scoped: the bar comes back on the visitor's next visit.
-        try {
-          if (sessionStorage.getItem('fnlmxAppbarClosed') === '1') {
-            bar.classList.add('is-hidden');
-            sync();
+        var KEY = 'fnlmxAppbarClosed';
+
+        // With no re-show delay the dismissal is session-scoped, as before: the
+        // bar returns on the visitor's next visit. With one, the moment it was
+        // closed is stored instead, and checked against the delay on each load.
+        var store = function () {
+          try {
+            if (reshowHours > 0) {
+              localStorage.setItem(KEY, String(Date.now()));
+            } else {
+              sessionStorage.setItem(KEY, '1');
+            }
+          } catch (e) {}
+        };
+
+        var isClosed = function () {
+          try {
+            if (reshowHours > 0) {
+              var closedAt = parseInt(localStorage.getItem(KEY), 10);
+
+              if (!closedAt) {
+                return false;
+              }
+
+              // Expired — clear it so the value cannot linger and a clock
+              // change can't keep the bar hidden indefinitely.
+              if (Date.now() - closedAt >= reshowHours * 3600000) {
+                localStorage.removeItem(KEY);
+                return false;
+              }
+
+              return true;
+            }
+
+            return sessionStorage.getItem(KEY) === '1';
+          } catch (e) {
+            return false;
           }
-        } catch (e) {}
+        };
+
+        if (isClosed()) {
+          bar.classList.add('is-hidden');
+          sync();
+        }
 
         close.addEventListener('click', function () {
           bar.classList.add('is-hidden');
           sync();
-          try { sessionStorage.setItem('fnlmxAppbarClosed', '1'); } catch (e) {}
+          store();
         });
       })();
     </script>

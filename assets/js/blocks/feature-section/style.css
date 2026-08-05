@@ -155,10 +155,12 @@
   background-color: #0a0a0b;
 }
 
-/* Capped, but always keeping a gutter so it never touches the viewport edge. */
+/* Capped, but always keeping a gutter so it never touches the viewport edge.
+   1280 to match the other sections on the page — at 1440 this one sat wider
+   than its neighbours and the edges did not line up. */
 .mytheme-feature-section__container {
   width: 100%;
-  max-width: min(1440px, calc(100% - 48px));
+  max-width: min(1280px, calc(100% - 48px));
   margin: 0 auto;
   box-sizing: border-box;
   display: flex;
@@ -196,6 +198,12 @@
   font-weight: 800;
   line-height: 1.25;
   margin: 0 0 24px;
+  /* Headings are editor content, so they can arrive with non-breaking spaces
+     between words — a run joined that way is one unbreakable "word" and will
+     run past the column rather than wrap. This lets it break anywhere it has
+     to, which only ever happens when the alternative is overflowing. */
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .mytheme-feature-section__title .highlight-text {
@@ -346,6 +354,13 @@
   .mytheme-feature-section__title {
     font-size: 32px;
   }
+
+  /* Once the image sits below the text rather than beside it, the column is
+     the full width and a left-aligned row of buttons reads as stranded. */
+  .mytheme-feature-section__buttons,
+  .feature-section-editor__buttons {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 767px) {
@@ -357,8 +372,11 @@
     max-width: calc(100% - 32px);
   }
 
+  /* Fluid rather than a flat 26px: a 390px screen has ~358px of column, and a
+     long unbroken phrase at 26px does not fit it. Scaling with the viewport
+     keeps the smallest phones readable without the heading running off. */
   .mytheme-feature-section__title {
-    font-size: 26px;
+    font-size: clamp(20px, 6vw, 26px);
     margin-bottom: 16px;
   }
 
