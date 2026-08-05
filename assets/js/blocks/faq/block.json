@@ -1,0 +1,42 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/faq",
+  "title": "FAQ",
+  "category": "design",
+  "icon": "editor-help",
+  "description": "An accordion of questions and answers. Items start empty and are added one at a time.",
+  "keywords": ["faq", "accordion", "questions", "answers", "toggle"],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Frequently Asked Questions About the"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": "FUNaloMAX App"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "items": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "singleOpen": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

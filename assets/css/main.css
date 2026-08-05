@@ -85,11 +85,20 @@
    value. That keeps the icon / heading / phone / button in the same proportions
    the flat banner has, at any viewport width. */
 .fnlmx-appbar {
-  --appbar-w: min(100vw, 1200px);
   /* 6:1 like the artwork, but capped — at full 1200px the banner would be
      200px tall, far too much standing viewport. The cap keeps every element
      scaling together, just smaller. */
-  --appbar-h: clamp(52px, calc(var(--appbar-w) / 6), 104px);
+  /* --appbar-vw is the bar's real width, published by the inline script in
+     functions.php: it excludes the scrollbar where 100vw does not. The fallback
+     covers the moment before that script runs. */
+  --appbar-h: clamp(52px, calc(min(var(--appbar-vw, 100vw), 1200px) / 6), 104px);
+  /* Tied to the height rather than fixed at 1200px. Every element inside is
+     sized from --appbar-h, so once the height hits its cap a wider content box
+     is not filled by anything — it just opens a gap between the heading and the
+     phone. 7.5x is the ratio the bar already has at 768px, where the spacing
+     reads correctly. The desktop block below widens this again, but only
+     alongside the larger type that can fill it. Below ~780px this is 100vw. */
+  --appbar-w: min(var(--appbar-vw, 100vw), calc(var(--appbar-h) * 7.5));
   /* Floored at 22px so it stays a usable tap target on the short mobile bar. */
   --appbar-close: clamp(22px, calc(var(--appbar-h) * 0.28), 30px);
   /* Docked to the bottom of the viewport at every size: the CTA stays visible
@@ -127,6 +136,20 @@
 
 .fnlmx-appbar.is-hidden {
   display: none;
+}
+
+/* The bar sits at z-index 1000, above the mobile drawer (999) and its backdrop
+   (998), so it would cover the bottom of the drawer's menu. Every overlay that
+   takes over the screen — the drawer, the search overlay, the register modal —
+   sets this class on the body, so hiding it here covers all of them.
+
+   visibility rather than display: the bar is fixed, so its measured height is
+   what drives the body's bottom padding. Removing it from the box model would
+   zero that height and shift the page behind the overlay, then shift it back on
+   close. */
+body.funalo-drawer-open .fnlmx-appbar {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .fnlmx-appbar__inner {
@@ -287,6 +310,45 @@ body {
 
 body .fnlmx-back-to-top {
   bottom: calc(var(--fnlmx-appbar-h, 0px) + 1rem);
+}
+
+/* ─── Desktop ────────────────────────────────────────────────────────
+   The bar's height is capped at 104px well before the viewport stops growing,
+   and everything inside is sized from that height — so on a wide screen the
+   contents stay small while the bar stays wide, and the slack collects as an
+   empty white stretch between the heading and the phone.
+
+   The answer is to scale the contents up rather than to shrink the bar: the
+   heading and icon take a larger share of the (unchanged) 104px height, which
+   lets the content box widen back out without reopening the gap. Two lines of
+   heading at 0.3 of the height is ~69px inside a 104px bar, so it still clears
+   the edges comfortably.
+
+   The phone and the CTA label keep their existing sizes deliberately — only the
+   left-hand cluster grows, since that is the side the gap opens from. */
+@media (min-width: 1024px) {
+  .fnlmx-appbar {
+    --appbar-w: min(var(--appbar-vw, 100vw), calc(var(--appbar-h) * 9.5));
+  }
+
+  .fnlmx-appbar__inner {
+    gap: calc(var(--appbar-h) * 0.2);
+  }
+
+  .fnlmx-appbar__icon {
+    width: calc(var(--appbar-h) * 0.78);
+    height: calc(var(--appbar-h) * 0.78);
+    border-radius: calc(var(--appbar-h) * 0.16);
+  }
+
+  .fnlmx-appbar__heading {
+    font-size: calc(var(--appbar-h) * 0.3);
+    line-height: 1.1;
+  }
+
+  .fnlmx-appbar__btn {
+    padding: calc(var(--appbar-h) * 0.15) calc(var(--appbar-h) * 0.42);
+  }
 }
 
 /* Below the artwork's own width the 52px floor kicks in, so the bar stops
@@ -813,6 +875,11 @@ body .fnlmx-back-to-top {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  /* Explicit, because `overflow-y: auto` alone makes this axis compute to
+     `auto` as well — and the links scale to 1.04 on hover and for the current
+     page, which pushes them past the panel's edges and raises a horizontal
+     scrollbar. Nothing here is meant to scroll sideways. */
+  overflow-x: hidden;
   visibility: hidden;
 }
 

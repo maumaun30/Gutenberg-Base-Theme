@@ -1,0 +1,332 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Editor Preview ────────────────────────────────────────────── */
+.faq-editor {
+  position: relative;
+  width: 100%;
+  padding: 40px 24px;
+  background-color: #0a0a0b;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.faq-editor__header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 32px;
+}
+
+.faq-editor__title {
+  color: #fff !important;
+  font-size: clamp(1.75rem, 4vw, 3rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  margin: 0 0 12px !important;
+}
+
+.faq-editor__subtitle {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+}
+
+.faq-editor__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faq-editor__item {
+  background-color: #16161d;
+  border-radius: 12px;
+  padding: 20px 24px;
+}
+
+.faq-editor__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.faq-editor__question {
+  color: #fff !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  flex: 1 1 auto;
+}
+
+.faq-editor__mark {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: #ba001d;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.faq-editor__answer {
+  color: rgba(255, 255, 255, 0.75) !important;
+  font-size: 0.9375rem !important;
+  line-height: 1.7 !important;
+  margin: 12px 0 0 !important;
+}
+
+.faq-editor__add {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ─── Frontend Section ───────────────────────────────────────────── */
+.wp-block-mytheme-faq.mytheme-faq {
+  display: block;
+  width: 100%;
+  padding: 72px 0;
+  background-color: #0a0a0b;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* Capped, but always keeping a gutter so it never touches the viewport edge. */
+.mytheme-faq__container {
+  width: 100%;
+  max-width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.mytheme-faq__header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 48px;
+}
+
+.mytheme-faq__title {
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* The highlighted half of the heading drops to its own line, as in the design. */
+.mytheme-faq__title .highlight-text {
+  color: #ba001d;
+  display: block;
+}
+
+.mytheme-faq__subtitle {
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 20px 0 0;
+}
+
+.mytheme-faq__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Accordion item ──────────────────────────────────────────────── */
+.mytheme-faq__item {
+  background-color: #16161d;
+  border-radius: 14px;
+  transition: background-color 0.25s ease;
+}
+
+.mytheme-faq__item[open] {
+  background-color: #1a1a22;
+}
+
+.mytheme-faq__question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 26px 28px;
+  cursor: pointer;
+  list-style: none; /* hides the default disclosure triangle */
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Safari needs the WebKit pseudo-element to drop the triangle as well. */
+.mytheme-faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.mytheme-faq__question:focus-visible {
+  outline: 2px solid #ba001d;
+  outline-offset: -2px;
+  border-radius: 14px;
+}
+
+/* Plus sign drawn from two bars so it can turn into a minus on open. The whole
+   mark spins as it does, so the change reads as one motion rather than a bar
+   blinking out.
+
+   The open state is keyed off `[open]:not(.is-closing)` rather than `[open]`
+   alone: view.js has to keep `open` set for the length of the collapse
+   animation, so `[open]` on its own would hold the icon open until the panel
+   had finished closing and then snap it back. */
+.mytheme-faq__mark {
+  position: relative;
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.06);
+  transform: rotate(0deg);
+  transition: transform 0.32s cubic-bezier(0.33, 0, 0.2, 1),
+    background-color 0.32s ease;
+}
+
+/* A half turn, not a quarter: at 90deg the bar left showing is the one that
+   started horizontal, which lands vertical — a bar, not a minus. */
+.mytheme-faq__item[open]:not(.is-closing) .mytheme-faq__mark {
+  transform: rotate(180deg);
+  background-color: rgba(186, 0, 29, 0.16);
+}
+
+.mytheme-faq__mark::before,
+.mytheme-faq__mark::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 11px;
+  height: 1.5px;
+  border-radius: 1px;
+  background-color: #ba001d;
+  transform: translate(-50%, -50%);
+  transition: transform 0.32s cubic-bezier(0.33, 0, 0.2, 1), opacity 0.2s ease;
+}
+
+.mytheme-faq__mark::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+/* Open: the vertical bar fades as the mark rotates, leaving a minus. */
+.mytheme-faq__item[open]:not(.is-closing) .mytheme-faq__mark::after {
+  opacity: 0;
+}
+
+.mytheme-faq__answer {
+  padding: 0 28px 26px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 16px;
+  line-height: 1.75;
+  /* Drifts up into place while the panel height animates, so the text arrives
+     rather than appearing fully formed at zero height. */
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.28s ease 0.06s, transform 0.28s ease 0.06s;
+}
+
+.mytheme-faq__item[open] .mytheme-faq__answer {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mytheme-faq__answer p {
+  margin: 0 0 12px;
+}
+
+.mytheme-faq__answer p:last-child {
+  margin-bottom: 0;
+}
+
+.mytheme-faq__answer a {
+  color: #ba001d;
+}
+
+/* Respect users who prefer no motion — the panel still opens, just instantly.
+   view.js bails out of its height animation under the same condition. */
+@media (prefers-reduced-motion: reduce) {
+  .mytheme-faq__item,
+  .mytheme-faq__mark,
+  .mytheme-faq__mark::before,
+  .mytheme-faq__mark::after,
+  .mytheme-faq__answer {
+    transition: none;
+  }
+
+  .mytheme-faq__answer {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ─── Tablet ─────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .wp-block-mytheme-faq.mytheme-faq {
+    padding: 56px 0;
+  }
+
+  .mytheme-faq__title {
+    font-size: 32px;
+  }
+
+  .mytheme-faq__header {
+    margin-bottom: 36px;
+  }
+
+  .mytheme-faq__question {
+    padding: 22px 24px;
+    font-size: 16px;
+  }
+
+  .mytheme-faq__answer {
+    padding: 0 24px 22px;
+    font-size: 15px;
+  }
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .wp-block-mytheme-faq.mytheme-faq {
+    padding: 40px 0;
+  }
+
+  .mytheme-faq__container {
+    max-width: calc(100% - 32px);
+  }
+
+  .mytheme-faq__title {
+    font-size: 24px;
+  }
+
+  .mytheme-faq__subtitle {
+    font-size: 14px;
+    margin-top: 14px;
+  }
+
+  .mytheme-faq__list {
+    gap: 10px;
+  }
+
+  .mytheme-faq__question {
+    padding: 18px 18px;
+    gap: 14px;
+    font-size: 14px;
+  }
+
+  .mytheme-faq__answer {
+    padding: 0 18px 18px;
+    font-size: 13px;
+  }
+
+  .mytheme-faq__mark {
+    width: 22px;
+    height: 22px;
+  }
+}

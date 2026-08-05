@@ -140,9 +140,13 @@
   pointer-events: none;
 }
 
+/* 1328 = the 1280 the other sections cap at, plus this block's 24px side
+   padding at each edge — the box is border-box, so the padding sits inside the
+   max-width. That lands the text and image on the same line as the sections
+   below it. */
 .mytheme-hero-banner__content {
   position: relative;
-  max-width: 1440px;
+  max-width: 1328px;
   margin: 0 auto;
   padding: 64px 24px 0;
   display: flex;

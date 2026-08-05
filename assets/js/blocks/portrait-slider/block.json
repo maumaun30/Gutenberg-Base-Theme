@@ -1,0 +1,61 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/portrait-slider",
+  "title": "Portrait Slider",
+  "category": "design",
+  "icon": "format-gallery",
+  "description": "A smooth, looping slider of portrait images. Slides start empty and are added one at a time. Shows 5 across on desktop, 3 on tablet and 1 on phone.",
+  "keywords": ["slider", "carousel", "screenshots", "portrait", "gallery"],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Ready to Experience"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": "FUNaloMAX on Mobile?"
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "slides": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "autoplay": {
+      "type": "boolean",
+      "default": true
+    },
+    "autoplayDelay": {
+      "type": "number",
+      "default": 3000
+    },
+    "speed": {
+      "type": "number",
+      "default": 700
+    },
+    "continuous": {
+      "type": "boolean",
+      "default": true
+    },
+    "centeredSlides": {
+      "type": "boolean",
+      "default": true
+    },
+    "showPagination": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

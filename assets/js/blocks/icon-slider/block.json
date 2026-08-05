@@ -1,0 +1,49 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/icon-slider",
+  "title": "Icon Slider",
+  "category": "design",
+  "icon": "images-alt2",
+  "description": "An auto-scrolling row of icon + label pills, using the same seamless marquee as the Why Choose Us block. Items start empty and are added one at a time.",
+  "keywords": ["slider", "marquee", "carousel", "icons", "pills"],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "render": "file:./render.php",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "default": "Games Available on the FUNaloMAX App"
+    },
+    "titleHighlight": {
+      "type": "string",
+      "default": ""
+    },
+    "subtitle": {
+      "type": "string",
+      "default": ""
+    },
+    "isPageTitle": {
+      "type": "boolean",
+      "default": false
+    },
+    "items": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
+    "speed": {
+      "type": "number",
+      "default": 5
+    },
+    "direction": {
+      "type": "string",
+      "default": "left"
+    },
+    "pauseOnHover": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

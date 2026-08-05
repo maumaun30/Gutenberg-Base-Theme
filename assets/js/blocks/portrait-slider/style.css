@@ -1,0 +1,374 @@
+/* ── Google Fonts ────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap');
+
+/* ─── Editor Preview ────────────────────────────────────────────── */
+.portrait-slider-editor {
+  position: relative;
+  width: 100%;
+  padding: 40px 24px;
+  background-color: #0a0a0b;
+  border-radius: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.portrait-slider-editor__header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 32px;
+}
+
+.portrait-slider-editor__title {
+  color: #fff !important;
+  font-size: clamp(1.75rem, 4vw, 3rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  margin: 0 0 12px !important;
+}
+
+.portrait-slider-editor__subtitle {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 1rem !important;
+  margin: 0 !important;
+}
+
+.portrait-slider-editor__strip {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.portrait-slider-editor__slide {
+  flex: 0 0 auto;
+  width: 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.portrait-slider-editor__slide img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.portrait-slider-editor__slide-empty {
+  width: 100%;
+  aspect-ratio: 9 / 16;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+}
+
+.portrait-slider-editor__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.portrait-slider-editor__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.28);
+}
+
+.portrait-slider-editor__dot.is-active {
+  width: 26px;
+  background-color: #ba001d;
+}
+
+.portrait-slider-editor__add {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ─── Frontend Section ───────────────────────────────────────────── */
+.wp-block-mytheme-portrait-slider.mytheme-portrait-slider {
+  display: block;
+  width: 100%;
+  padding: 72px 0;
+  background-color: #0a0a0b;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+}
+
+.mytheme-portrait-slider__container {
+  width: 100%;
+  max-width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.mytheme-portrait-slider__header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 56px;
+}
+
+.mytheme-portrait-slider__title {
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* The highlighted half of the heading drops to its own line, as in the design. */
+.mytheme-portrait-slider__title .highlight-text {
+  color: #ba001d;
+  display: block;
+}
+
+.mytheme-portrait-slider__subtitle {
+  color: #FFFFFF;
+  font-size: 16px;
+  line-height: 1.75;
+  margin: 20px 0 0;
+}
+
+/* ── Swiper ──────────────────────────────────────────────────────── */
+/* Held to the same width as the header above it, so the strip lines up with the
+   heading and stops growing with the viewport past 1280px. */
+.mytheme-portrait-slider__swiper {
+  width: 100%;
+  max-width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 0 0 8px;
+  box-sizing: border-box;
+}
+
+/* Before Swiper takes over, the slides are sized here so the first paint
+   already matches the finished layout — 5 across, centred — instead of showing
+   a row of full-size images. Swiper overrides these inline once initialised. */
+.mytheme-portrait-slider__swiper .swiper-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.mytheme-portrait-slider__swiper.is-ready .swiper-wrapper {
+  justify-content: flex-start;
+  gap: 0;
+}
+
+.mytheme-portrait-slider__slide {
+  height: auto; /* overrides Swiper's stretch so the portrait ratio is kept */
+  flex: 0 0 calc((100% - 4 * 24px) / 5);
+  max-width: calc((100% - 4 * 24px) / 5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Swiper sets each slide's width inline, so the flex basis has to stop
+   competing with it. */
+.mytheme-portrait-slider__swiper.is-ready .mytheme-portrait-slider__slide {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+/* If Swiper never loads, the strip stays usable as a horizontal scroller. */
+.mytheme-portrait-slider__swiper.is-fallback {
+  overflow-x: auto;
+}
+
+.mytheme-portrait-slider__swiper.is-fallback .swiper-wrapper {
+  justify-content: flex-start;
+  gap: 24px;
+}
+
+/* The container caps the slide width, so this mostly just centres the art. The
+   height ceiling still earns its place on a short window — a laptop at 1280
+   wide but only 700 tall — where art sized purely by slide width would run past
+   the fold. */
+.mytheme-portrait-slider__image {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(58vh, 520px);
+  margin: 0 auto;
+  border-radius: 16px;
+  /* Off-centre slides sit back a little, so the middle one reads as active. */
+  transform: scale(0.94);
+  opacity: 0.75;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+.mytheme-portrait-slider__swiper .swiper-slide-active .mytheme-portrait-slider__image {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Before init there is no "active" slide, so nothing should look dimmed. */
+.mytheme-portrait-slider__swiper:not(.is-ready) .mytheme-portrait-slider__image {
+  transform: none;
+  opacity: 1;
+}
+
+.mytheme-portrait-slider__link {
+  display: block;
+  width: 100%;
+}
+
+/* ── Pagination dots ─────────────────────────────────────────────── */
+/* With one dot per image this is just a centred row. Past DOT_CAP images it
+   becomes the window the row slides inside, and JS sets its width to exactly
+   the visible dot count so the spare dot at each end stays clipped. */
+.mytheme-portrait-slider__pagination {
+  overflow: hidden;
+  margin: 32px auto 0;
+  line-height: 0;
+}
+
+.mytheme-portrait-slider__dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The windowed row is wider than its host and positioned with transforms, so
+   it has to start at the edge rather than be centred within it. */
+.mytheme-portrait-slider__dots.is-windowed {
+  justify-content: flex-start;
+}
+
+/* Only while stepping: the row is repositioned without animation once the
+   movement has settled (see createDots in portrait-slider.js). */
+.mytheme-portrait-slider__dots.is-animating {
+  transition: transform 0.35s ease;
+}
+
+/* Equal-width slots regardless of the dot inside them, so one step of the row
+   is always the same distance — the active pill is wider than the rest. */
+.mytheme-portrait-slider__dot-slot {
+  flex: 0 0 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mytheme-portrait-slider__dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  /*border-radius: 999px;*/
+  background-color: rgba(255, 255, 255, 0.28);
+  cursor: pointer;
+  transition: width 0.35s ease, background-color 0.35s ease;
+}
+
+.mytheme-portrait-slider__dot.is-active {
+  width: 26px;
+  background-color: #ba001d;
+}
+
+.mytheme-portrait-slider__dot:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 3px;
+}
+
+/* Users who prefer no motion still get the slider, just without the scaling. */
+@media (prefers-reduced-motion: reduce) {
+  .mytheme-portrait-slider__image {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .mytheme-portrait-slider__dots.is-animating,
+  .mytheme-portrait-slider__dot {
+    transition: none;
+  }
+}
+
+/* ─── Tablet ─────────────────────────────────────────────────────── */
+@media (max-width: 1023px) {
+  .wp-block-mytheme-portrait-slider.mytheme-portrait-slider {
+    padding: 56px 0;
+  }
+
+  .mytheme-portrait-slider__title {
+    font-size: 32px;
+  }
+
+  .mytheme-portrait-slider__header {
+    margin-bottom: 40px;
+  }
+
+  /* Sizing and centring are inherited from the base rule; only the ceiling
+     changes, since there is less height to spare here. */
+  .mytheme-portrait-slider__image {
+    max-height: 52vh;
+  }
+
+  /* Pre-init sizing tracks the Swiper breakpoints: 3 across on tablet. */
+  .mytheme-portrait-slider__swiper .swiper-wrapper {
+    gap: 20px;
+  }
+
+  .mytheme-portrait-slider__slide {
+    flex-basis: calc((100% - 2 * 20px) / 3);
+    max-width: calc((100% - 2 * 20px) / 3);
+  }
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .wp-block-mytheme-portrait-slider.mytheme-portrait-slider {
+    padding: 40px 0;
+  }
+
+  .mytheme-portrait-slider__container {
+    max-width: calc(100% - 32px);
+  }
+
+  .mytheme-portrait-slider__title {
+    font-size: 24px;
+  }
+
+  .mytheme-portrait-slider__subtitle {
+    font-size: 14px;
+    margin-top: 14px;
+  }
+
+  /* Matches the header's narrower gutter on a phone. */
+  .mytheme-portrait-slider__swiper {
+    max-width: calc(100% - 32px);
+  }
+
+  /* A phone shows one slide at a time and has the whole width to give it, so
+     the ceiling is the most generous here — height is what constrains the art
+     and the width follows from it. */
+  .mytheme-portrait-slider__image {
+    max-height: 68vh;
+    /* One slide is in view at a time, so nothing should sit back or dim. */
+    transform: none;
+    opacity: 1;
+  }
+
+  /* Pre-init sizing tracks the Swiper breakpoints: 1 across on phones. */
+  .mytheme-portrait-slider__swiper .swiper-wrapper {
+    gap: 16px;
+  }
+
+  .mytheme-portrait-slider__slide {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+
+  .mytheme-portrait-slider__pagination {
+    margin-top: 24px;
+  }
+}
