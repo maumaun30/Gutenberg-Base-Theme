@@ -134,8 +134,40 @@
   background-repeat: no-repeat, no-repeat;
 }
 
+/* Slides down out of view rather than vanishing. Kept in the box model while
+   hidden — `display: none` cannot be transitioned — with visibility delayed
+   until the slide has finished so it is not focusable on the way out. */
+/* Slower coming back than going away: leaving is a response to a tap and wants
+   to feel immediate, but returning is unprompted, so it eases in gently rather
+   than appearing under the visitor's thumb. */
+.fnlmx-appbar {
+  transition:
+    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.7s ease-out;
+}
+
 .fnlmx-appbar.is-hidden {
-  display: none;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.55, 0.06, 0.68, 0.19),
+    opacity 0.25s ease,
+    visibility 0s linear 0.35s;
+}
+
+/* Set in the markup and removed on the first frame, so a bar that is already
+   dismissed on load is placed off-screen instead of animating out of view. */
+.fnlmx-appbar.is-preload {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fnlmx-appbar,
+  .fnlmx-appbar.is-hidden {
+    transition: none;
+  }
 }
 
 /* The bar sits at z-index 1000, above the mobile drawer (999) and its backdrop
@@ -308,8 +340,18 @@ body {
   padding-bottom: var(--fnlmx-appbar-h, 0px);
 }
 
+/* Eased to match the bar's slide: the height drops to 0 the moment it is
+   dismissed, and without this the back-to-top button would jump down while the
+   bar is still on its way out. */
 body .fnlmx-back-to-top {
   bottom: calc(var(--fnlmx-appbar-h, 0px) + 1rem);
+  transition: bottom 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body .fnlmx-back-to-top {
+    transition: none;
+  }
 }
 
 /* ─── Desktop ────────────────────────────────────────────────────────
