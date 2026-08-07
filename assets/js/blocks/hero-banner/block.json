@@ -56,6 +56,13 @@
       "type": "string",
       "default": "#"
     },
+    "downloadButtons": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object"
+      }
+    },
     "isPageTitle": {
       "type": "boolean",
       "default": false
