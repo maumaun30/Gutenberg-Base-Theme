@@ -15,7 +15,7 @@ if ( $show_border ) {
 }
 ?>
 
-<div
+<section
   <?php
   echo get_block_wrapper_attributes(
       [
@@ -117,4 +117,4 @@ if ( $show_border ) {
     <?php endforeach; ?>
 
   </div>
-</div>
+</section>

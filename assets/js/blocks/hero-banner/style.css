@@ -123,6 +123,47 @@
   font-weight: 700;
 }
 
+.hero-banner-editor__download-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.hero-banner-editor__download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  background-color: #ba001d;
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.hero-banner-editor__download-btn-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+
+.hero-banner-editor__download-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.hero-banner-editor__download-btn-small {
+  font-size: 0.75rem;
+}
+
+.hero-banner-editor__download-btn-main {
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+
 /* ─── Frontend Banner ────────────────────────────────────────────── */
 .wp-block-mytheme-hero-banner.mytheme-hero-banner {
   position: relative;
@@ -291,6 +332,122 @@
   line-height: 1;
 }
 
+/* ─── Download buttons (sit below the feature list) ──────────────── */
+/* Desktop keeps every button on one line — like the feature row above it,
+   the buttons shrink to fit the column instead of wrapping. */
+.mytheme-hero-banner__download-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.mytheme-hero-banner__download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(8px, 0.9vw, 12px);
+  /* Never shrink below the label — the clamped padding and type above are what
+     make the row fit; letting the box shrink instead clips the text. */
+  flex: 0 0 auto;
+  background-color: #ba001d;
+  border-radius: 10px;
+  padding: 12px clamp(12px, 1.4vw, 20px);
+  text-decoration: none;
+  color: #ffffff;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.mytheme-hero-banner__download-btn:hover {
+  transform: translateY(-3px);
+  background-color: #d1032a;
+}
+
+.mytheme-hero-banner__download-btn-icon {
+  flex: 0 0 auto;
+  width: clamp(26px, 2.4vw, 34px);
+  height: clamp(26px, 2.4vw, 34px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mytheme-hero-banner__download-btn-icon img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.mytheme-hero-banner__download-btn-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+/* Labels stay on their own single line so a squeezed row shrinks the padding
+   and type rather than stacking words. */
+.mytheme-hero-banner__download-btn-small {
+  font-size: clamp(11px, 0.95vw, 13px);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.mytheme-hero-banner__download-btn-main {
+  font-size: clamp(13px, 1.15vw, 16px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* At 1024px the text column is too narrow for a single 4-up feature row and a
+   single button row — both are allowed to wrap from here down, while the
+   two-column layout is still in place. */
+@media (max-width: 1024px) {
+  .mytheme-hero-banner__features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 14px 24px;
+  }
+}
+
+/* ─── Narrow desktop (1024–1279px) ───────────────────────────────── */
+/* The two columns are still side by side here but the text column is tight.
+   The buttons stay on one line by getting smaller, and the image is scaled up
+   past its column so the right side does not read as half empty. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .mytheme-hero-banner__content {
+    gap: 12px;
+  }
+
+  .mytheme-hero-banner__download-btn {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .mytheme-hero-banner__download-btn-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mytheme-hero-banner__download-btn-small {
+    font-size: 10px;
+  }
+
+  .mytheme-hero-banner__download-btn-main {
+    font-size: 12px;
+  }
+
+  /* Overflows its column toward the right edge — the banner already clips
+     anything past it, and the column is bottom-aligned so it grows upward
+     into the empty space instead of pushing the layout. */
+  .mytheme-hero-banner__image {
+    width: 122%;
+    max-width: none;
+  }
+}
+
 /* ─── Tablet & Mobile: image stacks below the text ───────────────── */
 @media (max-width: 1023px) {
   .mytheme-hero-banner__content {
@@ -336,6 +493,12 @@
     justify-content: center;
     gap: 14px 28px;
   }
+
+  /* Stacked layout is full width, so the buttons may wrap freely again. */
+  .mytheme-hero-banner__download-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 767px) {
@@ -352,7 +515,12 @@
     margin-bottom: 24px;
   }
 
+  /* Two even columns instead of a wrapping row, so the four items read as a
+     2 x 2 block rather than 2 + 1 + 1. */
   .mytheme-hero-banner__features {
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    justify-content: center;
     gap: 10px 20px;
   }
 
@@ -369,7 +537,86 @@
     padding: 15px 25px;
   }
 
+  /* Two per row, and a lone last button centred across both columns. */
+  .mytheme-hero-banner__download-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 20px;
+  }
+
+  .mytheme-hero-banner__download-btn {
+    padding: 10px;
+    gap: 8px;
+    justify-content: center;
+    min-width: 0;
+  }
+
+  .mytheme-hero-banner__download-btn:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .mytheme-hero-banner__download-btn-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .mytheme-hero-banner__download-btn-small {
+    font-size: 10px;
+  }
+
+  .mytheme-hero-banner__download-btn-main {
+    font-size: 12px;
+  }
+
   .mytheme-hero-banner__image {
     max-height: 380px;
+  }
+}
+
+/* ─── Very small phones (320px and under) ────────────────────────── */
+/* Two columns no longer fit here — "Fast or Real Cashouts" and the wider
+   button labels get clipped — so both rows drop to a single column. */
+@media (max-width: 374px) {
+  .mytheme-hero-banner__features {
+    grid-template-columns: minmax(0, 1fr);
+    justify-content: stretch;
+    gap: 10px;
+  }
+
+  .mytheme-hero-banner__feature {
+    justify-content: center;
+    white-space: normal;
+  }
+
+  .mytheme-hero-banner__download-buttons {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Undo the centred full-width span: every button is already full width. */
+  .mytheme-hero-banner__download-btn:last-child:nth-child(odd) {
+    grid-column: auto;
+    justify-self: stretch;
+  }
+
+  .mytheme-hero-banner__download-btn {
+    padding: 10px 16px;
+    gap: 10px;
+  }
+
+  .mytheme-hero-banner__download-btn-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mytheme-hero-banner__download-btn-small {
+    font-size: 11px;
+  }
+
+  .mytheme-hero-banner__download-btn-main {
+    font-size: 14px;
   }
 }

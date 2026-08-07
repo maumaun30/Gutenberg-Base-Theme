@@ -6,6 +6,7 @@ $title              = $attributes['title'] ?? '';
 $title_highlight    = $attributes['titleHighlight'] ?? '';
 $subtitle           = $attributes['subtitle'] ?? '';
 $features           = $attributes['features'] ?? [];
+$download_buttons   = $attributes['downloadButtons'] ?? [];
 $primary_btn_text   = $attributes['primaryButtonText'] ?? '';
 $show_primary_btn   = $attributes['showPrimaryButton'] ?? false;
 $secondary_btn_text = $attributes['secondaryButtonText'] ?? '';
@@ -47,7 +48,7 @@ if ( ! function_exists( 'mytheme_hero_banner_btn_shape' ) ) {
 }
 ?>
 
-<div <?php echo get_block_wrapper_attributes( [ 'class' => 'mytheme-hero-banner' ] ); ?>>
+<section <?php echo get_block_wrapper_attributes( [ 'class' => 'mytheme-hero-banner' ] ); ?>>
 
   <div
     class="mytheme-hero-banner__overlay"
@@ -118,6 +119,58 @@ if ( ! function_exists( 'mytheme_hero_banner_btn_shape' ) ) {
         </ul>
       <?php endif; ?>
 
+      <?php if ( ! empty( $download_buttons ) ) : ?>
+        <div class="mytheme-hero-banner__download-buttons">
+          <?php foreach ( $download_buttons as $button ) : ?>
+            <?php
+            $btn_icon   = $button['iconUrl'] ?? '';
+            $btn_alt    = $button['iconAlt'] ?? '';
+            $btn_small  = $button['smallText'] ?? '';
+            $btn_main   = $button['mainText'] ?? '';
+            $btn_action = $button['action'] ?? 'link';
+            $new_tab    = ! empty( $button['newTab'] );
+
+            // A download button points at the uploaded file and carries the
+            // `download` attribute so browsers save it instead of navigating;
+            // a link button just goes to its URL.
+            if ( 'file' === $btn_action ) {
+                $href      = $button['fileUrl'] ?? '';
+                $file_name = $button['fileName'] ?? '';
+                $extra     = ' download' . ( $file_name ? '="' . esc_attr( $file_name ) . '"' : '' );
+            } else {
+                $href  = $button['url'] ?? '';
+                $extra = $new_tab ? ' target="_blank" rel="noopener noreferrer"' : '';
+            }
+
+            // Skip buttons that have nothing to point at yet.
+            if ( '' === trim( (string) $href ) ) {
+                continue;
+            }
+            ?>
+
+            <a class="mytheme-hero-banner__download-btn" href="<?php echo esc_url( $href ); ?>"<?php echo $extra; ?>>
+
+              <?php if ( $btn_icon ) : ?>
+                <span class="mytheme-hero-banner__download-btn-icon">
+                  <img src="<?php echo esc_url( $btn_icon ); ?>" alt="<?php echo esc_attr( $btn_alt ); ?>" loading="lazy" />
+                </span>
+              <?php endif; ?>
+
+              <span class="mytheme-hero-banner__download-btn-text">
+                <?php if ( '' !== trim( (string) $btn_small ) ) : ?>
+                  <span class="mytheme-hero-banner__download-btn-small"><?php echo esc_html( $btn_small ); ?></span>
+                <?php endif; ?>
+
+                <?php if ( '' !== trim( (string) $btn_main ) ) : ?>
+                  <span class="mytheme-hero-banner__download-btn-main"><?php echo esc_html( $btn_main ); ?></span>
+                <?php endif; ?>
+              </span>
+
+            </a>
+          <?php endforeach; ?>
+        </div>
+      <?php endif; ?>
+
     </div>
 
     <?php if ( $image_url ) : ?>
@@ -148,4 +201,4 @@ if ( ! function_exists( 'mytheme_hero_banner_btn_shape' ) ) {
 
   </div>
 
-</div>
+</section>

@@ -12,7 +12,24 @@ import {
   ToggleControl,
   RangeControl,
   ResponsiveWrapper,
+  SelectControl,
 } from '@wordpress/components';
+
+// Same shape as the feature-section block's buttons, so the two stay
+// interchangeable for editors.
+const EMPTY_DOWNLOAD_BUTTON = {
+  iconUrl: '',
+  iconId: 0,
+  iconAlt: '',
+  smallText: '',
+  mainText: 'Button',
+  action: 'link',
+  url: '',
+  fileUrl: '',
+  fileId: 0,
+  fileName: '',
+  newTab: false,
+};
 
 export default function Edit({ attributes, setAttributes }) {
   const {
@@ -23,6 +40,7 @@ export default function Edit({ attributes, setAttributes }) {
     titleHighlight,
     subtitle,
     features,
+    downloadButtons,
     primaryButtonText,
     showPrimaryButton,
     secondaryButtonText,
@@ -35,11 +53,34 @@ export default function Edit({ attributes, setAttributes }) {
   const TitleTag = isPageTitle ? 'h1' : 'h2';
 
   const list = features || [];
+  const buttonList = downloadButtons || [];
 
   const updateFeature = (index, value) => {
     const next = [...list];
     next[index] = value;
     setAttributes({ features: next });
+  };
+
+  const updateButton = (index, changes) => {
+    setAttributes({
+      downloadButtons: buttonList.map((entry, i) =>
+        i === index ? { ...entry, ...changes } : entry
+      ),
+    });
+  };
+
+  const removeButton = (index) => {
+    setAttributes({ downloadButtons: buttonList.filter((_, i) => i !== index) });
+  };
+
+  const moveButton = (index, offset) => {
+    const target = index + offset;
+    if (target < 0 || target >= buttonList.length) {
+      return;
+    }
+    const next = [...buttonList];
+    [next[index], next[target]] = [next[target], next[index]];
+    setAttributes({ downloadButtons: next });
   };
 
   const overlayStyle = {
@@ -168,6 +209,177 @@ export default function Edit({ attributes, setAttributes }) {
             type="url"
           />
         </PanelBody>
+
+        {buttonList.map((button, index) => (
+          <PanelBody
+            key={`download-button-${index}`}
+            title={`Download Button ${index + 1}: ${button.mainText || ''}`}
+            initialOpen={false}
+          >
+            <MediaUploadCheck>
+              <MediaUpload
+                onSelect={(media) =>
+                  updateButton(index, {
+                    iconUrl: media.url,
+                    iconId: media.id,
+                    iconAlt: media.alt || '',
+                  })
+                }
+                allowedTypes={['image']}
+                value={button.iconId}
+                render={({ open }) => (
+                  <div style={{ marginBottom: '12px' }}>
+                    <p style={{ margin: '0 0 4px', fontSize: '11px', textTransform: 'uppercase' }}>
+                      Button Icon
+                    </p>
+                    {button.iconUrl ? (
+                      <>
+                        <img
+                          src={button.iconUrl}
+                          alt={button.iconAlt}
+                          style={{ width: '36px', height: '36px', objectFit: 'contain', display: 'block' }}
+                        />
+                        <div style={{ marginTop: '8px', display: 'flex', gap: '8px' }}>
+                          <Button variant="secondary" size="small" onClick={open}>
+                            Replace
+                          </Button>
+                          <Button
+                            variant="tertiary"
+                            isDestructive
+                            size="small"
+                            onClick={() => updateButton(index, { iconUrl: '', iconId: 0, iconAlt: '' })}
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      </>
+                    ) : (
+                      <Button variant="secondary" size="small" onClick={open}>
+                        Upload Icon
+                      </Button>
+                    )}
+                  </div>
+                )}
+              />
+            </MediaUploadCheck>
+
+            <TextControl
+              label="Small Text (top line)"
+              help="Optional, e.g. “Available on the”."
+              value={button.smallText}
+              onChange={(value) => updateButton(index, { smallText: value })}
+            />
+            <TextControl
+              label="Main Text (bottom line)"
+              value={button.mainText}
+              onChange={(value) => updateButton(index, { mainText: value })}
+            />
+
+            <SelectControl
+              label="Action"
+              value={button.action || 'link'}
+              options={[
+                { label: 'Go to link', value: 'link' },
+                { label: 'Download file (APK, PDF…)', value: 'file' },
+              ]}
+              onChange={(value) => updateButton(index, { action: value })}
+            />
+
+            {(button.action || 'link') === 'link' ? (
+              <>
+                <TextControl
+                  label="URL"
+                  value={button.url}
+                  type="url"
+                  onChange={(value) => updateButton(index, { url: value })}
+                />
+                <ToggleControl
+                  label="Open in New Tab"
+                  checked={!!button.newTab}
+                  onChange={(value) => updateButton(index, { newTab: value })}
+                />
+              </>
+            ) : (
+              <MediaUploadCheck>
+                <MediaUpload
+                  onSelect={(media) =>
+                    updateButton(index, {
+                      fileUrl: media.url,
+                      fileId: media.id,
+                      fileName: media.filename || media.title || '',
+                    })
+                  }
+                  allowedTypes={[]}
+                  value={button.fileId}
+                  render={({ open }) => (
+                    <div>
+                      {button.fileUrl ? (
+                        <>
+                          <p style={{ margin: '0 0 8px', wordBreak: 'break-all', fontSize: '12px' }}>
+                            {button.fileName || button.fileUrl}
+                          </p>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <Button variant="secondary" size="small" onClick={open}>
+                              Replace File
+                            </Button>
+                            <Button
+                              variant="tertiary"
+                              isDestructive
+                              size="small"
+                              onClick={() => updateButton(index, { fileUrl: '', fileId: 0, fileName: '' })}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+                        </>
+                      ) : (
+                        <Button variant="secondary" onClick={open}>
+                          Select / Upload File
+                        </Button>
+                      )}
+                      <p style={{ marginTop: '8px', fontSize: '12px', fontStyle: 'italic' }}>
+                        APK files may need to be allowed in Media Library uploads.
+                      </p>
+                    </div>
+                  )}
+                />
+              </MediaUploadCheck>
+            )}
+
+            <div style={{ display: 'flex', gap: '8px', marginTop: '12px' }}>
+              <Button
+                variant="secondary"
+                size="small"
+                onClick={() => moveButton(index, -1)}
+                disabled={index === 0}
+              >
+                Move Up
+              </Button>
+              <Button
+                variant="secondary"
+                size="small"
+                onClick={() => moveButton(index, 1)}
+                disabled={index === buttonList.length - 1}
+              >
+                Move Down
+              </Button>
+              <Button variant="tertiary" isDestructive size="small" onClick={() => removeButton(index)}>
+                Delete
+              </Button>
+            </div>
+          </PanelBody>
+        ))}
+
+        <PanelBody title="Add Download Button" initialOpen={true}>
+          <Button
+            variant="primary"
+            onClick={() =>
+              setAttributes({ downloadButtons: [...buttonList, { ...EMPTY_DOWNLOAD_BUTTON }] })
+            }
+          >
+            Add Download Button
+          </Button>
+        </PanelBody>
       </InspectorControls>
 
       <div {...blockProps}>
@@ -232,6 +444,26 @@ export default function Edit({ attributes, setAttributes }) {
                   </li>
                 ))}
               </ul>
+            )}
+
+            {!!buttonList.length && (
+              <div className="hero-banner-editor__download-buttons">
+                {buttonList.map((button, index) => (
+                  <span key={index} className="hero-banner-editor__download-btn">
+                    {button.iconUrl && (
+                      <span className="hero-banner-editor__download-btn-icon">
+                        <img src={button.iconUrl} alt="" />
+                      </span>
+                    )}
+                    <span className="hero-banner-editor__download-btn-text">
+                      {button.smallText && (
+                        <span className="hero-banner-editor__download-btn-small">{button.smallText}</span>
+                      )}
+                      <span className="hero-banner-editor__download-btn-main">{button.mainText}</span>
+                    </span>
+                  </span>
+                ))}
+              </div>
             )}
           </div>
 
