@@ -1,20 +1,21 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // #fm-register-trigger (register modal) -> wallet deposit tab
     const DEFAULT_CAMPAIGN =
-        "2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo";
+        "2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub";
 
+    // #fnlmx-rg-proceed (registration bonus modal) -> wallet deposit tab
     const BONUS_CAMPAIGN =
-        "2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo-reg-bonus-offer";
+        "2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub-reg-bonus-offer";
+
+    const DEFAULT_MEDIUM = "seo";
 
     const STORAGE_KEY = "fm_attr";
     const LEGACY_STORAGE_KEY = "fm_attribution";
 
+    // Every modal lands on the wallet deposit tab. Per-modal overrides live in
+    // MODALS[type].redirectUrl / MODALS[type].depositTab.
     const REDIRECT_BASE_URL =
         "https://funalomax.com/en/profile/wallet";
-
-    // The registration bonus campaign lands on the profile page (not the wallet
-    // deposit tab). Per-modal overrides live in MODALS[type].redirectUrl.
-    const PROFILE_REDIRECT_URL =
-        "https://funalomax.com/en/profile";
 
     // The Responsible Gaming Guidelines popup (functions.php ->
     // fnlmx_responsible_gaming_popup()) is a separate overlay, not one of the
@@ -60,9 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
             termsSelector: "#fm-bonus-terms",
             campaign: BONUS_CAMPAIGN,
             openSelector: "#fnlmx-rg-proceed",
-            submitSelector: "#fm-bonus-submit",
-            redirectUrl: PROFILE_REDIRECT_URL,
-            depositTab: false
+            submitSelector: "#fm-bonus-submit"
         }
     };
 
@@ -123,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
             utm_medium:
                 params.get("utm_medium") ||
                 existingAttribution.utm_medium ||
-                "ggo",
+                DEFAULT_MEDIUM,
 
             utm_campaign:
                 params.get("utm_campaign") ||
@@ -196,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const attribution = getAttribution();
 
         attribution.utm_source = attribution.utm_source || "seo";
-        attribution.utm_medium = attribution.utm_medium || "ggo";
+        attribution.utm_medium = attribution.utm_medium || DEFAULT_MEDIUM;
         attribution.utm_campaign = config.campaign;
 
         saveAttribution(attribution);
@@ -280,8 +279,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function buildQuery(phone, attribution, includeDepositTab) {
         const query = new URLSearchParams();
 
-        // Wallet redirects open straight on the deposit tab; the profile-page
-        // redirect (bonus offer) omits it.
+        // Wallet redirects open straight on the deposit tab; a modal can opt out
+        // with depositTab: false.
         if (includeDepositTab !== false) {
             query.set("tab", "deposit");
         }
@@ -291,7 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         query.set("utm_source", attribution.utm_source || "seo");
-        query.set("utm_medium", attribution.utm_medium || "ggo");
+        query.set("utm_medium", attribution.utm_medium || DEFAULT_MEDIUM);
 
         query.set(
             "utm_campaign",
