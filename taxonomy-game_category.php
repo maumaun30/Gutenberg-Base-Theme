@@ -37,9 +37,11 @@ $total_q = new WP_Query([
 $game_count = $total_q->found_posts;
 wp_reset_postdata();
 
-/* First 12 games for the grid */
-$grid_q = new WP_Query([
+/* First 12 games for the grid, most active players first — ordering comes from
+   fnlmx_game_order_args() so Load More (functions.php) stays in lockstep. */
+$grid_q = new WP_Query(array_merge([
   'post_type'      => 'game',
+  'post_status'    => 'publish',
   'tax_query'      => [[
     'taxonomy'         => 'game_category',
     'field'            => 'term_id',
@@ -47,9 +49,7 @@ $grid_q = new WP_Query([
     'include_children' => true,
   ]],
   'posts_per_page' => 12,
-  'orderby'        => 'date',
-  'order'          => 'DESC',
-]);
+], fnlmx_game_order_args()));
 
 /* ACF fields */
 $sub_para  = function_exists('get_field') ? get_field('fnlmx_game_category_contents_subparagraph', $current_term) : '';
