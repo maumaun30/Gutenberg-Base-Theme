@@ -1811,6 +1811,40 @@ if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
     }
 }
 
+/**
+ * Shared ordering for game listings: highest fnlmx_active_player first.
+ *
+ * A plain meta_key + meta_value_num orderby INNER JOINs the meta table, which
+ * would drop every game that has no fnlmx_active_player value. The EXISTS /
+ * NOT EXISTS pair forces a LEFT JOIN instead, so those games stay in the list
+ * and sort as 0 (their NULL meta_value sorts last under DESC). Date DESC breaks
+ * ties so the order is stable across paged Load More requests — the template
+ * query and fnlmx_ajax_load_more_games() MUST pass identical args or paging
+ * will repeat and skip cards.
+ */
+if ( ! function_exists( 'fnlmx_game_order_args' ) ) {
+    function fnlmx_game_order_args(): array {
+        return [
+            'meta_query' => [
+                'relation' => 'OR',
+                'active_players' => [
+                    'key'     => 'fnlmx_active_player',
+                    'compare' => 'EXISTS',
+                    'type'    => 'NUMERIC',
+                ],
+                'no_active_players' => [
+                    'key'     => 'fnlmx_active_player',
+                    'compare' => 'NOT EXISTS',
+                ],
+            ],
+            'orderby' => [
+                'active_players' => 'DESC',
+                'date'           => 'DESC',
+            ],
+        ];
+    }
+}
+
 if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
     function fnlmx_ajax_load_more_games(): void {
         check_ajax_referer( 'fnlmx_load_more', 'nonce' );
@@ -1822,7 +1856,7 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
             wp_send_json_error( [ 'message' => 'Missing term' ], 400 );
         }
 
-        $query = new WP_Query( [
+        $query = new WP_Query( array_merge( [
             'post_type'      => 'game',
             'post_status'    => 'publish',
             'tax_query'      => [ [
@@ -1833,9 +1867,7 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
             ] ],
             'posts_per_page' => 12,
             'paged'          => $page,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-        ] );
+        ], fnlmx_game_order_args() ) );
 
         if ( ! $query->have_posts() ) {
             wp_send_json_success( [ 'html' => '', 'has_more' => false ] );

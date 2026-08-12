@@ -207,7 +207,9 @@ if (! empty($category_order)) {
 
         // Category tiles only show games tagged "Hot" (game-tag: hot). The
         // Recommended Games row below has its own tag and is queried separately.
-        $games = new WP_Query([
+        // Ordering (highest fnlmx_active_player first) comes from the shared
+        // helper in functions.php, same as taxonomy-game_category.php.
+        $games = new WP_Query(array_merge([
           'post_type'      => 'game',
           'posts_per_page' => $posts_per_category > 0 ? $posts_per_category : -1,
           'post_status'    => 'publish',
@@ -225,7 +227,7 @@ if (! empty($category_order)) {
               'terms'    => 'hot',
             ],
           ],
-        ]);
+        ], fnlmx_game_order_args()));
 
         if (! $games->have_posts()) continue;
 
@@ -288,7 +290,7 @@ if (! empty($category_order)) {
     <?php if ($show_recommended) :
       $rec_tag = get_term_by('slug', 'recommended-games', 'game-tag');
       if ($rec_tag) :
-        $rec_query = new WP_Query([
+        $rec_query = new WP_Query(array_merge([
           'post_type'      => 'game',
           'post_status'    => 'publish',
           // Match the per-category tile count so the Recommended row shows the
@@ -299,7 +301,7 @@ if (! empty($category_order)) {
             'field'    => 'term_id',
             'terms'    => $rec_tag->term_id,
           ]],
-        ]);
+        ], fnlmx_game_order_args()));
         if ($rec_query->have_posts()) :
           $rec_id = 'gl-recommended';
     ?>
