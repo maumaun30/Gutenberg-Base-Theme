@@ -1,0 +1,31 @@
+{
+  "apiVersion": 3,
+  "name": "mytheme/about-panel",
+  "title": "About Panel",
+  "category": "design",
+  "icon": "info-outline",
+  "description": "Dark bordered panel with an icon heading and collapsible rich-text body — same layout as the About the Game section on single game pages.",
+  "keywords": ["about", "panel", "read more", "description"],
+  "editorScript": "file:./build/index.js",
+  "style": "file:./style.css",
+  "viewScript": "file:./view.js",
+  "render": "file:./render.php",
+  "attributes": {
+    "heading": {
+      "type": "string",
+      "default": "About the Game"
+    },
+    "content": {
+      "type": "string",
+      "default": ""
+    },
+    "collapsible": {
+      "type": "boolean",
+      "default": true
+    },
+    "collapsedHeight": {
+      "type": "number",
+      "default": 8.5
+    }
+  }
+}

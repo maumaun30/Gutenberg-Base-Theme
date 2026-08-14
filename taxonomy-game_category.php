@@ -55,6 +55,9 @@ $grid_q = new WP_Query(array_merge([
 $sub_para  = function_exists('get_field') ? get_field('fnlmx_game_category_contents_subparagraph', $current_term) : '';
 $icon_rows = function_exists('get_field') ? (get_field('fnlmx_game_category_icon_details_wrapper', $current_term) ?: []) : [];
 $faq_rows  = function_exists('get_field') ? (get_field('fnlmx_game_category_faq_wrapper', $current_term) ?: []) : [];
+/* WYSIWYG "About" copy — same panel layout as the About the Game block on single-game.php */
+$about_html = function_exists('get_field') ? (get_field('fnlmx_game_category_about', $current_term) ?: '') : '';
+$has_about  = ! empty(trim(strip_tags($about_html)));
 
 $has_left  = !empty($icon_rows);
 $has_right = !empty($faq_rows);
@@ -718,6 +721,106 @@ set_query_var('game_count',     $game_count);
     color: #fff;
     font-family: 'Montserrat', sans-serif;
   }
+
+  /* ── ABOUT PANEL (mirrors .sg-main / .sg-panel on single-game.php) ── */
+  .fm-about {
+    padding: 40px 0;
+  }
+
+  /* Colors are pinned to the same literals single-game.php sets on :root
+     (--bg-dark-2 is #231F33 globally, so inheriting it would tint the card
+     purple instead of matching the About the Game panel). */
+  .fm-about__wrap {
+    background: #1E1E1E;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: .875rem;
+    padding: 1.75rem 2rem;
+  }
+
+  .fm-about__hd {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, .08);
+  }
+
+  .fm-about__hd svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: #BA001D;
+    flex-shrink: 0;
+  }
+
+  .fm-about__hd h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+  }
+
+  .fm-about__content {
+    font-family: 'Montserrat', sans-serif;
+    font-size: .9rem;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, .7);
+    overflow: hidden;
+    max-height: 8.5em;
+    transition: max-height .45s ease;
+  }
+
+  .fm-about__content p {
+    margin: 0 0 1rem;
+  }
+
+  .fm-about__content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .fm-about__content ul,
+  .fm-about__content ol {
+    margin: 0 0 1rem;
+    padding-left: 1.5rem;
+  }
+
+  .fm-about__content ul {
+    list-style: disc;
+  }
+
+  .fm-about__content ol {
+    list-style: decimal;
+  }
+
+  .fm-about__content li {
+    margin-bottom: .35rem;
+  }
+
+  .fm-about__content ul li::marker {
+    color: #BA001D;
+  }
+
+  .fm-about__toggle {
+    margin-top: 1.25rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, .6);
+    font-family: 'Montserrat', sans-serif;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: 0;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+
+  .fm-about__toggle:hover {
+    color: #fff;
+  }
 </style>
 
 <div class="fm-page">
@@ -760,6 +863,30 @@ set_query_var('game_count',     $game_count);
       <?php endif; ?>
     </div>
   </section>
+
+  <!-- ABOUT -->
+  <?php if ($has_about) : ?>
+    <section class="fm-about">
+      <div class="fm-container">
+        <div class="fm-about__wrap">
+          <div class="fm-about__hd">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <h2>About <?php echo esc_html($term_name); ?></h2>
+          </div>
+          <div class="fm-about__content" id="fm-about-body">
+            <?php echo wp_kses_post($about_html); ?>
+          </div>
+          <button type="button" class="fm-about__toggle" id="fm-about-toggle"
+            data-more="Read More" data-less="Read Less">Read More</button>
+        </div>
+      </div>
+    </section>
+  <?php endif; ?>
 
   <!-- WHY PLAY / QUICK GUIDE -->
   <?php if ($has_left || $has_right) : ?>
@@ -904,6 +1031,35 @@ set_query_var('game_count',     $game_count);
           label.textContent = original;
         }
       });
+    }
+
+    /* About "Read More" toggle — same two-frame collapse as single-game.php so
+       the animation runs at the same speed in both directions. */
+    const aboutBody = document.getElementById('fm-about-body');
+    const aboutBtn = document.getElementById('fm-about-toggle');
+    if (aboutBody && aboutBtn) {
+      if (aboutBody.scrollHeight <= aboutBody.clientHeight + 4) {
+        aboutBtn.style.display = 'none';
+        aboutBody.style.maxHeight = 'none';
+      } else {
+        let isOpen = false;
+        aboutBtn.addEventListener('click', () => {
+          if (!isOpen) {
+            aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
+            aboutBtn.textContent = aboutBtn.dataset.less;
+            isOpen = true;
+          } else {
+            aboutBody.style.maxHeight = aboutBody.scrollHeight + 'px';
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                aboutBody.style.maxHeight = '8.5em';
+              });
+            });
+            aboutBtn.textContent = aboutBtn.dataset.more;
+            isOpen = false;
+          }
+        });
+      }
     }
 
     // Sticky info column: pin whichever of the two columns is shorter while

@@ -1814,36 +1814,78 @@ if ( ! function_exists( 'fnlmx_game_card_template' ) ) {
 /**
  * Shared ordering for game listings: highest fnlmx_active_player first.
  *
- * A plain meta_key + meta_value_num orderby INNER JOINs the meta table, which
- * would drop every game that has no fnlmx_active_player value. The EXISTS /
- * NOT EXISTS pair forces a LEFT JOIN instead, so those games stay in the list
- * and sort as 0 (their NULL meta_value sorts last under DESC). Date DESC breaks
- * ties so the order is stable across paged Load More requests — the template
- * query and fnlmx_ajax_load_more_games() MUST pass identical args or paging
- * will repeat and skip cards.
+ * Every game is guaranteed to have a fnlmx_active_player row (see
+ * fnlmx_backfill_active_player() and the save_post hook below), so a plain
+ * meta_key INNER JOIN is safe and no game is dropped. Do NOT reintroduce an
+ * EXISTS / NOT EXISTS OR pair here: that joins wp_postmeta twice and forces a
+ * GROUP BY, which lets MySQL pick an arbitrary row for the sort column and
+ * reshuffles the list between requests.
+ *
+ * ID DESC after date DESC guarantees a total order — bulk-imported games share
+ * a post_date, and without a final tiebreak the template query and
+ * fnlmx_ajax_load_more_games() can slice different lists, repeating and
+ * skipping cards. Both MUST pass identical args.
  */
 if ( ! function_exists( 'fnlmx_game_order_args' ) ) {
     function fnlmx_game_order_args(): array {
         return [
-            'meta_query' => [
-                'relation' => 'OR',
-                'active_players' => [
-                    'key'     => 'fnlmx_active_player',
-                    'compare' => 'EXISTS',
-                    'type'    => 'NUMERIC',
-                ],
-                'no_active_players' => [
-                    'key'     => 'fnlmx_active_player',
-                    'compare' => 'NOT EXISTS',
-                ],
-            ],
-            'orderby' => [
-                'active_players' => 'DESC',
+            'meta_key' => 'fnlmx_active_player',
+            'orderby'  => [
+                'meta_value_num' => 'DESC',
                 'date'           => 'DESC',
+                'ID'             => 'DESC',
             ],
         ];
     }
 }
+
+/**
+ * Guarantee every published game carries a fnlmx_active_player row so the
+ * INNER JOIN in fnlmx_game_order_args() never drops one. Games with no value
+ * sort as a genuine 0 rather than below it.
+ */
+if ( ! function_exists( 'fnlmx_backfill_active_player' ) ) {
+    function fnlmx_backfill_active_player(): int {
+        $ids = get_posts( [
+            'post_type'      => 'game',
+            'post_status'    => 'any',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'meta_query'     => [ [
+                'key'     => 'fnlmx_active_player',
+                'compare' => 'NOT EXISTS',
+            ] ],
+        ] );
+
+        foreach ( $ids as $id ) {
+            add_post_meta( $id, 'fnlmx_active_player', 0, true );
+        }
+
+        return count( $ids );
+    }
+}
+
+/* One-shot backfill for games that predate the field. The option guard keeps
+   this to a single run; bump the option name to force a re-run. */
+add_action( 'admin_init', function () {
+    if ( get_option( 'fnlmx_active_player_backfilled' ) ) {
+        return;
+    }
+
+    fnlmx_backfill_active_player();
+    update_option( 'fnlmx_active_player_backfilled', 1, false );
+} );
+
+/* Keep the guarantee for games created or imported after the backfill. */
+add_action( 'save_post_game', function ( $post_id ) {
+    if ( wp_is_post_revision( $post_id ) || wp_is_post_autosave( $post_id ) ) {
+        return;
+    }
+
+    if ( '' === get_post_meta( $post_id, 'fnlmx_active_player', true ) ) {
+        update_post_meta( $post_id, 'fnlmx_active_player', 0 );
+    }
+}, 20 );
 
 if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
     function fnlmx_ajax_load_more_games(): void {

@@ -9,6 +9,14 @@
   "style": "file:./style.css",
   "render": "file:./render.php",
   "attributes": {
+    "blockTitle": {
+      "type": "string",
+      "default": ""
+    },
+    "blockSubtitle": {
+      "type": "string",
+      "default": ""
+    },
     "postsPerCategory": {
       "type": "number",
       "default": 6

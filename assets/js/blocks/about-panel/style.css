@@ -1,0 +1,120 @@
+/**
+ * About Panel block.
+ *
+ * Colors are pinned to the literals single-game.php sets on its own :root —
+ * the global --bg-dark-2 is #231F33, which would tint the card purple instead
+ * of matching the About the Game panel.
+ */
+
+.mytheme-about {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4rem) 1.5rem;
+}
+
+.mytheme-about__wrap {
+  background: #1E1E1E;
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: .875rem;
+  padding: 1.75rem 2rem;
+}
+
+.mytheme-about__hd {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+
+.mytheme-about__hd svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: #BA001D;
+  flex-shrink: 0;
+}
+
+.mytheme-about__hd h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: .8rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+}
+
+.mytheme-about__content {
+  font-family: 'Montserrat', sans-serif;
+  font-size: .9rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, .7);
+}
+
+/* Collapsed state — height comes from the inline --about-collapsed value */
+.mytheme-about__content.is-collapsible {
+  overflow: hidden;
+  max-height: var(--about-collapsed, 8.5em);
+  transition: max-height .45s ease;
+}
+
+.mytheme-about__content p {
+  margin: 0 0 1rem;
+}
+
+.mytheme-about__content p:last-child {
+  margin-bottom: 0;
+}
+
+.mytheme-about__content ul,
+.mytheme-about__content ol {
+  margin: 0 0 1rem;
+  padding-left: 1.5rem;
+}
+
+.mytheme-about__content ul {
+  list-style: disc;
+}
+
+.mytheme-about__content ol {
+  list-style: decimal;
+}
+
+.mytheme-about__content li {
+  margin-bottom: .35rem;
+}
+
+.mytheme-about__content ul li::marker {
+  color: #BA001D;
+}
+
+.mytheme-about__content a {
+  color: #BA001D;
+  text-decoration: underline;
+}
+
+.mytheme-about__toggle {
+  margin-top: 1.25rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(255, 255, 255, .6);
+  font-family: 'Montserrat', sans-serif;
+  font-size: .82rem;
+  font-weight: 600;
+  padding: 0;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  transition: color .2s;
+}
+
+.mytheme-about__toggle:hover {
+  color: #fff;
+}
+
+@media (max-width: 640px) {
+  .mytheme-about__wrap {
+    padding: 1.5rem 1.25rem;
+  }
+}
