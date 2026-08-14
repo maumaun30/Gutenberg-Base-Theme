@@ -1,4 +1,6 @@
 <?php
+$block_title         = $attributes['blockTitle']                   ?? '';
+$block_subtitle      = $attributes['blockSubtitle']                ?? '';
 $posts_per_category  = (int)  ($attributes['postsPerCategory']   ?? 6);
 $show_view_all       = (bool) ($attributes['showViewAll']         ?? true);
 $selected_categories = $attributes['selectedCategories']           ?? [];
@@ -122,6 +124,14 @@ if (! empty($category_order)) {
   <div class="games-listing__glow" aria-hidden="true"></div>
 
   <div class="games-listing__container">
+
+    <?php if ($block_title !== '') : ?>
+      <h2 class="games-listing__title"><?php echo wp_kses_post($block_title); ?></h2>
+    <?php endif; ?>
+
+    <?php if ($block_subtitle !== '') : ?>
+      <p class="games-listing__subtitle"><?php echo wp_kses_post($block_subtitle); ?></p>
+    <?php endif; ?>
 
     <!-- ── Category Tabs ── -->
     <nav class="games-listing__tabs" aria-label="Game categories">

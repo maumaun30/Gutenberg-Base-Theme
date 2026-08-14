@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from '@wordpress/element';
 import {
   InspectorControls,
+  RichText,
   useBlockProps,
 } from '@wordpress/block-editor';
 import {
@@ -101,6 +102,8 @@ function SortableList({ items, onReorder }) {
 /* ── Main Edit component ── */
 export default function Edit({ attributes, setAttributes }) {
   const {
+    blockTitle,
+    blockSubtitle,
     postsPerCategory,
     showViewAll,
     selectedCategories,
@@ -309,6 +312,24 @@ export default function Edit({ attributes, setAttributes }) {
       <section {...useBlockProps({ className: 'games-listing bg-dark-3 section' })}>
         <div className="games-listing__glow" aria-hidden="true" />
         <div className="games-listing__container">
+
+          {/* Block heading + optional subtitle */}
+          <RichText
+            tagName="h2"
+            className="games-listing__title"
+            value={blockTitle}
+            onChange={(v) => setAttributes({ blockTitle: v })}
+            placeholder="Add a title…"
+            allowedFormats={['core/bold', 'core/italic']}
+          />
+          <RichText
+            tagName="p"
+            className="games-listing__subtitle"
+            value={blockSubtitle}
+            onChange={(v) => setAttributes({ blockSubtitle: v })}
+            placeholder="Add a subtitle (optional)…"
+            allowedFormats={['core/bold', 'core/italic', 'core/link']}
+          />
 
           {/* Category Tabs */}
           {!loading && categories.length > 0 && (

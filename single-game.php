@@ -119,8 +119,11 @@ if ($primary_cat) {
   $cat_chain = get_ancestors($primary_cat->term_id, 'game_category', 'taxonomy');
   $parent_id = ! empty($cat_chain) ? end($cat_chain) : $primary_cat->term_id;
 
-  $rq = new WP_Query([
+  // Most active players first — shared ordering from fnlmx_game_order_args()
+  // so this row matches the category archive and games-listing block.
+  $rq = new WP_Query(array_merge([
     'post_type'      => 'game',
+    'post_status'    => 'publish',
     'tax_query'      => [[
       'taxonomy'         => 'game_category',
       'field'            => 'term_id',
@@ -129,9 +132,7 @@ if ($primary_cat) {
     ]],
     'posts_per_page' => 6,
     'post__not_in'   => [$post_id],
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-  ]);
+  ], fnlmx_game_order_args()));
   if ($rq->have_posts()) {
     while ($rq->have_posts()) {
       $rq->the_post();
