@@ -9,7 +9,7 @@
 .mytheme-about {
   max-width: 80rem;
   margin: 0 auto;
-  padding: clamp(2rem, 5vw, 4rem) 1.5rem;
+  padding: clamp(2rem, 5vw, 2rem) 1.5rem;
 }
 
 .mytheme-about__wrap {
@@ -41,7 +41,6 @@
   font-weight: 700;
   color: #fff;
   margin: 0;
-  text-transform: uppercase;
   letter-spacing: .1em;
 }
 
@@ -61,6 +60,39 @@
 
 .mytheme-about__content p {
   margin: 0 0 1rem;
+}
+
+/* Headings inside the editor content need breathing room from the paragraph
+   above them, otherwise each section reads as one unbroken block. */
+.mytheme-about__content h2,
+.mytheme-about__content h3,
+.mytheme-about__content h4,
+.mytheme-about__content h5,
+.mytheme-about__content h6 {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.4;
+  margin: 2rem 0 .75rem;
+}
+
+.mytheme-about__content h2 { font-size: 1.15rem; }
+.mytheme-about__content h3 { font-size: 1.05rem; }
+.mytheme-about__content h4,
+.mytheme-about__content h5,
+.mytheme-about__content h6 { font-size: .95rem; }
+
+/* The editor's RichText is multiline="p", so sub-headings come through as a
+   paragraph containing nothing but bold text — treat those as headings too. */
+.mytheme-about__content p:has(> strong:only-child),
+.mytheme-about__content p:has(> b:only-child) {
+  color: #fff;
+  font-size: 1rem;
+  line-height: 1.4;
+  margin: 2rem 0 .75rem;
+}
+
+.mytheme-about__content > :first-child {
+  margin-top: 0;
 }
 
 .mytheme-about__content p:last-child {

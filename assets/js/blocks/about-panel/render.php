@@ -1,11 +1,15 @@
 <?php
+/**
+ * @var array    $attributes Block attributes.
+ * @var string   $content    Rendered inner blocks.
+ * @var WP_Block $block      Block instance.
+ */
 $heading          = trim( (string) ( $attributes['heading'] ?? '' ) );
-$content          = (string) ( $attributes['content'] ?? '' );
 $collapsible      = (bool) ( $attributes['collapsible'] ?? true );
 $collapsed_height = (float) ( $attributes['collapsedHeight'] ?? 8.5 );
 
-// Nothing to show when the body is empty (an empty <p> from the editor counts
-// as empty too).
+// $content is the rendered inner blocks (paragraphs, headings, lists). Nothing
+// to show when the body is empty (an empty <p> from the editor counts too).
 if ( '' === trim( strip_tags( $content ) ) ) {
   return;
 }
@@ -32,7 +36,7 @@ if ( '' === trim( strip_tags( $content ) ) ) {
     ?>
     <div class="mytheme-about__content<?php echo $collapsible ? ' is-collapsible' : ''; ?>"
       <?php if ( $collapsible ) : ?>style="--about-collapsed: <?php echo esc_attr( $collapsed_height ); ?>em;"<?php endif; ?>>
-      <?php echo wp_kses_post( $content ); ?>
+      <?php echo $content; // Already-rendered inner blocks. ?>
     </div>
 
     <?php if ( $collapsible ) : ?>

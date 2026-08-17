@@ -1,5 +1,6 @@
 import {
   useBlockProps,
+  useInnerBlocksProps,
   RichText,
   InspectorControls,
 } from '@wordpress/block-editor';
@@ -10,9 +11,25 @@ import {
 } from '@wordpress/components';
 
 export default function Edit({ attributes, setAttributes }) {
-  const { heading, content, collapsible, collapsedHeight } = attributes;
+  const { heading, collapsible, collapsedHeight } = attributes;
 
   const blockProps = useBlockProps({ className: 'mytheme-about' });
+
+  // Inner blocks instead of a single RichText so each line can be converted to
+  // a Heading (H2–H4) or left as a paragraph from the normal block toolbar.
+  const innerBlocksProps = useInnerBlocksProps(
+    { className: 'mytheme-about__content' },
+    {
+      allowedBlocks: [
+        'core/paragraph',
+        'core/heading',
+        'core/list',
+        'core/separator',
+      ],
+      template: [['core/paragraph', { placeholder: 'Write the description…' }]],
+      templateLock: false,
+    }
+  );
 
   return (
     <>
@@ -64,14 +81,7 @@ export default function Edit({ attributes, setAttributes }) {
             />
           </div>
 
-          <RichText
-            tagName="div"
-            className="mytheme-about__content"
-            multiline="p"
-            value={content}
-            onChange={(value) => setAttributes({ content: value })}
-            placeholder="Write the description…"
-          />
+          <div {...innerBlocksProps} />
 
           {collapsible && (
             <span className="mytheme-about__toggle">Read More</span>
