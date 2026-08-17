@@ -20,7 +20,7 @@
 
       <!-- Logo -->
       <div class="funalo-nav__logo">
-        <a href="https://funalomax.com/en?utm_source=seo&utm_medium=ggo&utm_campaign=2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo">
+        <a href="https://funalomax.com/en?utm_source=seo&utm_medium=seo&utm_campaign=2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub">
           <?php if (has_custom_logo()) : ?>
             <?php // Output the logo image only — the_custom_logo() would wrap it in its own
                   // <a> pointing to the homepage, overriding the link above. ?>
