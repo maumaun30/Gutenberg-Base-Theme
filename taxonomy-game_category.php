@@ -888,6 +888,37 @@ set_query_var('game_count',     $game_count);
     </section>
   <?php endif; ?>
 
+  <!-- FAQ SCHEMA (JSON-LD) — built from the same ACF rows the accordion renders -->
+  <?php if ($has_right) :
+    $faq_schema_items = [];
+    foreach ($faq_rows as $faq) {
+      $q = trim(wp_strip_all_tags($faq['fnlmx_game_category_faq_question'] ?? ''));
+      $a = trim(wp_strip_all_tags($faq['fnlmx_game_category_faq_answer'] ?? '', true));
+      if ($q === '' || $a === '') continue; // Google rejects empty Q/A pairs
+      $faq_schema_items[] = [
+        '@type'          => 'Question',
+        'name'           => $q,
+        'acceptedAnswer' => [
+          '@type' => 'Answer',
+          'text'  => $a,
+        ],
+      ];
+    }
+    if ($faq_schema_items) :
+      $faq_term_link = get_term_link($current_term);
+      $faq_schema = [
+        '@context'   => 'https://schema.org',
+        '@type'      => 'FAQPage',
+        '@id'        => (is_wp_error($faq_term_link) ? '' : $faq_term_link) . '#faq',
+        'mainEntity' => $faq_schema_items,
+      ];
+  ?>
+    <script type="application/ld+json">
+      <?php echo wp_json_encode($faq_schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>
+    </script>
+  <?php endif;
+  endif; ?>
+
   <!-- WHY PLAY / QUICK GUIDE -->
   <?php if ($has_left || $has_right) : ?>
     <section class="fm-info">

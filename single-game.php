@@ -30,6 +30,91 @@ function gc_acf($key, $id)
   return function_exists('get_field') ? get_field($key, $id) : get_post_meta($id, $key, true);
 }
 
+/**
+ * Pull Q/A pairs out of the free-form About copy so they can be described with
+ * FAQPage schema. Editors write the FAQ as plain paragraphs — a "Frequently
+ * Asked Questions" marker, then alternating "1. Question?" / answer blocks —
+ * so there is no structured field to read; the markup has to be walked.
+ *
+ * Returns [] whenever the content has no FAQ section, which is the common case.
+ */
+function fnlmx_game_faq_pairs( $rendered_html ) {
+  if ( ! is_string( $rendered_html ) || '' === trim( $rendered_html ) ) {
+    return [];
+  }
+
+  // Cheap bail-out so games without an FAQ never pay for DOM parsing.
+  if ( ! preg_match( '/frequently\s+asked\s+questions|\bFAQs?\b/i', $rendered_html ) ) {
+    return [];
+  }
+
+  /* Editors format the FAQ two different ways: one paragraph per block, or a
+     single paragraph with <br><br> between entries. Promoting every <br> to a
+     paragraph break normalises both into the same flat list of blocks. */
+  $normalised = preg_replace( '/<br\s*\/?>/i', '</p><p>', $rendered_html );
+
+  $dom = new DOMDocument();
+  $prev = libxml_use_internal_errors( true );
+  // Force UTF-8: without the meta hint DOMDocument assumes ISO-8859-1 and
+  // mangles the curly quotes the editor content is full of.
+  $dom->loadHTML(
+    '<?xml encoding="utf-8" ?><div>' . $normalised . '</div>',
+    LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+  );
+  libxml_clear_errors();
+  libxml_use_internal_errors( $prev );
+
+  $xpath  = new DOMXPath( $dom );
+  $blocks = $xpath->query( '//p | //h1 | //h2 | //h3 | //h4 | //h5 | //h6' );
+  if ( ! $blocks || 0 === $blocks->length ) {
+    return [];
+  }
+
+  $pairs    = [];
+  $started  = false;
+  $question = '';
+  $answer   = [];
+
+  foreach ( $blocks as $block ) {
+    $text = trim( preg_replace( '/\s+/u', ' ', $block->textContent ) );
+    if ( '' === $text ) {
+      continue;
+    }
+
+    // Everything before the "Frequently Asked Questions" marker is intro copy.
+    if ( ! $started ) {
+      if ( preg_match( '/^(frequently\s+asked\s+questions|FAQs?)\b[:\s]*$/i', $text ) ) {
+        $started = true;
+      }
+      continue;
+    }
+
+    // A question is either numbered ("1. What is X?") or a heading ending in "?".
+    $is_heading = preg_match( '/^h[1-6]$/i', $block->nodeName );
+    $numbered   = preg_match( '/^\d+\s*[\.\)]\s*(.+)$/u', $text, $m );
+
+    if ( $numbered || ( $is_heading && str_ends_with( $text, '?' ) ) ) {
+      // Flush the previous pair before starting the next one.
+      if ( '' !== $question && $answer ) {
+        $pairs[] = [ $question, implode( ' ', $answer ) ];
+      }
+      $question = $numbered ? trim( $m[1] ) : $text;
+      $answer   = [];
+      continue;
+    }
+
+    if ( '' !== $question ) {
+      $answer[] = $text;
+    }
+  }
+
+  if ( '' !== $question && $answer ) {
+    $pairs[] = [ $question, implode( ' ', $answer ) ];
+  }
+
+  return $pairs;
+}
+
 /* Global ACF Options fields (Site Settings → Game Tooltip Data) */
 function gc_acf_option($key)
 {
@@ -1406,9 +1491,59 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
               </svg>
               <h2>About the Game</h2>
             </div>
+            <?php
+            // Rendered once and reused for both the visible copy and the
+            // FAQPage schema, so the two can never describe different text.
+            $about_rendered = apply_filters('the_content', $content);
+            ?>
             <div class="sg-about__content" id="sg-about-body">
-              <?php echo apply_filters('the_content', $content); ?>
+              <?php echo $about_rendered; ?>
             </div>
+
+            <?php
+            /* FAQ SCHEMA (JSON-LD) — only when the About copy actually holds a
+               Q/A section. MYTHEME_FAQ_SCHEMA_DONE is shared with the FAQ block
+               so a page never emits two FAQPage nodes. */
+            $faq_pairs = defined('MYTHEME_FAQ_SCHEMA_DONE') ? [] : fnlmx_game_faq_pairs($about_rendered);
+
+            if ($faq_pairs) :
+              $faq_schema_items = [];
+
+              foreach ($faq_pairs as $pair) {
+                list($q, $a) = $pair;
+                $q = trim(wp_strip_all_tags($q));
+                $a = trim(wp_strip_all_tags($a, true));
+
+                if ('' === $q || '' === $a) {
+                  continue; // Google rejects empty Q/A pairs.
+                }
+
+                $faq_schema_items[] = [
+                  '@type'          => 'Question',
+                  'name'           => $q,
+                  'acceptedAnswer' => [
+                    '@type' => 'Answer',
+                    'text'  => $a,
+                  ],
+                ];
+              }
+
+              if ($faq_schema_items) :
+                define('MYTHEME_FAQ_SCHEMA_DONE', true);
+            ?>
+              <script type="application/ld+json"><?php
+                echo wp_json_encode(
+                  [
+                    '@context'   => 'https://schema.org',
+                    '@type'      => 'FAQPage',
+                    '@id'        => get_permalink($post_id) . '#faq',
+                    'mainEntity' => $faq_schema_items,
+                  ],
+                  JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+                );
+              ?></script>
+            <?php endif;
+            endif; ?>
             <button type="button" class="sg-about__toggle" id="sg-about-toggle"
               data-more="Read More" data-less="Read Less">Read More</button>
           </div>
