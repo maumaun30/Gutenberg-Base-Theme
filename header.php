@@ -294,6 +294,49 @@
         if (drawerCta) drawerCta.addEventListener('click', closeDrawer);
       }
 
+      /* ── Drawer Sub-menus ──
+         Parent items collapse by default and expand on tap. The toggle is a
+         separate button rather than the link itself, so a parent category is
+         still reachable as a destination. */
+      document.querySelectorAll('.funalo-drawer__nav .menu-item-has-children').forEach(function(item) {
+        const submenu = item.querySelector(':scope > .sub-menu');
+        const link    = item.querySelector(':scope > a');
+        if (!submenu || !link) return;
+
+        const toggle = document.createElement('button');
+        toggle.type = 'button';
+        toggle.className = 'funalo-submenu-toggle';
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Toggle ' + link.textContent.trim() + ' submenu');
+        toggle.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>';
+
+        // The submenu is wrapped so a single element can be animated: the
+        // grid-rows collapse only affects the first row, so the <ul> itself
+        // cannot be the grid when it has several <li> children.
+        const wrap = document.createElement('div');
+        wrap.className = 'funalo-submenu-wrap';
+        submenu.parentNode.insertBefore(wrap, submenu);
+        wrap.appendChild(submenu);
+
+        link.insertAdjacentElement('afterend', toggle);
+        item.classList.add('has-toggle');
+
+        toggle.addEventListener('click', function() {
+          const isOpen = item.classList.toggle('is-open');
+          toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+
+          // Accordion: only one branch stays open at a time.
+          if (isOpen) {
+            item.parentElement.querySelectorAll(':scope > .menu-item-has-children.is-open').forEach(function(other) {
+              if (other === item) return;
+              other.classList.remove('is-open');
+              const t = other.querySelector(':scope > .funalo-submenu-toggle');
+              if (t) t.setAttribute('aria-expanded', 'false');
+            });
+          }
+        });
+      });
+
       /* ── Search Overlay ── */
       const searchBtn = document.getElementById('funalo-search-btn');
       const searchOverlay = document.getElementById('funalo-search-overlay');
