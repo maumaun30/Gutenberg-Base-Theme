@@ -89,13 +89,14 @@ if (! empty($fg_term_ids_by_tax)) {
     ];
   }
 
-  $fq = new WP_Query([
+  /* Most active players first — same shared ordering the category grid, Load
+     More and the games-listing block use, so a game's position is consistent
+     wherever it appears. */
+  $fq = new WP_Query(array_merge([
     'post_type'      => 'game',
     'posts_per_page' => 6,
     'tax_query'      => $tax_query,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-  ]);
+  ], fnlmx_game_order_args()));
   if ($fq->have_posts()) {
     while ($fq->have_posts()) {
       $fq->the_post();
@@ -224,6 +225,13 @@ $share_title = rawurlencode($title);
     gap: 2rem;
   }
 
+  /* Only post on the site, or none sharing a category: the Related Blogs aside
+     is not rendered at all, so the reserved 320px track would otherwise leave
+     the content card stranded against a dead gutter. Let it span the width. */
+  .sp-main--full {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   @media (max-width: 899px) {
     .sp-main {
       grid-template-columns: 1fr;
@@ -318,7 +326,13 @@ $share_title = rawurlencode($title);
   }
 
   .sp-content__body a {
-    color: var(--color-primary);
+    color: var(--color-hyperlink);
+    text-decoration: underline;
+    transition: color .2s ease;
+  }
+
+  .sp-content__body a:hover {
+    color: #fff;
   }
 
   .sp-content__body img {
@@ -528,8 +542,14 @@ $share_title = rawurlencode($title);
     height: 16px;
   }
 
+  /* Swiper sets overflow: hidden on .swiper to clip the off-screen slides, so
+     the card's -4px hover lift was being sheared off against the top edge. Pad
+     the clip box by more than the lift travels and pull the same amount back
+     off the margin, so the cards stay whole without moving the section. */
   .sp-fg .swiper {
     width: 100%;
+    padding-top: 6px;
+    margin-top: -6px;
     padding-bottom: .5rem;
   }
 
@@ -611,7 +631,7 @@ $share_title = rawurlencode($title);
     <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true">
       <path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor" />
     </svg>
-    <a href="<?php echo esc_url(home_url('/blog/')); ?>">Blogs</a>
+    <a href="<?php echo esc_url(home_url('/blogs/')); ?>">Blogs</a>
     <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true">
       <path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor" />
     </svg>
@@ -626,7 +646,7 @@ $share_title = rawurlencode($title);
   </section>
 
   <!-- MAIN: content + sidebar -->
-  <div class="sp-main">
+  <div class="sp-main<?php echo empty($related_posts) ? ' sp-main--full' : ''; ?>">
 
     <!-- LEFT: article -->
     <article class="sp-content">

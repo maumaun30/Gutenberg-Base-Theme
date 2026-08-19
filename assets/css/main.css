@@ -3175,12 +3175,20 @@ a.fnlmx-cta__btn--secondary:hover {
 }
 
 /* 404 Page */
+/* The background/color are repeated here on purpose. WP prints theme.json's
+   global styles as `body { ... }` inline, the same specificity as our own body
+   rule, so only source order separates them — and SiteGround Optimizer hoists
+   the combined theme stylesheet above that inline block in production, which
+   flipped these pages to the white default. An id selector outranks `body`
+   either way. */
 div#error-404-wrapper,
 div#search-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 40px 0 40px 0;
+  background-color: var(--bg-dark-3);
+  color: #ffffff;
 }
 
 .text-center {

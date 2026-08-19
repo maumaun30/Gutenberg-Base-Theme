@@ -111,13 +111,14 @@ if (! empty($fg_term_ids_by_tax)) {
   foreach ($fg_term_ids_by_tax as $tax_name => $term_id) {
     $tax_query[] = ['taxonomy' => $tax_name, 'field' => 'term_id', 'terms' => $term_id];
   }
-  $fq = new WP_Query([
+  /* Most active players first — same shared ordering the category grid, Load
+     More and the games-listing block use, so a game's position is consistent
+     wherever it appears. */
+  $fq = new WP_Query(array_merge([
     'post_type'      => 'game',
     'posts_per_page' => 6,
     'tax_query'      => $tax_query,
-    'orderby'        => 'date',
-    'order'          => 'DESC',
-  ]);
+  ], fnlmx_game_order_args()));
   if ($fq->have_posts()) {
     while ($fq->have_posts()) {
       $fq->the_post();
@@ -529,8 +530,14 @@ if (! empty($fg_term_ids_by_tax)) {
     height: 16px;
   }
 
+  /* Swiper sets overflow: hidden on .swiper to clip the off-screen slides, so
+     the card's -4px hover lift was being sheared off against the top edge. Pad
+     the clip box by more than the lift travels and pull the same amount back
+     off the margin, so the cards stay whole without moving the section. */
   .pr-fg .swiper {
     width: 100%;
+    padding-top: 6px;
+    margin-top: -6px;
     padding-bottom: .5rem;
   }
 
