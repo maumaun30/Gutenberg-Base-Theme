@@ -29,11 +29,11 @@
   },
   "styles": {
     "color": {
-      "background": "#FFFFFF",
-      "text": "#111827"
+      "background": "#000000",
+      "text": "#FFFFFF"
     },
     "typography": {
-      "fontFamily": "system-ui, sans-serif",
+      "fontFamily": "Montserrat, system-ui, sans-serif",
       "lineHeight": "1.6"
     },
     "spacing": {

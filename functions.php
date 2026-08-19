@@ -1931,3 +1931,57 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
     add_action( 'wp_ajax_fnlmx_load_more_games',        'fnlmx_ajax_load_more_games' );
     add_action( 'wp_ajax_nopriv_fnlmx_load_more_games', 'fnlmx_ajax_load_more_games' );
 }
+/**
+ * game_category archives are not paginated.
+ *
+ * taxonomy-game_category.php never touches the main loop — it renders its own
+ * $grid_q of 12 games and extends it through the Load More AJAX endpoint above.
+ * The main query still ran with the Reading setting's posts_per_page, though,
+ * so max_num_pages came back > 1 and Yoast emitted <link rel="next"> pointing
+ * at /page/2/. Those URLs returned 200 and re-rendered the identical 12 games
+ * with a self-referencing canonical — duplicate content on an endless crawl
+ * chain. Dropping paging off the main query gives max_num_pages = 1, which is
+ * what stops the rel=next/prev tags being printed at all.
+ */
+if ( ! function_exists( 'fnlmx_unpaginate_game_category_archive' ) ) {
+    function fnlmx_unpaginate_game_category_archive( WP_Query $query ): void {
+        if ( is_admin() || ! $query->is_main_query() || ! $query->is_tax( 'game_category' ) ) {
+            return;
+        }
+
+        $query->set( 'posts_per_page', -1 );
+    }
+
+    add_action( 'pre_get_posts', 'fnlmx_unpaginate_game_category_archive' );
+}
+
+/**
+ * Send any /page/N/ URL that was already crawled back to the term itself.
+ *
+ * Killing rel=next stops new ones being discovered, but posts_per_page = -1
+ * also means nopaging, so a paged URL that is already indexed (or linked from
+ * anywhere) would still resolve and serve the duplicate rather than 404. A 301
+ * consolidates that history onto the canonical term URL.
+ */
+if ( ! function_exists( 'fnlmx_redirect_paged_game_category' ) ) {
+    function fnlmx_redirect_paged_game_category(): void {
+        if ( ! is_tax( 'game_category' ) || ! is_paged() ) {
+            return;
+        }
+
+        $term = get_queried_object();
+        if ( ! $term instanceof WP_Term ) {
+            return;
+        }
+
+        $link = get_term_link( $term );
+        if ( is_wp_error( $link ) ) {
+            return;
+        }
+
+        wp_safe_redirect( $link, 301 );
+        exit;
+    }
+
+    add_action( 'template_redirect', 'fnlmx_redirect_paged_game_category' );
+}
