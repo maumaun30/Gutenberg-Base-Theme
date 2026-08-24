@@ -25,6 +25,10 @@ $title     = get_the_title();
 $content   = get_the_content();
 $permalink = get_permalink();
 $hero_img  = get_the_post_thumbnail_url($post_id, 'full');
+/* Site logo stands in wherever a post has no featured image — hero banner
+   and Related Blogs cards. Empty string when no custom logo is set, so the
+   original gradient / blank placeholder still applies. */
+$logo_img  = function_exists('fnlmx_site_logo_url') ? fnlmx_site_logo_url() : '';
 
 $cats = get_the_category();
 $tags = get_the_tags();
@@ -48,7 +52,7 @@ if (! empty($cats)) {
         'title'     => get_the_title(),
         'permalink' => get_permalink(),
         'thumb'     => get_the_post_thumbnail_url(get_the_ID(), 'medium_large'),
-        'excerpt'   => wp_trim_words(get_the_excerpt(), 18, '…'),
+        'excerpt'   => wp_trim_words(get_the_excerpt(), 10, '…'),
       ];
     }
     wp_reset_postdata();
@@ -198,7 +202,16 @@ $share_title = rawurlencode($title);
     background:
       <?php if ($hero_img) : ?> linear-gradient(90deg, rgba(0, 0, 0, .55) 0%, rgba(0, 0, 0, .15) 70%),
       url('<?php echo esc_url($hero_img); ?>') center/cover no-repeat,
-      <?php endif; ?> linear-gradient(120deg, #6e0fbf 0%, #c41cd4 55%, #ff37a1 100%);
+      <?php elseif ($logo_img) : ?>
+      /* No featured image — centre the site logo on a flat dark panel,
+         contained so it never stretches. */
+      url('<?php echo esc_url($logo_img); ?>') center/min(240px, 45%) no-repeat,
+      <?php endif; ?> var(--bg-dark-2);
+  }
+
+  /* Fallback hero carries a hairline ring so the panel reads as a card. */
+  .sp-hero__inner--fallback {
+    border: 1px solid var(--border);
   }
 
   .sp-hero__title {
@@ -491,6 +504,30 @@ $share_title = rawurlencode($title);
   }
 
   /* ── SIDEBAR ── */
+  /* Two-column layout only (>=900px): the aside pins below the 90px sticky nav
+     while the article scrolls past. This only works because the cards below are
+     deliberately compact (21:9 thumb, clamped title + excerpt) — three of them
+     come to roughly 1140px, so the column fits the viewport instead of
+     overflowing it. `align-self: start` is required: a grid item stretches to
+     the row height by default, leaving `sticky` no distance to travel.
+     If you ever raise the related-post count or un-clamp the cards, this needs
+     revisiting — an overflowing top-pinned column strands its last card. */
+  @media (min-width: 900px) {
+    .sp-side {
+      position: -webkit-sticky;
+      position: sticky;
+      top: calc(90px + 1.5rem);
+      align-self: start;
+    }
+  }
+
+  /* Respect a reduced-motion preference: no travel, just a static column. */
+  @media (min-width: 900px) and (prefers-reduced-motion: reduce) {
+    .sp-side {
+      position: static;
+    }
+  }
+
   .sp-side__hd {
     font-size: 1rem;
     font-weight: 700;
@@ -503,7 +540,7 @@ $share_title = rawurlencode($title);
   .sp-side__list {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 1rem;
   }
 
   .sp-rel {
@@ -522,15 +559,33 @@ $share_title = rawurlencode($title);
 
   .sp-rel__thumb {
     width: 100%;
-    aspect-ratio: 16/9;
+    aspect-ratio: 21/9;
     object-fit: cover;
     display: block;
     background: var(--bg-dark-4);
     /*border-radius: 8px;*/
   }
 
+  /* Featured-image-less related post: site logo, centred and contained. */
+  .sp-rel__thumb--fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .75rem;
+    background: var(--bg-dark-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .sp-rel__thumb--fallback img {
+    width: 60%;
+    max-width: 150px;
+    height: auto;
+    object-fit: contain;
+    opacity: .95;
+  }
+
   .sp-rel__body {
-    padding: 1.1rem 1.1rem 1.25rem;
+    padding: .9rem 1rem 1rem;
   }
 
   .sp-rel__title {
@@ -539,6 +594,13 @@ $share_title = rawurlencode($title);
     line-height: 1.3;
     color: #fff;
     margin: 0 0 .55rem;
+    /* Long headlines ran to 4 lines and blew the sticky column past the
+       viewport; two lines keeps every card a predictable height. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .sp-rel__excerpt {
@@ -735,7 +797,7 @@ $share_title = rawurlencode($title);
 
   <!-- HERO BANNER -->
   <section class="sp-hero">
-    <div class="sp-hero__inner">
+    <div class="sp-hero__inner<?php echo $hero_img ? '' : ' sp-hero__inner--fallback'; ?>">
       <h1 class="sp-hero__title"><?php echo esc_html($title); ?></h1>
     </div>
   </section>
@@ -815,6 +877,10 @@ $share_title = rawurlencode($title);
             <a class="sp-rel" href="<?php echo esc_url($rp['permalink']); ?>">
               <?php if ($rp['thumb']) : ?>
                 <img class="sp-rel__thumb" src="<?php echo esc_url($rp['thumb']); ?>" alt="<?php echo esc_attr($rp['title']); ?>" loading="lazy">
+              <?php elseif ($logo_img) : ?>
+                <div class="sp-rel__thumb sp-rel__thumb--fallback">
+                  <img src="<?php echo esc_url($logo_img); ?>" alt="<?php echo esc_attr($rp['title']); ?>" loading="lazy">
+                </div>
               <?php else : ?>
                 <div class="sp-rel__thumb"></div>
               <?php endif; ?>
