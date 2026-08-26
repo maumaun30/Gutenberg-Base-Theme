@@ -1550,6 +1550,21 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
         <?php endif; ?>
 
         <?php if ($has_rules) : ?>
+          <?php
+          /* HowTo for the rules list. The repeater uses its own field names, so
+             map them onto the shape fnlmx_howto_schema() expects. Emits nothing
+             until at least two rules carry copy. */
+          if (function_exists('fnlmx_howto_schema')) {
+            $howto_steps = [];
+            foreach ($game_rules as $rule) {
+              $howto_steps[] = [
+                'title'       => $rule['fnlmx_game_rules_title']      ?? '',
+                'description' => $rule['fnlmx_game_rules_desription'] ?? '',
+              ];
+            }
+            echo fnlmx_howto_schema('How to Play ' . $title, $hero_desc, $howto_steps);
+          }
+          ?>
           <div class="sg-panel">
             <div class="sg-panel__hd">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"

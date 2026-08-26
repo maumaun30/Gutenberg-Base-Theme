@@ -14,7 +14,13 @@ $classes = 'mytheme-line-steps';
 if ( ! $show_line ) {
     $classes .= ' mytheme-line-steps--no-line';
 }
+
+// HowTo describes this section's ordered instructions; helper lives in inc/schema.php.
+$howto_schema = function_exists( 'fnlmx_howto_schema' )
+    ? fnlmx_howto_schema( trim( $title . ' ' . $title_highlight ), $subtitle, $steps )
+    : '';
 ?>
+<?php echo $howto_schema; ?>
 
 <section
   <?php

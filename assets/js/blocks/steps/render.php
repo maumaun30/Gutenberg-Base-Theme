@@ -4,7 +4,13 @@ $section_subtitle = $attributes['sectionSubtitle'] ?? '';
 $footer_text      = $attributes['footerText'] ?? '';
 $steps            = $attributes['steps'] ?? [];
 $total            = count( $steps );
+
+// HowTo describes this section's ordered instructions; helper lives in inc/schema.php.
+$howto_schema = function_exists( 'fnlmx_howto_schema' )
+    ? fnlmx_howto_schema( $section_title, $section_subtitle, $steps )
+    : '';
 ?>
+<?php echo $howto_schema; ?>
 
 <section <?php echo get_block_wrapper_attributes(['class' => 'mytheme-steps']); ?>>
   <div class="mytheme-steps__container">
