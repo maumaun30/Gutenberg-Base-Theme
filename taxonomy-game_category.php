@@ -58,6 +58,11 @@ $faq_rows  = function_exists('get_field') ? (get_field('fnlmx_game_category_faq_
 /* WYSIWYG "About" copy — same panel layout as the About the Game block on single-game.php */
 $about_html = function_exists('get_field') ? (get_field('fnlmx_game_category_about', $current_term) ?: '') : '';
 $has_about  = ! empty(trim(strip_tags($about_html)));
+/* About heading — ACF, falling back to "About {term_name}" */
+$about_title = function_exists('get_field') ? trim((string) get_field('fnlmx_game_category_about_title', $current_term)) : '';
+if ('' === $about_title) {
+  $about_title = 'About ' . $term_name;
+}
 
 $has_left  = !empty($icon_rows);
 $has_right = !empty($faq_rows);
@@ -739,7 +744,7 @@ set_query_var('game_count',     $game_count);
 
   .fm-about__hd {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: .65rem;
     padding-bottom: 1rem;
     margin-bottom: 1.5rem;
@@ -747,20 +752,27 @@ set_query_var('game_count',     $game_count);
   }
 
   .fm-about__hd svg {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: clamp(22px, 2.6vw, 32px);
+    height: clamp(22px, 2.6vw, 32px);
     color: #BA001D;
     flex-shrink: 0;
+    /* nudge onto the first line's optical centre */
+    margin-top: .15em;
   }
 
   .fm-about__hd h2 {
     font-family: 'Montserrat', sans-serif;
-    font-size: .8rem;
+    font-size: clamp(20px, 3.2vw, 32px);
+    line-height: 1.15;
     font-weight: 700;
     color: #fff;
     margin: 0;
     text-transform: uppercase;
-    letter-spacing: .1em;
+    letter-spacing: -.012em;
+    /* let a long title wrap inside the flex row instead of overflowing */
+    min-width: 0;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .fm-about__content {
@@ -828,9 +840,9 @@ set_query_var('game_count',     $game_count);
   <?php get_template_part('template-parts/game-category-hero'); ?>
 
   <!-- GAMES GRID -->
+  <?php if ($grid_q->have_posts()) : ?>
   <section class="fm-games">
     <div class="fm-container">
-      <?php if ($grid_q->have_posts()) : ?>
         <div class="fm-grid<?php echo $square_cards ? ' fm-grid--square' : ''; ?>">
           <?php while ($grid_q->have_posts()) : $grid_q->the_post();
             fnlmx_game_card_template(get_the_ID());
@@ -858,11 +870,9 @@ set_query_var('game_count',     $game_count);
             </button>
           </div>
         <?php endif; ?>
-      <?php else : ?>
-        <p style="text-align:center;color:rgba(255,255,255,.5);padding:60px 0;">No <?php echo esc_html($term_name); ?> games available yet.</p>
-      <?php endif; ?>
     </div>
   </section>
+  <?php endif; ?>
 
   <!-- ABOUT -->
   <?php if ($has_about) : ?>
@@ -876,7 +886,7 @@ set_query_var('game_count',     $game_count);
               <line x1="12" y1="8" x2="12" y2="12" />
               <line x1="12" y1="16" x2="12.01" y2="16" />
             </svg>
-            <h2>About <?php echo esc_html($term_name); ?></h2>
+            <h2><?php echo esc_html($about_title); ?></h2>
           </div>
           <div class="fm-about__content" id="fm-about-body">
             <?php echo wp_kses_post($about_html); ?>

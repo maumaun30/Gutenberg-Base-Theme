@@ -30,6 +30,24 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
             : ( ! empty( $acf_img['url'] ) ? $acf_img['url'] : $hero_bg );
     }
 }
+
+/* Prefer ACF term title group: fnlmx_game_category_main_title */
+$title_highlighted = '';
+$title_white       = '';
+
+if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
+    $acf_title = get_field( 'fnlmx_game_category_main_title', 'game_category_' . $term->term_id );
+    if ( is_array( $acf_title ) ) {
+        $title_highlighted = trim( (string) ( $acf_title['fnlmx_game_category_highlighted_title'] ?? '' ) );
+        $title_white       = trim( (string) ( $acf_title['fnlmx_game_category_white_title'] ?? '' ) );
+    }
+}
+
+/* Fallback to the previous hardcoded pattern */
+if ( '' === $title_highlighted && '' === $title_white ) {
+    $title_highlighted = sprintf( 'Play %s Games', $term_name );
+    $title_white       = 'in the Philippines';
+}
 ?>
 <section class="fm-hero">
   <div class="fm-hero__bg" style="background-image:url('<?php echo esc_url( $hero_bg ); ?>');"></div>
@@ -48,7 +66,9 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
     </nav>
 
     <h1 class="fm-hero__title">
-      <span style="color:#ba001d;">Play <?php echo esc_html( $term_name ); ?> Games</span><br>in the Philippines
+      <?php if ( $title_highlighted ) : ?><span style="color:#ba001d;"><?php echo esc_html( $title_highlighted ); ?></span><?php endif; ?>
+      <?php if ( $title_highlighted && $title_white ) : ?><?php endif; ?>
+      <?php echo esc_html( $title_white ); ?>
     </h1>
 
     <p class="fm-hero__desc">
