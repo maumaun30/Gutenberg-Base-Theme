@@ -21,6 +21,8 @@ $ancestors      = get_query_var( 'ancestors' );
 $assets_url = get_template_directory_uri() . '/assets/images/category-template';
 $hero_bg    = $assets_url . '/ce74fb3646e3.png'; // fallback
 
+$hero_bg_mobile = ''; // only set when the term has a dedicated mobile crop
+
 /* Prefer ACF term image: fnlmx_game_category_featured_image */
 if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
     $acf_img = get_field( 'fnlmx_game_category_featured_image', 'game_category_' . $term->term_id );
@@ -28,6 +30,15 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
         $hero_bg = ! empty( $acf_img['sizes']['large'] )
             ? $acf_img['sizes']['large']
             : ( ! empty( $acf_img['url'] ) ? $acf_img['url'] : $hero_bg );
+    }
+
+    /* Optional portrait crop: fnlmx_game_category_featured_image_mobile.
+       Left empty when unset so the desktop image above keeps serving mobile. */
+    $acf_img_m = get_field( 'fnlmx_game_category_featured_image_mobile', 'game_category_' . $term->term_id );
+    if ( is_array( $acf_img_m ) ) {
+        $hero_bg_mobile = ! empty( $acf_img_m['sizes']['large'] )
+            ? $acf_img_m['sizes']['large']
+            : ( ! empty( $acf_img_m['url'] ) ? $acf_img_m['url'] : '' );
     }
 }
 
@@ -51,6 +62,17 @@ if ( '' === $title_highlighted && '' === $title_white ) {
 ?>
 <section class="fm-hero">
   <div class="fm-hero__bg" style="background-image:url('<?php echo esc_url( $hero_bg ); ?>');"></div>
+  <?php if ( $hero_bg_mobile ) : ?>
+    <div class="fm-hero__bg fm-hero__bg--mobile" style="background-image:url('<?php echo esc_url( $hero_bg_mobile ); ?>');"></div>
+    <style>
+      /* Swap in the portrait crop below the hero's mobile breakpoint. */
+      .fm-hero__bg--mobile { display: none; }
+      @media (max-width: 640px) {
+        .fm-hero > .fm-hero__bg:not(.fm-hero__bg--mobile) { display: none; }
+        .fm-hero__bg--mobile { display: block; }
+      }
+    </style>
+  <?php endif; ?>
   <div class="fm-hero__overlay"></div>
 
   <div class="fm-hero__inner">

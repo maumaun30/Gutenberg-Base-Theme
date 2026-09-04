@@ -64,6 +64,19 @@ if ('' === $about_title) {
   $about_title = 'About ' . $term_name;
 }
 
+/* "Why Play" heading — ACF group, falling back to the generated copy */
+$info_title_group = function_exists('get_field') ? (get_field('fnlmx_game_category_icon_details_title', $current_term) ?: []) : [];
+$info_title_white     = trim((string) ($info_title_group['fnlmx_game_category_icon_white_title'] ?? ''));
+$info_title_pink      = trim((string) ($info_title_group['fnlmx_game_category_icon_highlighted_title'] ?? ''));
+$info_title_white_two = trim((string) ($info_title_group['fnlmx_game_category_icon_second_white_title_copy'] ?? ''));
+$has_info_title = ('' !== $info_title_white || '' !== $info_title_pink || '' !== $info_title_white_two);
+
+/* FAQ heading — ACF group, falling back to the generated copy */
+$faq_title_group = function_exists('get_field') ? (get_field('fnlmx_game_category_faq_title', $current_term) ?: []) : [];
+$faq_title_pink  = trim((string) ($faq_title_group['fnlmx_game_category_faq_highlighted_title'] ?? ''));
+$faq_title_white = trim((string) ($faq_title_group['fnlmx_game_category_faq_white_title'] ?? ''));
+$has_faq_title   = ('' !== $faq_title_pink || '' !== $faq_title_white);
+
 $has_left  = !empty($icon_rows);
 $has_right = !empty($faq_rows);
 
@@ -124,7 +137,9 @@ set_query_var('game_count',     $game_count);
   .fm-hero__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, #0E0E0E 0%, rgba(14, 14, 14, 0.4) 50%, rgba(14, 14, 14, 0) 100%);
+    background:
+      linear-gradient(90deg, #0E0E0E 0%, rgba(14, 14, 14, 0.62) 45%, rgba(14, 14, 14, 0.22) 75%, rgba(14, 14, 14, 0) 100%),
+      linear-gradient(180deg, rgba(14, 14, 14, 0.12) 0%, rgba(14, 14, 14, 0.22) 100%);
   }
 
   .fm-hero__inner {
@@ -211,6 +226,14 @@ set_query_var('game_count',     $game_count);
     .fm-hero__desc {
       text-align: center;
       font-size: 12px;
+      line-height: 1.65;
+    }
+
+    /* The side-to-side gradient does nothing once the copy is full-width
+       and centred, so swap it for an even scrim behind the whole hero. */
+    .fm-hero__overlay {
+      background:
+        linear-gradient(180deg, rgba(14, 14, 14, 0.55) 0%, rgba(14, 14, 14, 0.72) 55%, rgba(14, 14, 14, 0.82) 100%);
     }
 
     .fm-info__title,
@@ -502,6 +525,14 @@ set_query_var('game_count',     $game_count);
     display: flex;
     align-items: center;
     gap: 24px;
+  }
+
+  /* On narrow screens the copy wraps to several lines, so top-align the icon
+     with the heading instead of centring it against the whole block. */
+  @media (max-width: 640px) {
+    .fm-feat__row {
+      align-items: flex-start;
+    }
   }
 
   .fm-feat__icon {
@@ -944,8 +975,14 @@ set_query_var('game_count',     $game_count);
           <?php if ($has_left) : ?>
             <div>
               <h2 class="fm-info__title">
-                Why Play <span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?><br>
-                Games</span> with Us
+                <?php if ($has_info_title) : ?>
+                  <?php if ('' !== $info_title_white) : ?><?php echo esc_html($info_title_white); ?> <?php endif; ?>
+                  <?php if ('' !== $info_title_pink) : ?><span class="fm-pink"><?php echo esc_html($info_title_pink); ?></span> <?php endif; ?>
+                  <?php if ('' !== $info_title_white_two) : ?><?php echo esc_html($info_title_white_two); ?><?php endif; ?>
+                <?php else : ?>
+                  Why Play <span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?><br>
+                  Games</span> with Us
+                <?php endif; ?>
               </h2>
 
               <?php if ($sub_para) : ?>
@@ -982,7 +1019,15 @@ set_query_var('game_count',     $game_count);
           <!-- RIGHT: Quick Guide FAQ -->
           <?php if ($has_right) : ?>
             <div>
-              <h2 class="fm-faq-title"><span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> Games</span><br>Quick Guide</h2>
+              <h2 class="fm-faq-title">
+                <?php if ($has_faq_title) : ?>
+                  <?php if ('' !== $faq_title_pink) : ?><span class="fm-pink"><?php echo esc_html($faq_title_pink); ?></span><?php endif; ?>
+                  <?php if ('' !== $faq_title_pink && '' !== $faq_title_white) : ?><br><?php endif; ?>
+                  <?php if ('' !== $faq_title_white) : ?><?php echo esc_html($faq_title_white); ?><?php endif; ?>
+                <?php else : ?>
+                  <span class="fm-pink"><?php echo esc_html(strtoupper($term_name)); ?> Games</span><br>Quick Guide
+                <?php endif; ?>
+              </h2>
 
               <div class="fm-faq">
                 <?php foreach ($faq_rows as $idx => $faq) :
