@@ -116,7 +116,7 @@ if (! empty($fg_term_ids_by_tax)) {
      wherever it appears. */
   $fq = new WP_Query(array_merge([
     'post_type'      => 'game',
-    'posts_per_page' => 6,
+    'posts_per_page' => 20,
     'tax_query'      => $tax_query,
   ], fnlmx_game_order_args()));
   if ($fq->have_posts()) {
@@ -498,36 +498,65 @@ if (! empty($fg_term_ids_by_tax)) {
 
   .pr-fg__nav {
     display: flex;
-    gap: .5rem;
+    gap: 0.25rem;
   }
 
+  /* Matches the games-listing block nav buttons: 32px square, 2px radius,
+     dark "layer-3" fill, muted arrow. */
   .pr-fg__btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-    background: var(--bg-dark-2);
-    border: 1px solid var(--border-strong);
-    color: #fff;
-    cursor: pointer;
-    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    background: #292929; /* --layer-3 */
+    color: #B0B0B0;
+    display: flex;
     align-items: center;
     justify-content: center;
-    transition: background .2s, color .2s, border-color .2s;
-  }
-
-  .pr-fg__btn:hover {
-    background: var(--color-primary);
-    border-color: var(--color-primary);
-  }
-
-  .pr-fg__btn.swiper-button-disabled {
-    opacity: .35;
-    cursor: not-allowed;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-size: 0.7rem;
+    font-family: 'Montserrat', sans-serif;
+    border: none;
+    border-radius: 0.125rem;
   }
 
   .pr-fg__btn svg {
-    width: 16px;
-    height: 16px;
+    width: 0.5rem;
+    height: 0.5rem;
+    fill: none;
+    stroke: #B0B0B0;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    display: block;
+    transition: stroke 0.2s;
+  }
+
+  .pr-fg__btn:hover {
+    background: oklch(30.52% 0 0); /* --dark-btn-hover */
+    color: #F6F2EE;
+  }
+
+  .pr-fg__btn:hover svg {
+    stroke: #ffffff;
+  }
+
+  .pr-fg__btn:active {
+    background: oklch(22.21% 0 0); /* --dark-btn-active */
+  }
+
+  /* Disabled state — nothing left to scroll in that direction. */
+  .pr-fg__btn:disabled,
+  .pr-fg__btn.swiper-button-disabled {
+    background: oklch(22.21% 0 0); /* --dark-btn-disabled */
+    color: #7C7C7C;
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .pr-fg__btn:disabled svg,
+  .pr-fg__btn.swiper-button-disabled svg {
+    fill: none;
+    stroke: #7C7C7C;
   }
 
   /* Swiper sets overflow: hidden on .swiper to clip the off-screen slides, so
@@ -664,13 +693,13 @@ if (! empty($fg_term_ids_by_tax)) {
         <h2 class="pr-fg__hd">Featured Games</h2>
         <div class="pr-fg__nav">
           <button type="button" class="pr-fg__btn pr-fg__prev" aria-label="Previous">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="15 18 9 12 15 6" />
+            <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="6,1 1.5,6 6,11" />
             </svg>
           </button>
           <button type="button" class="pr-fg__btn pr-fg__next" aria-label="Next">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="9 18 15 12 9 6" />
+            <svg viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline points="2,1 6.5,6 2,11" />
             </svg>
           </button>
         </div>
