@@ -1350,6 +1350,14 @@ function fnlmx_cta_section() {
 
                                     $is_external = $link && ! preg_match( '/^(tel:|mailto:)/', $link );
                                     $target      = $is_external ? ' target="_blank" rel="noopener noreferrer"' : '';
+                                    // Cloudflare's Email Address Obfuscation rewrites any literal mailto:
+                                    // href into /cdn-cgi/l/email-protection, which crawlers (Ahrefs,
+                                    // Screaming Frog) report as a 404. These comments are Cloudflare's
+                                    // supported opt-out: the edge skips what they wrap, so obfuscation
+                                    // stays on everywhere else. Purge the CF cache after deploying.
+                                    $is_mailto   = $link && 0 === stripos( $link, 'mailto:' );
+                                    $email_off   = $is_mailto ? '<!--email_off-->' : '';
+                                    $email_on    = $is_mailto ? '<!--email_on-->' : '';
                                     // Primary button opens the register popup via register-modal.js
                                     // (#fm-register-trigger); its click is intercepted, so the href is a fallback.
                                     $btn_class   = $index === 0 ? 'fnlmx-cta__btn fnlmx-cta__btn--primary' : 'fnlmx-cta__btn fnlmx-cta__btn--secondary';
@@ -1364,10 +1372,12 @@ function fnlmx_cta_section() {
                                         . '<rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>';
                                 ?>
                                     <?php if ( $link ) : ?>
+                                        <?php echo $email_off; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                         <a href="<?php echo esc_url( $link ); ?>" class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $btn_id; ?><?php echo $target; ?>>
                                             <?php echo $btn_shape; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                             <span class="fnlmx-cta__btn-label"><?php echo esc_html( $label ); ?></span>
                                         </a>
+                                        <?php echo $email_on; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                     <?php else : ?>
                                         <span class="<?php echo esc_attr( $btn_class ); ?>"<?php echo $btn_id; ?>>
                                             <?php echo $btn_shape; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -1897,6 +1907,15 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
         $term_id = absint( $_POST['term_id'] ?? 0 );
         $page    = max( 1, (int) ( $_POST['page'] ?? 2 ) );
 
+        /* The button lives on both taxonomy-game_category.php and
+           taxonomy-provider.php, so the taxonomy travels with the request.
+           Whitelisted: a term_id is only meaningful against the taxonomy that
+           owns it, and an arbitrary string here would be a free tax_query. */
+        $taxonomy = sanitize_key( $_POST['taxonomy'] ?? 'game_category' );
+        if ( ! in_array( $taxonomy, [ 'game_category', 'provider' ], true ) ) {
+            $taxonomy = 'game_category';
+        }
+
         if ( ! $term_id ) {
             wp_send_json_error( [ 'message' => 'Missing term' ], 400 );
         }
@@ -1905,7 +1924,7 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
             'post_type'      => 'game',
             'post_status'    => 'publish',
             'tax_query'      => [ [
-                'taxonomy'         => 'game_category',
+                'taxonomy'         => $taxonomy,
                 'field'            => 'term_id',
                 'terms'            => $term_id,
                 'include_children' => true,
