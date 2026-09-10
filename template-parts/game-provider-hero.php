@@ -1,22 +1,24 @@
 <?php
 /**
- * Template Part: Game Category Hero (FunaloMAX redesign)
+ * Template Part: Game Provider Hero (FunaloMAX redesign)
+ *
+ * Mirrors game-category-hero.php. `provider` is non-hierarchical, so the
+ * breadcrumb is a flat Home > {Provider} — there are no ancestors to walk.
+ *
+ * ACF lookups pass the WP_Term object rather than a "{taxonomy}_{id}" string,
+ * which resolves correctly on any taxonomy.
  *
  * @var WP_Term $term
  * @var string  $term_name
  * @var string  $term_desc
- * @var int     $parent_term_id
- * @var array   $ancestors
  * @var int     $game_count
  */
 
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-$term           = get_query_var( 'term' );
-$term_name      = get_query_var( 'term_name' );
-$term_desc      = get_query_var( 'term_desc' );
-$parent_term_id = get_query_var( 'parent_term_id' );
-$ancestors      = get_query_var( 'ancestors' );
+$term      = get_query_var( 'term' );
+$term_name = get_query_var( 'term_name' );
+$term_desc = get_query_var( 'term_desc' );
 
 $assets_url = get_template_directory_uri() . '/assets/images/category-template';
 $hero_bg    = $assets_url . '/Image of a carnival.webp'; // fallback
@@ -24,8 +26,8 @@ $hero_bg    = $assets_url . '/Image of a carnival.webp'; // fallback
 $hero_bg_mobile = ''; // only set when the term has a dedicated mobile crop
 
 /* Prefer ACF term image: fnlmx_game_category_featured_image */
-if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
-    $acf_img = get_field( 'fnlmx_game_category_featured_image', 'game_category_' . $term->term_id );
+if ( function_exists( 'get_field' ) && $term instanceof WP_Term ) {
+    $acf_img = get_field( 'fnlmx_game_category_featured_image', $term );
     if ( is_array( $acf_img ) ) {
         $hero_bg = ! empty( $acf_img['sizes']['large'] )
             ? $acf_img['sizes']['large']
@@ -34,7 +36,7 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
 
     /* Optional portrait crop: fnlmx_game_category_featured_image_mobile.
        Left empty when unset so the desktop image above keeps serving mobile. */
-    $acf_img_m = get_field( 'fnlmx_game_category_featured_image_mobile', 'game_category_' . $term->term_id );
+    $acf_img_m = get_field( 'fnlmx_game_category_featured_image_mobile', $term );
     if ( is_array( $acf_img_m ) ) {
         $hero_bg_mobile = ! empty( $acf_img_m['sizes']['large'] )
             ? $acf_img_m['sizes']['large']
@@ -46,8 +48,8 @@ if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
 $title_highlighted = '';
 $title_white       = '';
 
-if ( function_exists( 'get_field' ) && $term && ! empty( $term->term_id ) ) {
-    $acf_title = get_field( 'fnlmx_game_category_main_title', 'game_category_' . $term->term_id );
+if ( function_exists( 'get_field' ) && $term instanceof WP_Term ) {
+    $acf_title = get_field( 'fnlmx_game_category_main_title', $term );
     if ( is_array( $acf_title ) ) {
         $title_highlighted = trim( (string) ( $acf_title['fnlmx_game_category_highlighted_title'] ?? '' ) );
         $title_white       = trim( (string) ( $acf_title['fnlmx_game_category_white_title'] ?? '' ) );
@@ -79,11 +81,6 @@ if ( '' === $title_highlighted && '' === $title_white ) {
     <nav class="fm-bc" aria-label="Breadcrumb">
       <a href="<?php echo esc_url( home_url( '/' ) ); ?>">Home</a>
       <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true"><path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor"/></svg>
-      <?php foreach ( (array) $ancestors as $aid ) :
-        $at = get_term( $aid, 'game_category' ); ?>
-        <a href="<?php echo esc_url( get_term_link( $at ) ); ?>"><?php echo esc_html( $at->name ); ?></a>
-        <svg viewBox="0 0 6 10" width="6" height="10" aria-hidden="true"><path d="M3.818 5L0 1.111 1.091 0 6 5l-4.909 5L0 8.889 3.818 5z" fill="currentColor"/></svg>
-      <?php endforeach; ?>
       <span class="fm-bc__cur"><?php echo esc_html( $term_name ); ?></span>
     </nav>
 
@@ -96,7 +93,7 @@ if ( '' === $title_highlighted && '' === $title_white ) {
     <p class="fm-hero__desc">
       <?php echo $term_desc
         ? wp_kses_post( $term_desc )
-        : 'Step into the excitement of ' . esc_html( $term_name ) . ' games online. Play everything from iconic classics to fast-paced live action.'; ?>
+        : 'Discover the full lineup of games from ' . esc_html( $term_name ) . '. Play everything from iconic classics to fast-paced live action.'; ?>
     </p>
   </div>
 </section>

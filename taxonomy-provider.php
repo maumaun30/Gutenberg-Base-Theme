@@ -1,35 +1,40 @@
 <?php
 
 /**
- * Template: taxonomy-game_category.php  (FunaloMAX redesign)
+ * Template: taxonomy-provider.php  (FunaloMAX redesign)
  * CPT      : game
- * Taxonomy : game_category
+ * Taxonomy : provider  (flat / non-hierarchical)
+ *
+ * Structural clone of taxonomy-game_category.php. Two differences follow from
+ * `provider` being registered non-hierarchical in the ACF Taxonomies UI:
+ *
+ *   1. No ancestors/parent — the breadcrumb is Home > {Provider} and the
+ *      tax_query drops `include_children`, which is meaningless on a flat
+ *      taxonomy.
+ *   2. Card ratio is the default 111/140. The square-tile rule on the category
+ *      archive keys off the root category slug (slot / e-games); providers have
+ *      no such root, so there is nothing to branch on.
+ *
+ * ACF: reuses the existing fnlmx_game_category_* field names so the same field
+ * group can simply be assigned to the Provider taxonomy (Field Group >
+ * Location > Taxonomy is equal to Provider). Every section is guarded, so
+ * until that assignment is made the page renders hero + grid only.
  */
 
 get_header();
 
-$current_term   = get_queried_object();
-$term_id        = $current_term->term_id;
-$term_name      = $current_term->name;
-$term_desc      = $current_term->description;
-$parent_term_id = $current_term->parent;
-$ancestors      = array_reverse(get_ancestors($term_id, 'game_category', 'taxonomy'));
+$current_term = get_queried_object();
+$term_id      = $current_term->term_id;
+$term_name    = $current_term->name;
+$term_desc    = $current_term->description;
 
-/* Root parent category drives the card aspect ratio: Slot & E-Games use square
-   (1/1) tiles, everything else keeps the default 111/140. */
-$root_term_id = $ancestors[0] ?? $term_id;
-$root_term    = get_term($root_term_id, 'game_category');
-$root_slug    = ($root_term && ! is_wp_error($root_term)) ? $root_term->slug : '';
-$square_cards = in_array($root_slug, ['slot', 'e-games'], true);
-
-/* Total game count (this term + descendants) */
+/* Total game count for this provider */
 $total_q = new WP_Query([
   'post_type'      => 'game',
   'tax_query'      => [[
-    'taxonomy'         => 'game_category',
-    'field'            => 'term_id',
-    'terms'            => $term_id,
-    'include_children' => true,
+    'taxonomy' => 'provider',
+    'field'    => 'term_id',
+    'terms'    => $term_id,
   ]],
   'posts_per_page' => 1,
   'fields'         => 'ids',
@@ -43,10 +48,9 @@ $grid_q = new WP_Query(array_merge([
   'post_type'      => 'game',
   'post_status'    => 'publish',
   'tax_query'      => [[
-    'taxonomy'         => 'game_category',
-    'field'            => 'term_id',
-    'terms'            => $term_id,
-    'include_children' => true,
+    'taxonomy' => 'provider',
+    'field'    => 'term_id',
+    'terms'    => $term_id,
   ]],
   'posts_per_page' => 12,
 ], fnlmx_game_order_args()));
@@ -81,12 +85,10 @@ $has_left  = !empty($icon_rows);
 $has_right = !empty($faq_rows);
 
 /* Pass to hero partial */
-set_query_var('term',           $current_term);
-set_query_var('term_name',      $term_name);
-set_query_var('term_desc',      $term_desc);
-set_query_var('parent_term_id', $parent_term_id);
-set_query_var('ancestors',      $ancestors);
-set_query_var('game_count',     $game_count);
+set_query_var('term',       $current_term);
+set_query_var('term_name',  $term_name);
+set_query_var('term_desc',  $term_desc);
+set_query_var('game_count', $game_count);
 ?>
 <style>
   /* Montserrat must load here: this template renders no block that imports it,
@@ -872,13 +874,13 @@ set_query_var('game_count',     $game_count);
 
 <div class="fm-page">
 
-  <?php get_template_part('template-parts/game-category-hero'); ?>
+  <?php get_template_part('template-parts/game-provider-hero'); ?>
 
   <!-- GAMES GRID -->
   <?php if ($grid_q->have_posts()) : ?>
   <section class="fm-games">
     <div class="fm-container">
-        <div class="fm-grid<?php echo $square_cards ? ' fm-grid--square' : ''; ?>">
+        <div class="fm-grid">
           <?php while ($grid_q->have_posts()) : $grid_q->the_post();
             fnlmx_game_card_template(get_the_ID());
           endwhile;
@@ -891,6 +893,7 @@ set_query_var('game_count',     $game_count);
               type="button"
               class="fm-loadmore"
               data-term="<?php echo esc_attr($term_id); ?>"
+              data-taxonomy="provider"
               data-page="1"
               data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
               data-nonce="<?php echo esc_attr(wp_create_nonce('fnlmx_load_more')); ?>">
@@ -1094,6 +1097,7 @@ set_query_var('game_count',     $game_count);
           action: 'fnlmx_load_more_games',
           nonce: loadMoreBtn.dataset.nonce,
           term_id: loadMoreBtn.dataset.term,
+          taxonomy: loadMoreBtn.dataset.taxonomy || 'game_category',
           page: nextPage,
         });
 
