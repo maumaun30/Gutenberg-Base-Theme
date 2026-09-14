@@ -1412,7 +1412,32 @@ function fnlmx_cta_section() {
     return ob_get_clean();
 }
 add_shortcode( 'fnlmx_cta', 'fnlmx_cta_section' );
- 
+
+/**
+ * Wrap every mailto: link on the front end with Cloudflare's email_off
+ * opt-out, same as the CTA buttons above, so crawlers stop hitting
+ * /cdn-cgi/l/email-protection 404s. Filters the full page HTML because
+ * index.php renders page blocks without the_content, and ACF fields, the
+ * footer and templates print their own markup. Links already wrapped (the
+ * CTA shortcode) are left alone.
+ */
+function fnlmx_cloudflare_email_off( $content ) {
+    if ( false === stripos( $content, 'mailto:' ) ) {
+        return $content;
+    }
+
+    return preg_replace_callback(
+        '/(<!--email_off-->\s*)?<a\s[^>]*href\s*=\s*["\']\s*mailto:[^>]*>.*?<\/a>/is',
+        function ( $m ) {
+            return ! empty( $m[1] ) ? $m[0] : '<!--email_off-->' . $m[0] . '<!--email_on-->';
+        },
+        $content
+    );
+}
+add_action( 'template_redirect', function () {
+    ob_start( 'fnlmx_cloudflare_email_off' );
+}, PHP_INT_MAX );
+
 /**
  * Luxe Theme — Nav Walker & Menu Registration
  * Add this to your functions.php
