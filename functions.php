@@ -308,6 +308,9 @@ function fnlmx_responsible_gaming_popup() {
   $subparagraph       = function_exists('get_field') ? get_field('fnlmx_gaming_guidelines_subparagraph', 'option') : '';
   $exit_url = 'https://www.google.com';
 
+  // ACF True/False toggle: show the New User Welcome Bonus modal after Proceed.
+  $welcome_modal_enabled = function_exists('get_field') ? (bool) get_field('fnlmx_enable_bonus_offer_modal', 'option') : false;
+
   // Hero image for the New User Welcome Bonus modal.
   // Prefer the ACF options field; otherwise fall back to a theme asset so the
   // image can be supplied simply by dropping a file into /assets/images/.
@@ -405,7 +408,7 @@ function fnlmx_responsible_gaming_popup() {
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b52676)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b52676"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           <span class="fnlmx-rg-popup__btn-label"><?php esc_html_e('Exit', 'luxe'); ?></span>
         </button>
-        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed fnlmax-play-bonus" id="fnlmx-rg-accept"> <!--id="fnlmx-rg-proceed"-->
+        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed<?php echo $welcome_modal_enabled ? ' fnlmax-play-bonus' : ''; ?>" id="fnlmx-rg-accept"> <!--id="fnlmx-rg-proceed"-->
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b5266c)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b5266c"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           
           <!--<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>-->
@@ -416,6 +419,7 @@ function fnlmx_responsible_gaming_popup() {
     </div>
   </div>
 
+  <?php if ( $welcome_modal_enabled ) : ?>
   <!-- ── New User Welcome Bonus Modal ── -->
   <div class="fm-welcome-modal" id="fm-welcome-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="New User Welcome Bonus">
     <div class="fm-welcome-modal__card" role="document">
@@ -469,6 +473,8 @@ function fnlmx_responsible_gaming_popup() {
 
     </div>
   </div>
+
+  <?php endif; ?>
 
   <!-- ── Registration Bonus Modal (opens after Proceed on the RG popup) ──
        Mirrors the register modal layout (logo header, phone field, terms),
@@ -609,6 +615,15 @@ function fnlmx_responsible_gaming_popup() {
             if (rgAccept) {
             rgAccept.addEventListener('click', function () {
                 rememberRgDismissal();
+                <?php if ( ! $welcome_modal_enabled ) : ?>
+                // Welcome bonus modal disabled in ACF: Proceed just closes the popup.
+                sessionStorage.setItem('fnlmx_rg_accepted', '1');
+                if (rgPopup) {
+                    rgPopup.classList.remove('is-open');
+                    rgPopup.setAttribute('aria-hidden', 'true');
+                }
+                document.body.classList.remove('funalo-drawer-open');
+                <?php endif; ?>
             });
             }
 
