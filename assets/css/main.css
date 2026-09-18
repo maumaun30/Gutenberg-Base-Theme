@@ -3687,3 +3687,13 @@ h1.page-title-404 {
     border-color: var(--color-primary) !important;
   }
 }
+
+/* ============================================================
+   HTML SITEMAP
+   ============================================================ */
+/* The sitemap plugin draws its own "•" via ::before on top of the native
+   list ::marker, so every entry showed a double bullet. Drop the pseudo
+   element and keep the real marker. */
+ul.sw-html-sitemap__list li.sw-html-sitemap__item::before {
+  content: none;
+}

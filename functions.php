@@ -1994,20 +1994,32 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
     add_action( 'wp_ajax_nopriv_fnlmx_load_more_games', 'fnlmx_ajax_load_more_games' );
 }
 /**
- * game_category archives are not paginated.
+ * The taxonomies whose archives render their own grid and are never paginated.
  *
- * taxonomy-game_category.php never touches the main loop — it renders its own
- * $grid_q of 12 games and extends it through the Load More AJAX endpoint above.
- * The main query still ran with the Reading setting's posts_per_page, though,
- * so max_num_pages came back > 1 and Yoast emitted <link rel="next"> pointing
- * at /page/2/. Those URLs returned 200 and re-rendered the identical 12 games
- * with a self-referencing canonical — duplicate content on an endless crawl
- * chain. Dropping paging off the main query gives max_num_pages = 1, which is
- * what stops the rel=next/prev tags being printed at all.
+ * Both templates share the same shape, so both need the same paging guards.
+ */
+if ( ! function_exists( 'fnlmx_unpaginated_game_taxonomies' ) ) {
+    function fnlmx_unpaginated_game_taxonomies(): array {
+        return [ 'game_category', 'provider' ];
+    }
+}
+
+/**
+ * game_category and provider archives are not paginated.
+ *
+ * taxonomy-game_category.php and taxonomy-provider.php never touch the main
+ * loop — each renders its own $grid_q of 12 games and extends it through the
+ * Load More AJAX endpoint above. The main query still ran with the Reading
+ * setting's posts_per_page, though, so max_num_pages came back > 1 and Yoast
+ * emitted <link rel="next"> pointing at /page/2/. Those URLs returned 200 and
+ * re-rendered the identical 12 games with a self-referencing canonical —
+ * duplicate content on an endless crawl chain. Dropping paging off the main
+ * query gives max_num_pages = 1, which is what stops the rel=next/prev tags
+ * being printed at all.
  */
 if ( ! function_exists( 'fnlmx_unpaginate_game_category_archive' ) ) {
     function fnlmx_unpaginate_game_category_archive( WP_Query $query ): void {
-        if ( is_admin() || ! $query->is_main_query() || ! $query->is_tax( 'game_category' ) ) {
+        if ( is_admin() || ! $query->is_main_query() || ! $query->is_tax( fnlmx_unpaginated_game_taxonomies() ) ) {
             return;
         }
 
@@ -2027,7 +2039,7 @@ if ( ! function_exists( 'fnlmx_unpaginate_game_category_archive' ) ) {
  */
 if ( ! function_exists( 'fnlmx_redirect_paged_game_category' ) ) {
     function fnlmx_redirect_paged_game_category(): void {
-        if ( ! is_tax( 'game_category' ) || ! is_paged() ) {
+        if ( ! is_tax( fnlmx_unpaginated_game_taxonomies() ) || ! is_paged() ) {
             return;
         }
 
