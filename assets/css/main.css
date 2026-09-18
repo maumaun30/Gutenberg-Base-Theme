@@ -2827,6 +2827,53 @@ body.funalo-drawer-open {
   z-index: 1;
 }
 
+/* Short desktop/laptop screens: the panel can't grow past 90dvh, so tighten
+   the spacing and shrink the buttons to keep Exit / Proceed from being clipped. */
+@media (min-width: 561px) and (max-height: 960px) {
+  .fnlmx-rg-popup__title {
+    padding: 1rem 1.75rem 0.875rem;
+  }
+  .fnlmx-rg-popup__body {
+    padding: 0.875rem 1.75rem;
+  }
+  .fnlmx-rg-popup__list,
+  .fnlmx-rg-popup__wysiwyg ul,
+  .fnlmx-rg-popup__wysiwyg ol {
+    margin-bottom: 0.875rem;
+  }
+  .fnlmx-rg-popup__list li,
+  .fnlmx-rg-popup__wysiwyg ul li,
+  .fnlmx-rg-popup__wysiwyg ol li {
+    line-height: 1.45;
+  }
+  .fnlmx-rg-popup__badge-item {
+    min-height: 52px;
+    padding: 0.625rem 1.25rem;
+  }
+  .fnlmx-rg-popup__disclaimer {
+    line-height: 1.45;
+    padding: 0.75rem 1.25rem 0.875rem;
+  }
+  .fnlmx-rg-popup__remember {
+    padding-bottom: 0.75rem;
+  }
+  .fnlmx-rg-popup__actions {
+    padding: 0.875rem 1.75rem 1rem;
+  }
+  .fnlmx-rg-popup__btn {
+    padding: 0;
+    height: 38px;
+  }
+  .fnlmx-rg-popup__btn-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 0;
+    font-size: 0.8125rem;
+  }
+}
+
 @media (max-width: 560px) {
   .fnlmx-rg-popup {
     padding: 0.5rem;

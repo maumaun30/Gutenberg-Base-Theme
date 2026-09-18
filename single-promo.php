@@ -29,6 +29,7 @@ $title     = get_the_title();
 $content   = get_the_content();
 $permalink = get_permalink();
 $hero_img  = get_the_post_thumbnail_url($post_id, 'full');
+$logo_img  = function_exists('fnlmx_site_logo_url') ? fnlmx_site_logo_url() : '';
 
 function sp_promo_acf($key, $id)
 {
@@ -202,7 +203,17 @@ if (! empty($fg_term_ids_by_tax)) {
     border-radius: var(--radius-lg);
     overflow: hidden;
     aspect-ratio: 1280 / 360;
-    background: linear-gradient(120deg, #6e0fbf 0%, #c41cd4 55%, #ff37a1 100%);
+    background:
+      <?php if (! $hero_img && $logo_img) : ?>
+      /* No featured image — centre the site logo on a flat dark panel,
+         contained so it never stretches. */
+      url('<?php echo esc_url($logo_img); ?>') center/min(240px, 45%) no-repeat,
+      <?php endif; ?> var(--bg-dark-2);
+  }
+
+  /* Fallback hero carries a hairline ring so the panel reads as a card. */
+  .pr-hero__inner--fallback {
+    border: 1px solid var(--border);
   }
 
   .pr-hero__img {
@@ -435,6 +446,24 @@ if (! empty($fg_term_ids_by_tax)) {
     background: var(--bg-dark-4);
   }
 
+  /* Featured-image-less promo: site logo, centred and contained. */
+  .pr-rel__img--fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: .75rem;
+    background: var(--bg-dark-2);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .pr-rel__img--fallback img {
+    width: 60%;
+    max-width: 150px;
+    height: auto;
+    object-fit: contain;
+    opacity: .95;
+  }
+
   .pr-rel__body {
     padding: 1rem 1.1rem 1.15rem;
   }
@@ -619,7 +648,7 @@ if (! empty($fg_term_ids_by_tax)) {
 
   <!-- HERO BANNER -->
   <section class="pr-hero">
-    <div class="pr-hero__inner">
+    <div class="pr-hero__inner<?php echo $hero_img ? '' : ' pr-hero__inner--fallback'; ?>">
       <?php if ($hero_img) : ?>
         <img class="pr-hero__img" src="<?php echo esc_url($hero_img); ?>" alt="<?php echo esc_attr($title); ?>">
       <?php endif; ?>
@@ -664,6 +693,10 @@ if (! empty($fg_term_ids_by_tax)) {
             <a class="pr-rel" href="<?php echo esc_url($rp['permalink']); ?>">
               <?php if ($rp['thumb']) : ?>
                 <img class="pr-rel__img" src="<?php echo esc_url($rp['thumb']); ?>" alt="<?php echo esc_attr($rp['title']); ?>" loading="lazy">
+              <?php elseif ($logo_img) : ?>
+                <div class="pr-rel__img pr-rel__img--fallback">
+                  <img src="<?php echo esc_url($logo_img); ?>" alt="<?php echo esc_attr($rp['title']); ?>" loading="lazy">
+                </div>
               <?php else : ?>
                 <div class="pr-rel__img"></div>
               <?php endif; ?>
