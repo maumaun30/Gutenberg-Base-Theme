@@ -1470,6 +1470,60 @@ add_action( 'after_setup_theme', function () {
 });
  
  
+// ─── Primary Nav Dropdown Walker ─────────────────────────────────────────────
+
+/**
+ * Header primary nav: long child lists flow into extra columns instead of one
+ * column running down past the fold (same rules as the Solaire theme). The row
+ * count decides where the next column starts; see .sub-menu.is-multicol.
+ */
+class Funalo_Nav_Walker extends Walker_Nav_Menu {
+
+    /** Rows a dropdown column may reach before it splits into another. */
+    const DROPDOWN_MAX_ROWS = 10;
+
+    /** Hard cap on columns, so a huge menu never spans the whole header. */
+    const DROPDOWN_MAX_COLS = 5;
+
+    /** menu_item_parent => child count. */
+    protected $child_counts = [];
+
+    /** ID of the item whose start_el ran last, i.e. the parent of the next start_lvl. */
+    protected $current_parent = 0;
+
+    public function walk( $elements, $max_depth, ...$args ) {
+        $this->child_counts = [];
+        foreach ( $elements as $el ) {
+            $parent = (int) $el->menu_item_parent;
+            if ( $parent ) {
+                $this->child_counts[ $parent ] = ( $this->child_counts[ $parent ] ?? 0 ) + 1;
+            }
+        }
+        return parent::walk( $elements, $max_depth, ...$args );
+    }
+
+    public function start_el( &$output, $data_object, $depth = 0, $args = null, $current_object_id = 0 ) {
+        // start_lvl() for this item's children runs straight after this call.
+        $this->current_parent = (int) $data_object->ID;
+        parent::start_el( $output, $data_object, $depth, $args, $current_object_id );
+    }
+
+    public function start_lvl( &$output, $depth = 0, $args = null ) {
+        $count = $this->child_counts[ $this->current_parent ] ?? 0;
+        $cols  = min( self::DROPDOWN_MAX_COLS, max( 1, (int) ceil( $count / self::DROPDOWN_MAX_ROWS ) ) );
+
+        if ( $depth > 0 || $cols < 2 ) {
+            $output .= '<ul class="sub-menu">';
+            return;
+        }
+
+        $output .= sprintf(
+            '<ul class="sub-menu is-multicol" style="--dropdown-rows:%d">',
+            (int) ceil( $count / $cols )
+        );
+    }
+}
+
 // ─── Desktop Nav Walker ──────────────────────────────────────────────────────
  
 class Luxe_Nav_Walker extends Walker_Nav_Menu {
@@ -1960,6 +2014,17 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
             wp_send_json_error( [ 'message' => 'Missing term' ], 400 );
         }
 
+        /* The two archives show different numbers of cards up front — the
+           category grid renders 120, the provider grid 12 — so the page size has
+           to come from the button rather than be assumed here. Hardcoding it
+           meant Load More on the category archive asked for page 2 of a
+           12-per-page list, i.e. games 13-24, and silently appended nothing.
+           Clamped to a known set: it feeds LIMIT/OFFSET. */
+        $per_page = absint( $_POST['per_page'] ?? 12 );
+        if ( ! in_array( $per_page, [ 12, 120 ], true ) ) {
+            $per_page = 12;
+        }
+
         $query = new WP_Query( array_merge( [
             'post_type'      => 'game',
             'post_status'    => 'publish',
@@ -1969,7 +2034,7 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
                 'terms'            => $term_id,
                 'include_children' => true,
             ] ],
-            'posts_per_page' => 12,
+            'posts_per_page' => $per_page,
             'paged'          => $page,
         ], fnlmx_game_order_args() ) );
 
@@ -1994,6 +2059,28 @@ if ( ! function_exists( 'fnlmx_ajax_load_more_games' ) ) {
     add_action( 'wp_ajax_nopriv_fnlmx_load_more_games', 'fnlmx_ajax_load_more_games' );
 }
 /**
+ * "{Term} Games" without doubling the word for terms that already end in it.
+ *
+ * Term names are a mix: "Roulette" and "Slot" need the word appended, while
+ * "Card Games", "Dice Games" and "E-Games" already carry it and were rendering
+ * as "Card Games Games". The name is left exactly as it is when it already
+ * ends in Game/Games — stripping the word and re-appending it loses the
+ * original separator and turned "E-Games" into "E Games". A term like "Game
+ * Shows", where the word is not at the end, still gets it appended.
+ */
+if ( ! function_exists( 'fnlmx_games_label' ) ) {
+    function fnlmx_games_label( string $term_name ): string {
+        $name = trim( $term_name );
+
+        if ( preg_match( '/Games?$/i', $name ) ) {
+            return $name;
+        }
+
+        return $name . ' Games';
+    }
+}
+
+/**
  * The taxonomies whose archives render their own grid and are never paginated.
  *
  * Both templates share the same shape, so both need the same paging guards.
@@ -2008,8 +2095,8 @@ if ( ! function_exists( 'fnlmx_unpaginated_game_taxonomies' ) ) {
  * game_category and provider archives are not paginated.
  *
  * taxonomy-game_category.php and taxonomy-provider.php never touch the main
- * loop — each renders its own $grid_q of 12 games and extends it through the
- * Load More AJAX endpoint above. The main query still ran with the Reading
+ * loop — each renders its own $grid_q (120 games on the category archive, 12 on
+ * the provider one) and extends it through the Load More AJAX endpoint above. The main query still ran with the Reading
  * setting's posts_per_page, though, so max_num_pages came back > 1 and Yoast
  * emitted <link rel="next"> pointing at /page/2/. Those URLs returned 200 and
  * re-rendered the identical 12 games with a self-referencing canonical —
@@ -2059,3 +2146,147 @@ if ( ! function_exists( 'fnlmx_redirect_paged_game_category' ) ) {
 
     add_action( 'template_redirect', 'fnlmx_redirect_paged_game_category' );
 }
+
+/**
+ * Resolve the attachment that should stand in for a page on social cards.
+ *
+ * Featured image first, because single games and posts carry a bespoke one.
+ * Everything else — the provider and game_category archives above all, which
+ * have no featured image to give — walks a fallback chain down to a single
+ * site-wide banner.
+ *
+ * The chain deliberately does not stop at Yoast's Site Defaults social image:
+ * that setting is empty on this install, which is why the first cut of this
+ * fix left every archive without an og:image while single games got one. The
+ * homepage's image comes from the static front page's own featured image, so
+ * that is what the rest of the site borrows too.
+ */
+if ( ! function_exists( 'fnlmx_social_image_id' ) ) {
+    function fnlmx_social_image_id(): int {
+        $id = 0;
+
+        if ( is_singular() && has_post_thumbnail() ) {
+            $id = (int) get_post_thumbnail_id();
+        }
+
+        if ( ! $id ) {
+            $social = get_option( 'wpseo_social' );
+
+            if ( is_array( $social ) ) {
+                if ( ! empty( $social['og_default_image_id'] ) ) {
+                    $id = (int) $social['og_default_image_id'];
+                } elseif ( ! empty( $social['og_default_image'] ) ) {
+                    $id = (int) attachment_url_to_postid( $social['og_default_image'] );
+                }
+            }
+        }
+
+        // The static front page's featured image — the de facto site banner,
+        // and already the image every homepage share uses.
+        if ( ! $id ) {
+            $front = (int) get_option( 'page_on_front' );
+            if ( $front ) {
+                $id = (int) get_post_thumbnail_id( $front );
+            }
+        }
+
+        // Last resort so no page is ever imageless: the site icon, which is a
+        // square 512px attachment rather than a 1200x630 card, but beats the
+        // bare text box a missing og:image renders as.
+        if ( ! $id ) {
+            $id = (int) get_option( 'site_icon' );
+        }
+
+        /**
+         * Override the social image for any page.
+         *
+         * @param int $id Attachment ID, or 0 for none.
+         */
+        return (int) apply_filters( 'fnlmx_social_image_id', $id );
+    }
+}
+
+/**
+ * Print og:image / twitter:image on any page whose <head> ended up without one.
+ *
+ * Yoast only images a page it can find a featured image for, which left every
+ * taxonomy archive and every thumbnail-less game sharing as a bare text card.
+ * Its own wpseo_opengraph_images filter silently discards what is handed to
+ * it here, so rather than keep guessing at plugin internals the whole of
+ * wp_head is buffered and the tags are appended only when they are genuinely
+ * missing. That check is what keeps a page Yoast *did* image — the homepage,
+ * any game with a featured image — from ending up with two of each tag, and
+ * it stays correct whatever Yoast changes about how it decides.
+ */
+if ( ! function_exists( 'fnlmx_social_image_meta' ) ) {
+    function fnlmx_social_image_meta( string $head ): string {
+        if ( is_feed() || is_404() ) {
+            return $head;
+        }
+
+        $has_og      = false !== stripos( $head, 'property="og:image"' );
+        $has_twitter = false !== stripos( $head, 'name="twitter:image"' );
+
+        if ( $has_og && $has_twitter ) {
+            return $head;
+        }
+
+        $id = fnlmx_social_image_id();
+        if ( ! $id ) {
+            return $head;
+        }
+
+        $src = wp_get_attachment_image_src( $id, 'full' );
+        if ( ! $src ) {
+            return $head;
+        }
+
+        $tags = '';
+
+        if ( ! $has_og ) {
+            $tags .= '<meta property="og:image" content="' . esc_url( $src[0] ) . '" />' . "\n";
+
+            if ( ! empty( $src[1] ) && ! empty( $src[2] ) ) {
+                $tags .= '<meta property="og:image:width" content="' . (int) $src[1] . '" />' . "\n";
+                $tags .= '<meta property="og:image:height" content="' . (int) $src[2] . '" />' . "\n";
+            }
+
+            $type = get_post_mime_type( $id );
+            if ( $type ) {
+                $tags .= '<meta property="og:image:type" content="' . esc_attr( $type ) . '" />' . "\n";
+            }
+
+            $alt = get_post_meta( $id, '_wp_attachment_image_alt', true );
+            if ( $alt ) {
+                $tags .= '<meta property="og:image:alt" content="' . esc_attr( $alt ) . '" />' . "\n";
+            }
+        }
+
+        if ( ! $has_twitter ) {
+            $tags .= '<meta name="twitter:image" content="' . esc_url( $src[0] ) . '" />' . "\n";
+        }
+
+        return $head . $tags;
+    }
+
+    // Opened at the very start of wp_head and closed after everything else —
+    // Yoast prints at priority 1, so its tags are inside the buffer and can be
+    // seen before deciding whether to add ours.
+    add_action( 'wp_head', function () {
+        ob_start( 'fnlmx_social_image_meta' );
+    }, -PHP_INT_MAX );
+
+    add_action( 'wp_head', function () {
+        if ( ob_get_level() ) {
+            ob_end_flush();
+        }
+    }, PHP_INT_MAX );
+}
+
+/**
+   * Single games have no comment feed (/game/<slug>/feed/ 404s), but
+   * feed_links_extra() still advertised one in <head>, and Googlebot followed it.
+   */
+  add_filter( 'feed_links_extra_show_post_comments_feed', function ( $show ) {
+      return is_singular( 'game' ) ? false : $show;
+  } );

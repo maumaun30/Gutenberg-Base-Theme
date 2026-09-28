@@ -6,7 +6,7 @@
  *
  * Layout:
  *  1. Hero       — thumbnail, title, short description, RTP/Volatility/Provider stats bar, Play Now + Try Demo
- *  2. Related    — "More {Category} Games" static grid (6 desktop / 3 mobile) with "View All" link
+ *  2. Related    — "More {Category} Games" static grid of up to 24 (6 per row desktop / 3 mobile) with a "See Full List" link that reveals the same games as a text list
  *  3. About + Rules — conditional: both cols | about-only full-width | rules-only full-width
  *  4. CTA        — shortcode
  */
@@ -137,7 +137,11 @@ $game_embed = $game_code
 /* Stats — build array only for non-empty fields */
 $fnlmx_rtp        = gc_acf('fnlmx_rtp',        $post_id);
 $fnlmx_volatility = gc_acf('fnlmx_volatility',  $post_id);
-$fnlmx_provider   = gc_acf('fnlmx_provider',    $post_id);
+/* Provider comes from the `provider` taxonomy; the legacy fnlmx_provider text
+   field is the fallback for games whose term has not been assigned yet. */
+$provider_terms = get_the_terms($post_id, 'provider');
+$provider_term  = ($provider_terms && ! is_wp_error($provider_terms)) ? $provider_terms[0] : null;
+$fnlmx_provider = $provider_term ? $provider_term->name : gc_acf('fnlmx_provider', $post_id);
 
 /* Tooltip copy lives in Site Settings (ACF Options), shared across all games */
 $tooltip_rtp        = gc_acf_option('fnlmnx_rtp_tooltip');
@@ -180,7 +184,9 @@ if (! empty($fnlmx_volatility) && $fnlmx_volatility !== 'Select Volatility') {
 if (! empty($fnlmx_provider)) {
   $stats[] = [
     'label'   => 'Provider',
-    'value'   => esc_html($fnlmx_provider),
+    'value'   => ($provider_term && ! is_wp_error(get_term_link($provider_term)))
+      ? '<a class="sg-stat__link" href="' . esc_url(get_term_link($provider_term)) . '">' . esc_html($fnlmx_provider) . '</a>'
+      : esc_html($fnlmx_provider),
     'tooltip' => $tooltip_provider,
     'icon'    => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4l1.5 1.5M4 2l1.5 1.5M12 2c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10c0-1.821-.487-3.53-1.338-5M17 3a2 2 0 1 1 4 0 2 2 0 0 1-4 0z"/><circle cx="12" cy="12" r="3"/></svg>',
   ];
@@ -200,6 +206,7 @@ $term_name = $title;
 
 /* Related games */
 $related_games = [];
+$full_list     = [];
 if ($primary_cat) {
   $cat_chain = get_ancestors($primary_cat->term_id, 'game_category', 'taxonomy');
   $parent_id = ! empty($cat_chain) ? end($cat_chain) : $primary_cat->term_id;
@@ -215,7 +222,7 @@ if ($primary_cat) {
       'terms'            => $parent_id,
       'include_children' => true,
     ]],
-    'posts_per_page' => 6,
+    'posts_per_page' => 24,
     'post__not_in'   => [$post_id],
   ], fnlmx_game_order_args()));
   if ($rq->have_posts()) {
@@ -233,6 +240,13 @@ if ($primary_cat) {
     }
     wp_reset_postdata();
   }
+
+  /* The list behind "See Full List" is the same 24 games as the grid above,
+     as plain text links — no second query. Listing every game in the
+     category instead put ~2,100 links on each Slot game page. */
+  $full_list = array_map(static function ($rg) {
+    return ['title' => $rg['title'], 'permalink' => $rg['permalink']];
+  }, $related_games);
 }
 
 $related_label = 'Similar';
@@ -484,6 +498,20 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     line-height: 1.2;
   }
 
+  /* Provider stat links to its taxonomy archive; inherit the value styling so
+     the tile looks identical whether or not the term is assigned. */
+  .sg-stat__link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 255, 255, .35);
+    transition: border-color .2s ease;
+  }
+
+  .sg-stat__link:hover,
+  .sg-stat__link:focus-visible {
+    border-bottom-color: #fff;
+  }
+
   /* ── STAT TOOLTIP ── */
   .sg-tooltip {
     position: relative;
@@ -702,6 +730,78 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 
   .sg-viewall:hover {
     color: #fff;
+  }
+
+  /* .sg-viewall is a <button> (it reveals the list rather than navigating),
+     so the browser's button chrome has to be cleared to keep it a text link. */
+  button.sg-viewall {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* Once the list is open the link has nothing left to do. */
+  .sg-viewall[aria-expanded="true"] {
+    display: none;
+  }
+
+  /* ── FULL GAME LIST ──
+     Same panel as .fm-fulllist on taxonomy-game_category.php. Collapsed with
+     the `hidden` attribute rather than removed, so the markup ships in the
+     HTML response. */
+  .sg-fulllist {
+    margin-top: 40px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px;
+    background: #1E1E1E;
+  }
+
+  .sg-fulllist[hidden] {
+    display: none;
+  }
+
+  .sg-fulllist__title {
+    margin: 0 0 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .sg-fulllist__grid {
+    list-style: disc;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px 24px;
+  }
+
+  .sg-fulllist__item {
+    margin-left: 1.15em;
+    padding-left: .15em;
+    color: var(--color-primary, rgba(255, 255, 255, .45));
+  }
+
+  .sg-fulllist__link {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .88rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, .72);
+    text-decoration: none;
+    transition: color .2s ease;
+  }
+
+  .sg-fulllist__link:hover,
+  .sg-fulllist__link:focus-visible {
+    color: var(--color-hyperlink);
+    text-decoration: underline;
   }
 
   .sg-grid {
@@ -1418,8 +1518,13 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
     <section class="sg-related">
       <div class="sg-related-hd">
         <span>More <?php echo esc_html($related_label); ?> Games</span>
-        <?php if (! empty($top_term) && ! is_wp_error($top_term)) : ?>
-          <a href="<?php echo esc_url(get_term_link($top_term)); ?>" class="sg-viewall">View All →</a>
+        <?php if (! empty($full_list)) : ?>
+          <button
+            type="button"
+            class="sg-viewall"
+            id="sg-fulllist-toggle"
+            aria-expanded="false"
+            aria-controls="sg-fulllist">See Full List &rarr;</button>
         <?php endif; ?>
       </div>
       <div class="sg-grid<?php echo $square_cards ? ' sg-grid--square' : ''; ?>">
@@ -1468,6 +1573,34 @@ if ($has_rules && ! $has_about) $main_layout = 'rules-only';
 </a>
         <?php endforeach; ?>
       </div>
+
+      <?php if (! empty($full_list)) : ?>
+        <div class="sg-fulllist" id="sg-fulllist" hidden>
+          <h2 class="sg-fulllist__title"><?php echo esc_html(fnlmx_games_label($related_label)); ?> List (<?php echo esc_html(number_format_i18n(count($full_list))); ?>)</h2>
+          <ul class="sg-fulllist__grid">
+            <?php foreach ($full_list as $fl) : ?>
+              <li class="sg-fulllist__item">
+                <a class="sg-fulllist__link" href="<?php echo esc_url($fl['permalink']); ?>"><?php echo esc_html($fl['title']); ?></a>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        </div>
+
+        <script>
+          /* One-way reveal, same as the category archive: the link shows the
+             list and then takes itself out of the flow. */
+          (function () {
+            var btn  = document.getElementById('sg-fulllist-toggle');
+            var list = document.getElementById('sg-fulllist');
+            if (!btn || !list) return;
+            btn.addEventListener('click', function () {
+              list.hidden = false;
+              btn.setAttribute('aria-expanded', 'true');
+              list.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+          })();
+        </script>
+      <?php endif; ?>
     </section>
   <?php endif; ?>
 

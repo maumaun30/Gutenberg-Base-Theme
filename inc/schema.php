@@ -259,7 +259,10 @@ function fnlmx_add_game_software_application( $graph ) {
 	}
 
 	// The studio that made the game, as distinct from the site operating it.
-	$provider = trim( wp_strip_all_tags( (string) $get( 'fnlmx_provider' ) ) );
+	$provider_terms = get_the_terms( $post_id, 'provider' );
+	$provider       = ( $provider_terms && ! is_wp_error( $provider_terms ) )
+		? $provider_terms[0]->name
+		: trim( wp_strip_all_tags( (string) $get( 'fnlmx_provider' ) ) );
 	if ( '' !== $provider ) {
 		$node['author'] = [
 			'@type' => 'Organization',

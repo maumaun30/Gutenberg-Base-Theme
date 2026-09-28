@@ -904,7 +904,7 @@ set_query_var('game_count', $game_count);
                 </g>
                 <defs><clipPath id="fm-loadmore-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
               </svg>
-              <span class="fm-loadmore__label">Load More <?php echo esc_html($term_name); ?> Games</span>
+              <span class="fm-loadmore__label">Load More <?php echo esc_html(fnlmx_games_label($term_name)); ?></span>
             </button>
           </div>
         <?php endif; ?>
