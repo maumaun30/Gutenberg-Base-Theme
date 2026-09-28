@@ -649,6 +649,35 @@ body .fnlmx-back-to-top {
   display: none;
 }
 
+/* Multi-column dropdown (Funalo_Nav_Walker adds .is-multicol past 10 items):
+   columns fill top-to-bottom (--dropdown-rows tall) so the reading order
+   still runs straight down each column. */
+.funalo-nav__primary li ul.sub-menu.is-multicol {
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(var(--dropdown-rows, 8), auto);
+  /* Each column is as wide as its longest name, so long lists (40+
+     providers) fit across the screen instead of running down past it. */
+  grid-auto-columns: max-content;
+  column-gap: 8px;
+  max-width: calc(100vw - 32px);
+  padding: 14px 8px 8px;
+}
+
+/* Compact rows: one line per name, tighter spacing than the single-column
+   dropdown. */
+.funalo-nav__primary li ul.sub-menu.is-multicol li a {
+  padding: 8px 14px;
+  white-space: nowrap;
+}
+
+/* Near the right edge of the header a wide panel would run off-screen, so the
+   last two top-level items drop theirs right-aligned instead. */
+.funalo-nav__primary > li:nth-last-child(-n + 2) > ul.sub-menu.is-multicol {
+  left: auto;
+  right: -12px;
+}
+
 /* ── Right Side: Secondary + CTA ── */
 .funalo-nav__right {
   display: flex;

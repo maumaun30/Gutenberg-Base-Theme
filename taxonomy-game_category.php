@@ -37,8 +37,10 @@ $total_q = new WP_Query([
 $game_count = $total_q->found_posts;
 wp_reset_postdata();
 
-/* First 12 games for the grid, most active players first — ordering comes from
-   fnlmx_game_order_args() so Load More (functions.php) stays in lockstep. */
+/* First 120 games for the grid, most active players first — ordering comes from
+   fnlmx_game_order_args() so Load More (functions.php) stays in lockstep. The
+   same number travels to the AJAX handler as data-per-page, so page 2 picks up
+   exactly where the grid stopped. */
 $grid_q = new WP_Query(array_merge([
   'post_type'      => 'game',
   'post_status'    => 'publish',
@@ -48,7 +50,28 @@ $grid_q = new WP_Query(array_merge([
     'terms'            => $term_id,
     'include_children' => true,
   ]],
-  'posts_per_page' => 12,
+  'posts_per_page' => 120,
+], fnlmx_game_order_args()));
+
+/* Full title list behind the "View All" link. Rendered server-side (and only
+   hidden with the `hidden` attribute) so the complete set of games in this
+   category is crawlable from the archive, not just the 120 in the grid.
+
+   Shares fnlmx_game_order_args() with the grid above, so the list reads in the
+   same most-active-players-first order rather than alphabetically — the first
+   names in the list are then the same games the grid leads with. */
+$list_q = new WP_Query(array_merge([
+  'post_type'              => 'game',
+  'post_status'            => 'publish',
+  'tax_query'              => [[
+    'taxonomy'         => 'game_category',
+    'field'            => 'term_id',
+    'terms'            => $term_id,
+    'include_children' => true,
+  ]],
+  'posts_per_page'         => -1,
+  'no_found_rows'          => true,
+  'update_post_term_cache' => false,
 ], fnlmx_game_order_args()));
 
 /* ACF fields */
@@ -394,6 +417,8 @@ set_query_var('game_count',     $game_count);
     display: flex;
     justify-content: center;
     margin-top: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
   }
 
   /* The SVG (.fm-loadmore__shape) is the button background, filled via `color`
@@ -445,6 +470,121 @@ set_query_var('game_count',     $game_count);
     opacity: .6;
     cursor: default;
     transform: none;
+  }
+
+  /* Section header above the grid — title left, "View All" right. Mirrors
+     .sg-related-hd / .sg-viewall in single-game.php so the two templates read
+     the same. */
+  .fm-games-hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    gap: 1rem;
+  }
+
+  .fm-games-hd span {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #fff;
+    letter-spacing: -0.4px;
+    margin: 0;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .fm-viewall-link {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--color-primary);
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .fm-viewall-link:hover {
+    color: #fff;
+  }
+
+  /* Once the list is open the link has nothing left to do. */
+  .fm-viewall-link[aria-expanded="true"] {
+    display: none;
+  }
+
+  /* Same step-down single-game.php applies to .sg-related-hd span / .sg-viewall,
+     so the two headers stay the same size on a phone. */
+  @media (max-width: 600px) {
+    .fm-games-hd span,
+    .fm-viewall-link {
+      font-size: 14px;
+    }
+  }
+
+  /* ── FULL GAME LIST (SEO) ──
+     Plain text links to every game in the category. Collapsed with the `hidden`
+     attribute rather than removed, so the markup ships in the HTML response. */
+  .fm-fulllist {
+    margin-top: 40px;
+    padding: 28px;
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 12px;
+    background: #1E1E1E;
+    /*background: rgba(255, 255, 255, .03);*/
+  }
+
+  .fm-fulllist[hidden] {
+    display: none;
+  }
+
+  .fm-fulllist__title {
+    margin: 0 0 20px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+
+  .fm-fulllist__grid {
+    list-style: disc;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px 24px;
+  }
+
+  /* The markers need room inside the grid cell; `list-style-position: inside`
+     would collapse them against the text on wrapped titles. */
+  .fm-fulllist__item {
+    margin-left: 1.15em;
+    padding-left: .15em;
+    color: var(--color-primary, rgba(255, 255, 255, .45));
+  }
+
+  .fm-fulllist__link {
+    /* inline-block, not block: a block link fills the whole grid cell, so the
+       hover state reads as a column-wide bar instead of hugging the title. */
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: .88rem;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, .72);
+    text-decoration: none;
+    transition: color .2s ease;
+  }
+
+  .fm-fulllist__link:hover,
+  .fm-fulllist__link:focus-visible {
+    color: var(--color-hyperlink);
+    /*color: #fff;*/
+    text-decoration: underline;
   }
 
   /* WHY / QUICK GUIDE */
@@ -878,6 +1018,18 @@ set_query_var('game_count',     $game_count);
   <?php if ($grid_q->have_posts()) : ?>
   <section class="fm-games">
     <div class="fm-container">
+        <?php if ($list_q->have_posts()) : ?>
+          <div class="fm-games-hd">
+            <span>All <?php echo esc_html(fnlmx_games_label($term_name)); ?></span>
+            <button
+              type="button"
+              class="fm-viewall-link"
+              id="fm-fulllist-toggle"
+              aria-expanded="false"
+              aria-controls="fm-fulllist">See Full List &rarr;</button>
+          </div>
+        <?php endif; ?>
+
         <div class="fm-grid<?php echo $square_cards ? ' fm-grid--square' : ''; ?>">
           <?php while ($grid_q->have_posts()) : $grid_q->the_post();
             fnlmx_game_card_template(get_the_ID());
@@ -885,13 +1037,14 @@ set_query_var('game_count',     $game_count);
           wp_reset_postdata(); ?>
         </div>
 
-        <?php if ($game_count > 12) : ?>
-          <div class="fm-viewall">
+        <div class="fm-viewall">
+        <?php if ($game_count > 120) : ?>
             <button
               type="button"
               class="fm-loadmore"
               data-term="<?php echo esc_attr($term_id); ?>"
               data-page="1"
+              data-per-page="120"
               data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
               data-nonce="<?php echo esc_attr(wp_create_nonce('fnlmx_load_more')); ?>">
               <svg aria-hidden="true" class="fm-loadmore__shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -901,8 +1054,23 @@ set_query_var('game_count',     $game_count);
                 </g>
                 <defs><clipPath id="fm-loadmore-shape"><rect width="148" height="42" fill="white"></rect></clipPath></defs>
               </svg>
-              <span class="fm-loadmore__label">Load More <?php echo esc_html($term_name); ?> Games</span>
+              <span class="fm-loadmore__label">Load More <?php echo esc_html(fnlmx_games_label($term_name)); ?></span>
             </button>
+        <?php endif; ?>
+        </div>
+
+        <?php if ($list_q->have_posts()) : ?>
+          <div class="fm-fulllist" id="fm-fulllist" hidden>
+            <h2 class="fm-fulllist__title"><?php echo esc_html(fnlmx_games_label($term_name)); ?> List (<?php echo esc_html(number_format_i18n($list_q->post_count)); ?>)</h2>
+            <ul class="fm-fulllist__grid">
+              <?php while ($list_q->have_posts()) : $list_q->the_post(); ?>
+                <li class="fm-fulllist__item">
+                  <a class="fm-fulllist__link" href="<?php echo esc_url(get_permalink()); ?>"><?php echo esc_html(get_the_title()); ?></a>
+                </li>
+              <?php endwhile;
+              wp_reset_postdata(); ?>
+            </ul>
+
           </div>
         <?php endif; ?>
     </div>
@@ -1095,6 +1263,7 @@ set_query_var('game_count',     $game_count);
           nonce: loadMoreBtn.dataset.nonce,
           term_id: loadMoreBtn.dataset.term,
           page: nextPage,
+          per_page: loadMoreBtn.dataset.perPage,
         });
 
         try {
@@ -1111,7 +1280,7 @@ set_query_var('game_count',     $game_count);
           }
 
           if (!json.success || !json.data.has_more) {
-            loadMoreBtn.closest('.fm-viewall').remove();
+            loadMoreBtn.remove();
           } else {
             loadMoreBtn.disabled = false;
             label.textContent = original;
@@ -1120,6 +1289,19 @@ set_query_var('game_count',     $game_count);
           loadMoreBtn.disabled = false;
           label.textContent = original;
         }
+      });
+    }
+
+    /* Full game list reveal — one-way: the link shows the list and then takes
+       itself out of the flow. The list is in the DOM either way, so the markup
+       ships in the HTML response whether or not anyone clicks. */
+    const fullListBtn = document.getElementById('fm-fulllist-toggle');
+    const fullList = document.getElementById('fm-fulllist');
+    if (fullListBtn && fullList) {
+      fullListBtn.addEventListener('click', () => {
+        fullList.hidden = false;
+        fullListBtn.setAttribute('aria-expanded', 'true');
+        fullList.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       });
     }
 

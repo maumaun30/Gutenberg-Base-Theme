@@ -51,6 +51,7 @@
           'theme_location' => 'primary',
           'container'      => false,
           'menu_class'     => 'funalo-nav__primary',
+          'walker'         => new Funalo_Nav_Walker(),
           'fallback_cb'    => function () {
             echo '<ul class="funalo-nav__primary"><li><a href="/">Home</a></li></ul>';
           },
