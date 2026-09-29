@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             utm_campaign:
                 params.get("utm_campaign") ||
-                "2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub",
+                "2026_q3_fam_seo_lfc_org_seo_seo_fam-games-sub",
 
             utm_term:
                 params.get("utm_term") || "",
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
         query.set(
             "utm_campaign",
             attribution.utm_campaign ||
-            "2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub-reg-bonus-offer"
+            "2026_q3_fam_seo_lfc_org_seo_seo_fam-games-sub"
         );
 
         if (attribution.utm_term) {
@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
         query.set(
             "utm_campaign",
             attribution.utm_campaign ||
-            "2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub"
+            "2026_q3_fam_seo_lfc_org_seo_seo_fam-games-sub"
         );
 
         if (attribution.utm_term) {

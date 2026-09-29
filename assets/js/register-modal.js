@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     // #fm-register-trigger (register modal) -> wallet deposit tab
     const DEFAULT_CAMPAIGN =
-        "2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub";
+        "2026_q3_fam_seo_lfc_org_seo_seo_fam-games-sub";
 
     // #fnlmx-rg-proceed (registration bonus modal) -> wallet deposit tab
     const BONUS_CAMPAIGN =
