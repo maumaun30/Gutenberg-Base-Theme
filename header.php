@@ -19,7 +19,11 @@
 
       <!-- Logo -->
       <div class="funalo-nav__logo">
-        <a href="https://funalomax.com/en?utm_source=seo&utm_medium=seo&utm_campaign=2026_q3_fam_own_lfc_org_seo_seo_fam-games-sub">
+        <?php
+        // Logo link is set in Site Settings → Header Data; falls back to the site home.
+        $logo_link = function_exists('get_field') ? trim((string) get_field('fnlmx_header_logo_utm_link', 'option')) : '';
+        ?>
+        <a href="<?php echo esc_url($logo_link !== '' ? $logo_link : home_url('/')); ?>">
           <?php if (has_custom_logo()) : ?>
             <?php // Output the logo image only — the_custom_logo() would wrap it in its own
                   // <a> pointing to the homepage, overriding the link above. ?>
@@ -142,7 +146,7 @@
 
     <!-- Drawer Header: Logo + Close -->
     <div class="funalo-drawer__header">
-      <a href="https://funalomax.com/en?utm_source=seo&utm_medium=ggo&utm_campaign=2026_q2_fam_own_lfc_org_seo_ggo_fam-games-sub-seo" class="drawer-logo">
+      <a href="<?php echo esc_url($logo_link !== '' ? $logo_link : home_url('/')); ?>" class="drawer-logo">
         <?php if (has_custom_logo()) : ?>
           <?php // Output the logo image only — the_custom_logo() would wrap it in its own
                 // <a> pointing to the homepage, overriding the link above. ?>
