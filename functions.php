@@ -41,7 +41,7 @@ function mytheme_enqueue_assets()
     // those — like taxonomy-game_category.php — fell back to a system font.
     wp_enqueue_style(
         'mytheme-fonts',
-        'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap',
+        'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap',
         [],
         null
     );
@@ -1815,6 +1815,12 @@ require_once get_template_directory() . '/assets/js/blocks/post-archive/function
 
 //Hero Slider
 function mytheme_enqueue_hero_slider() {
+    // The slider script is only needed on pages that actually render the hero
+    // block. Loading it globally adds work to every other page.
+    if ( ! has_block( 'mytheme/hero' ) ) {
+        return;
+    }
+
     $js_path = get_theme_file_path( '/assets/js/blocks/hero/hero-slider.js' );
 
     if ( ! file_exists( $js_path ) ) {

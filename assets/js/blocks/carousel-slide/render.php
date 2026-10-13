@@ -1,5 +1,6 @@
 <?php
 $image_url            = $attributes['imageUrl'] ?? '';
+$image_id             = (int) ( $attributes['imageId'] ?? 0 );
 $image_alt            = $attributes['imageAlt'] ?? '';
 $title                = $attributes['title'] ?? '';
 $title_highlight = $attributes['titleHighlight'] ?? '';
@@ -9,6 +10,7 @@ $title_highlight = $attributes['titleHighlight'] ?? '';
 global $mytheme_carousel_slide_index;
 $mytheme_carousel_slide_index = isset( $mytheme_carousel_slide_index ) ? $mytheme_carousel_slide_index + 1 : 1;
 $title_tag = ( 1 === $mytheme_carousel_slide_index ) ? 'h1' : 'h2';
+$is_first_slide = ( 1 === $mytheme_carousel_slide_index );
 $subtitle             = $attributes['subtitle'] ?? '';
 $primary_btn_text     = $attributes['primaryButtonText'] ?? '';
 $show_primary_btn     = $attributes['showPrimaryButton'] ?? true;
@@ -48,12 +50,22 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
 <div <?php echo get_block_wrapper_attributes(['class' => 'swiper-slide mytheme-carousel-slide']); ?>>
 
   <?php if ( $image_url ) : ?>
-    <div
+    <?php
+    $image_srcset = $image_id ? wp_get_attachment_image_srcset( (int) $image_id, 'full' ) : false;
+    ?>
+    <img
       class="mytheme-carousel-slide__bg"
-      style="background-image: url('<?php echo esc_url( $image_url ); ?>');"
-      role="img"
-      aria-label="<?php echo esc_attr( $image_alt ); ?>"
-    ></div>
+      src="<?php echo esc_url( $image_url ); ?>"
+      <?php if ( $image_srcset ) : ?>
+        srcset="<?php echo esc_attr( $image_srcset ); ?>"
+        sizes="100vw"
+      <?php endif; ?>
+      width="1920"
+      height="600"
+      alt="<?php echo esc_attr( $image_alt ); ?>"
+      decoding="async"
+      <?php echo $is_first_slide ? 'fetchpriority="high"' : 'loading="lazy"'; ?>
+    >
   <?php endif; ?>
 
   <div
