@@ -50,6 +50,10 @@
       "type": "string",
       "default": "#"
     },
+    "secondaryButtonColor": {
+      "type": "string",
+      "default": "dark"
+    },
     "overlayOpacity": {
       "type": "number",
       "default": 85

@@ -11,6 +11,7 @@ import {
   TextControl,
   ToggleControl,
   RangeControl,
+  SelectControl,
   ResponsiveWrapper,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';
@@ -27,6 +28,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
     showPrimaryButton,
     secondaryButtonText,
     secondaryButtonUrl,
+    secondaryButtonColor,
     overlayOpacity,
   } = attributes;
 
@@ -128,6 +130,15 @@ export default function Edit({ attributes, setAttributes, clientId }) {
             onChange={(value) => setAttributes({ secondaryButtonUrl: value })}
             type="url"
           />
+          <SelectControl
+            label="Button Color"
+            value={secondaryButtonColor || 'dark'}
+            options={[
+              { label: 'Dark', value: 'dark' },
+              { label: 'Red', value: 'red' },
+            ]}
+            onChange={(value) => setAttributes({ secondaryButtonColor: value })}
+          />
         </PanelBody>
       </InspectorControls>
 
@@ -186,7 +197,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
                   </span>
                 )}
                 {secondaryButtonText && (
-                  <span className="carousel-slide-editor__btn carousel-slide-editor__btn--secondary">
+                  <span className={`carousel-slide-editor__btn carousel-slide-editor__btn--secondary carousel-slide-editor__btn--${secondaryButtonColor || 'dark'}`}>
                     {secondaryButtonText}
                   </span>
                 )}
