@@ -16,6 +16,7 @@ $primary_btn_text     = $attributes['primaryButtonText'] ?? '';
 $show_primary_btn     = $attributes['showPrimaryButton'] ?? true;
 $secondary_btn_text   = $attributes['secondaryButtonText'] ?? '';
 $secondary_btn_url    = $attributes['secondaryButtonUrl'] ?? '';
+$secondary_btn_color  = ( 'red' === ( $attributes['secondaryButtonColor'] ?? '' ) ) ? 'red' : 'dark';
 $overlay_opacity      = $attributes['overlayOpacity'] ?? 85;
 
 // Secondary button: fall back to scrolling to the games listing section when
@@ -117,7 +118,7 @@ if ( ! function_exists( 'mytheme_carousel_btn_shape' ) ) {
           <?php if ( $secondary_btn_text ) : ?>
             <a
               href="<?php echo esc_url( $secondary_btn_url ); ?>"
-              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--secondary"
+              class="mytheme-carousel-slide__btn mytheme-carousel-slide__btn--secondary mytheme-carousel-slide__btn--<?php echo esc_attr( $secondary_btn_color ); ?>"
             >
               <?php mytheme_carousel_btn_shape( 'secondary-' . $slide_uid ); ?>
               <span class="mytheme-carousel-slide__btn-label"><?php echo esc_html( $secondary_btn_text ); ?></span>

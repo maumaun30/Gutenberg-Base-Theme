@@ -149,6 +149,7 @@ $share_title = rawurlencode($title);
     min-height: 100vh;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
+    overflow-x: clip;
   }
 
   /* ── BREADCRUMB ── */
@@ -243,6 +244,7 @@ $share_title = rawurlencode($title);
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     padding: 2rem;
+    min-width: 0;
   }
 
   .sp-content__title {
@@ -293,6 +295,8 @@ $share_title = rawurlencode($title);
     font-size: .95rem;
     line-height: 1.75;
     color: rgba(255, 255, 255, .78);
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 
   .sp-content__body p {
@@ -404,6 +408,40 @@ $share_title = rawurlencode($title);
 
   .sp-content__body .alignfull img {
     border-radius: 0;
+  }
+
+  /* Wide/full-width Gutenberg blocks may safely bleed to the card edges on
+     desktop, but that negative margin can create a horizontal page overflow
+     on narrow screens. Keep post content inside the viewport on mobile. */
+  @media (max-width: 899px) {
+    .sp-content__body .alignwide,
+    .sp-content__body .alignfull {
+      width: 100%;
+      max-width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  /* User-authored post content can include embeds or tables whose intrinsic
+     width is larger than the article column. Make those elements responsive. */
+  .sp-content__body iframe,
+  .sp-content__body embed,
+  .sp-content__body object,
+  .sp-content__body video,
+  .sp-content__body table {
+    max-width: 100%;
+  }
+
+  .sp-content__body iframe,
+  .sp-content__body embed,
+  .sp-content__body object {
+    width: 100%;
+  }
+
+  .sp-content__body table {
+    display: block;
+    overflow-x: auto;
   }
 
   /* Gallery / columns keep their own grid — don't force the ratio there */
@@ -760,6 +798,45 @@ $share_title = rawurlencode($title);
     display: block;
   }
 
+  /* Match the category game-card fallback: dark tile, centered logo, and the
+     game title anchored over a bottom gradient. */
+  .sp-fg__card--fallback {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background: #1e1e1e;
+    color: rgba(255, 255, 255, .2);
+    font-size: 32px;
+    font-weight: 700;
+  }
+
+  .sp-fg__card--fallback .fnlmx-fallback-logo {
+    width: 65%;
+    height: auto;
+    object-fit: contain;
+    opacity: .95;
+  }
+
+  .sp-fg__card--fallback-name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 28px 12px 10px;
+    background: linear-gradient(to top, rgba(0, 0, 0, .85), transparent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1.2;
+    text-align: center;
+    overflow: hidden;
+  }
+
   /* CTA spacing */
   .sp-cta-wrap {
     margin-top: var(--section-py);
@@ -942,6 +1019,14 @@ $share_title = rawurlencode($title);
               <a class="sp-fg__card" href="<?php echo esc_url($g['permalink']); ?>" title="<?php echo esc_attr($g['title']); ?>">
                 <?php if ($g['thumb']) : ?>
                   <img src="<?php echo esc_url($g['thumb']); ?>" alt="<?php echo esc_attr($g['title']); ?>" loading="lazy">
+                <?php else : ?>
+                  <span class="sp-fg__card--fallback">
+                    <?php
+                    $fallback_logo = function_exists('fnlmx_tile_fallback_logo') ? fnlmx_tile_fallback_logo() : '';
+                    echo $fallback_logo ?: esc_html(mb_substr($g['title'], 0, 1)); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                    ?>
+                    <span class="sp-fg__card--fallback-name"><?php echo esc_html($g['title']); ?></span>
+                  </span>
                 <?php endif; ?>
               </a>
             </div>

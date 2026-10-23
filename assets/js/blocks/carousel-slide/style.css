@@ -75,6 +75,11 @@
   color: #fff;
 }
 
+.carousel-slide-editor__btn--secondary.carousel-slide-editor__btn--red {
+  background-color: #BA001D;
+  border-color: #BA001D;
+}
+
 /* ─── Frontend Slide ─────────────────────────────────────────────── */
 .wp-block-mytheme-carousel-slide.mytheme-carousel-slide {
   position: relative;
@@ -232,6 +237,10 @@ a.mytheme-carousel-slide__btn--secondary:hover {
   color: rgba(57, 57, 60, 0.6);
 }
 
+a.mytheme-carousel-slide__btn--secondary.mytheme-carousel-slide__btn--red:hover {
+  color: #BA001D;
+}
+
 
 .mytheme-carousel-slide__btn--primary {
   color: #BA001D; /* fills the SVG shape */
@@ -240,6 +249,11 @@ a.mytheme-carousel-slide__btn--secondary:hover {
 .mytheme-carousel-slide__btn--secondary {
   color: rgba(57, 57, 60, 0.6); /* fills the SVG shape */
   --decoration: rgba(255, 255, 255, 0.5);
+}
+
+.mytheme-carousel-slide__btn--secondary.mytheme-carousel-slide__btn--red {
+  color: #BA001D;
+  --decoration: #ffffff;
 }
 
 @media (max-width: 767px) {
