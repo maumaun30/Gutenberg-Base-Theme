@@ -5,7 +5,7 @@
  * Default single post template (post type: post)
  *
  * Layout:
- *  1. Hero banner       — featured image background w/ title overlay
+ *  1. Hero banner       — ACF "Single Blog Featured Image", else featured image, else site logo
  *  2. Main 2-col        — left: title, taxonomy chips, content, share | right: Related Blogs sidebar
  *  3. Featured Games    — 6 cards from CPT 'game' tagged 'Featured Games'
  *  4. CTA               — [fnlmx_cta] shortcode
@@ -24,7 +24,25 @@ $post_id   = get_the_ID();
 $title     = get_the_title();
 $content   = get_the_content();
 $permalink = get_permalink();
-$hero_img  = get_the_post_thumbnail_url($post_id, 'full');
+
+/* Hero banner: ACF "Single Blog Featured Image" first, then the post's
+   featured image. If both are empty, the site-logo fallback in the hero CSS
+   still applies. Handles all three ACF return formats. */
+$hero_img = '';
+if (function_exists('get_field')) {
+  $acf_hero = get_field('fnlmx_single_blog_featured_image', $post_id);
+  if (is_array($acf_hero) && ! empty($acf_hero['url'])) {
+    $hero_img = $acf_hero['url'];                                     // Image Array
+  } elseif (is_numeric($acf_hero) && $acf_hero) {
+    $hero_img = wp_get_attachment_image_url((int) $acf_hero, 'full'); // Image ID
+  } elseif (is_string($acf_hero) && $acf_hero !== '') {
+    $hero_img = $acf_hero;                                            // Image URL
+  }
+}
+if (! $hero_img) {
+  $hero_img = get_the_post_thumbnail_url($post_id, 'full');
+}
+
 /* Site logo stands in wherever a post has no featured image — hero banner
    and Related Blogs cards. Empty string when no custom logo is set, so the
    original gradient / blank placeholder still applies. */
@@ -48,10 +66,31 @@ if (! empty($cats)) {
   if ($rq->have_posts()) {
     while ($rq->have_posts()) {
       $rq->the_post();
+      $related_thumb = '';
+
+      /* Match the single-post hero image priority: use the custom Single Blog
+         Featured Image first, then the post's standard featured image. */
+      if (function_exists('get_field')) {
+        $acf_related_thumb = get_field('fnlmx_single_blog_featured_image', get_the_ID());
+        if (is_array($acf_related_thumb) && ! empty($acf_related_thumb['sizes']['medium_large'])) {
+          $related_thumb = $acf_related_thumb['sizes']['medium_large'];
+        } elseif (is_array($acf_related_thumb) && ! empty($acf_related_thumb['url'])) {
+          $related_thumb = $acf_related_thumb['url'];
+        } elseif (is_numeric($acf_related_thumb) && $acf_related_thumb) {
+          $related_thumb = wp_get_attachment_image_url((int) $acf_related_thumb, 'medium_large');
+        } elseif (is_string($acf_related_thumb) && $acf_related_thumb !== '') {
+          $related_thumb = $acf_related_thumb;
+        }
+      }
+
+      if (! $related_thumb) {
+        $related_thumb = get_the_post_thumbnail_url(get_the_ID(), 'medium_large');
+      }
+
       $related_posts[] = [
         'title'     => get_the_title(),
         'permalink' => get_permalink(),
-        'thumb'     => get_the_post_thumbnail_url(get_the_ID(), 'medium_large'),
+        'thumb'     => $related_thumb,
         'excerpt'   => wp_trim_words(get_the_excerpt(), 10, '…'),
       ];
     }
@@ -567,6 +606,36 @@ $share_title = rawurlencode($title);
     gap: 1rem;
   }
 
+  /* Tablet layout: two compact Recent Blogs cards per row instead of one
+     stretched card across the full content column. */
+  @media (min-width: 600px) and (max-width: 899px) {
+    .sp-side__list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .sp-rel__body {
+      padding: .75rem;
+    }
+
+    .sp-rel__title {
+      font-size: .9rem;
+    }
+
+    .sp-rel__excerpt {
+      font-size: .75rem;
+    }
+
+    /* When there are three cards, center the third card in the remaining row
+       instead of leaving it aligned to the left edge. */
+    .sp-rel:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: calc((100% - 1rem) / 2);
+    }
+  }
+
   .sp-rel {
     background: var(--bg-dark-2);
     border: 1px solid var(--border);
@@ -844,7 +913,15 @@ $share_title = rawurlencode($title);
 
   @media(max-width: 600px) {
     .sp-hero__inner {
-      height: 150px;
+      /* Match the wide promotional artwork's ratio so the banner scales with
+         the viewport instead of keeping a tall fixed box on phones. */
+      height: auto;
+      aspect-ratio: 4 / 1;
+      /* Keep the complete hero artwork visible; the proportional box prevents
+         the letterbox bands caused by the previous fixed 150px height. */
+      background-size: 100% 100%;
+      background-position: center;
+      background-repeat: no-repeat;
     }
 
     /* Floats and wide alignment collapse to plain full-width blocks */
@@ -859,6 +936,15 @@ $share_title = rawurlencode($title);
        slightly taller 4:3 frame instead. */
     .sp-content__body {
       --sp-img-ratio: 4 / 3;
+    }
+
+    /* Preserve the source image proportions on mobile instead of forcing
+       every body image into a cropped 4:3 frame. */
+    .sp-content__body img,
+    .sp-content__body .wp-block-image img {
+      aspect-ratio: auto;
+      height: auto;
+      object-fit: contain;
     }
 
     .sp-content__title {
