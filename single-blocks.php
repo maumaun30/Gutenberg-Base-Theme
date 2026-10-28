@@ -12,16 +12,18 @@ if (have_posts()) :
 ?>
     <style>
       .fnlmx-single-blocks {
-        max-width: 1280px;
-        margin: 0 auto;
-        padding: clamp(2rem, 5vw, 5rem) 1.5rem;
+        width: 100%;
+        max-width: none;
+        margin: 0;
+        padding: 0;
         color: #fff;
         font-family: 'Montserrat', sans-serif;
       }
 
       .fnlmx-single-blocks__content {
-        max-width: 1100px;
-        margin: 0 auto;
+        width: 100%;
+        max-width: none;
+        margin: 0;
         min-width: 0;
         overflow-wrap: anywhere;
       }
@@ -49,8 +51,7 @@ if (have_posts()) :
 
       @media (max-width: 640px) {
         .fnlmx-single-blocks {
-          padding-right: 1rem;
-          padding-left: 1rem;
+          padding: 0;
         }
       }
     </style>
