@@ -19,15 +19,6 @@ if (have_posts()) :
         font-family: 'Montserrat', sans-serif;
       }
 
-      .fnlmx-single-blocks__title {
-        max-width: 900px;
-        margin: 0 auto 2rem;
-        color: #fff;
-        font-size: clamp(2rem, 5vw, 4rem);
-        line-height: 1.1;
-        text-align: center;
-      }
-
       .fnlmx-single-blocks__content {
         max-width: 1100px;
         margin: 0 auto;
@@ -64,7 +55,6 @@ if (have_posts()) :
       }
     </style>
     <main class="fnlmx-single-blocks">
-      <h1 class="fnlmx-single-blocks__title"><?php the_title(); ?></h1>
       <div class="fnlmx-single-blocks__content"><?php the_content(); ?></div>
     </main>
 <?php
