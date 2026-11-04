@@ -1689,6 +1689,198 @@ body.funalo-drawer-open {
   }
 }
 
+/* ---- iPhone / Tesla Promo Modal ------------------------- */
+.fm-iphone-tesla-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, .82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.fm-iphone-tesla-modal.is-open { display: flex; }
+
+.fm-iphone-tesla-modal__card {
+  position: relative;
+  width: min(100%, 560px);
+  aspect-ratio: 550 / 500;
+  max-height: calc(100dvh - 2rem);
+  overflow: hidden;
+  border: 1px solid #ba001d;
+  border-radius: 20px;
+  background: #000;
+  text-align: center;
+}
+
+.fm-iphone-tesla-modal__card::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 50%;
+  z-index: 1;
+  pointer-events: none;
+  content: "";
+  background: #ba001d;
+  /* The Welcome Bonus header curves upward through the centre. */
+  clip-path: polygon(
+    0 0, 100% 0, 100% 78%,
+    95% 76%, 90% 73%, 85% 70%, 80% 67%, 75% 65%,
+    70% 63%, 65% 61%, 60% 59.5%, 55% 58.5%, 50% 58%,
+    45% 58.5%, 40% 59.5%, 35% 61%, 30% 63%, 25% 65%,
+    20% 67%, 15% 70%, 10% 73%, 5% 76%, 0 78%
+  );
+}
+
+.fm-iphone-tesla-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #1e1e1e;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  isolation: isolate;
+}
+
+.fm-iphone-tesla-modal__close-shape { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fm-iphone-tesla-modal__close-icon { position: relative; z-index: 1; display: block; width: 16px; height: 16px; color: #fff; }
+
+.fm-iphone-tesla-modal__title {
+  position: absolute;
+  top: 1rem;
+  right: 3rem;
+  left: 3rem;
+  z-index: 3;
+  margin: 0;
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 800;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.fm-iphone-tesla-modal__image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 20px;
+}
+
+.fm-iphone-tesla-modal__sub {
+  position: absolute;
+  right: 1rem;
+  bottom: 4.25rem;
+  left: 1rem;
+  z-index: 3;
+  padding: .75rem 1rem;
+  color: #fff;
+  font-family: Montserrat, sans-serif;
+  font-size: .95rem;
+  line-height: 1.4;
+}
+
+.fm-iphone-tesla-modal__cta {
+  position: absolute;
+  right: 12%;
+  bottom: 1rem;
+  left: 12%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  height: 60px;
+  padding: 0;
+  background: none;
+  color: #ba001d;
+  font-family: Montserrat, sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.fm-iphone-tesla-modal__cta-shape { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.fm-iphone-tesla-modal__cta span { position: relative; z-index: 1; color: #fff; }
+.fm-iphone-tesla-modal__cta:hover,
+.fm-iphone-tesla-modal__cta:focus { color: #ba001d; }
+
+@media (max-width: 600px) {
+  .fm-iphone-tesla-modal {
+    padding: 0;
+  }
+
+  .fm-iphone-tesla-modal__card {
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    max-height: none;
+    aspect-ratio: auto;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .fm-iphone-tesla-modal__image {
+    top: 0;
+    height: 100%;
+    border-radius: 0;
+  }
+
+  .fm-iphone-tesla-modal__card::after {
+    height: 38%;
+    clip-path: polygon(
+      0 0, 100% 0, 100% 78%,
+      95% 76%, 90% 73%, 85% 70%, 80% 67%, 75% 66%,
+      70% 64%, 65% 62%, 60% 61%, 55% 60%, 50% 60%,
+      45% 60%, 40% 61%, 35% 62%, 30% 64%, 25% 66%,
+      20% 67%, 15% 70%, 10% 73%, 5% 76%, 0 78%
+    );
+  }
+
+  .fm-iphone-tesla-modal__title {
+    top: 2.5rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: 390px;
+    margin-right: auto;
+    margin-left: auto;
+    font-size: clamp(1.5rem, 7vw, 2.25rem);
+  }
+
+  .fm-iphone-tesla-modal__sub {
+    bottom: 4.5rem;
+    font-size: .85rem;
+  }
+
+  .fm-iphone-tesla-modal__cta {
+    right: 8%;
+    bottom: 1.25rem;
+    left: 8%;
+    padding: .75rem .5rem;
+    font-size: .9rem;
+  }
+}
+
 /* ---- New User Welcome Bonus Modal ----------------------- */
 /* Patterned on .fm-reg-modal: fixed blurred overlay, centered card, chamfered
    close + CTA. Gold/orange theme to match the welcome-bonus design. */

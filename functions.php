@@ -311,6 +311,23 @@ function fnlmx_responsible_gaming_popup() {
   // ACF True/False toggle: show the New User Welcome Bonus modal after Proceed.
   $welcome_modal_enabled = function_exists('get_field') ? (bool) get_field('fnlmx_enable_bonus_offer_modal', 'option') : false;
 
+  // ACF-controlled iPhone/Tesla raffle modal shown after RG Proceed.
+  $iphone_tesla_modal_enabled = function_exists('get_field') ? (bool) get_field('fnlmx_enable_iphone_tesla_promo_modal', 'option') : false;
+  $iphone_tesla_modal_title = function_exists('get_field') ? (string) get_field('fnlmx_iphone_tesla_promo_modal_title', 'option') : '';
+  $iphone_tesla_modal_sub = function_exists('get_field') ? get_field('fnlmx_iphone_tesla_promo_modal_subparagraph', 'option') : '';
+  $iphone_tesla_modal_image = function_exists('get_field') ? get_field('fnlmx_iphone_tesla_promo_modal_image', 'option') : '';
+  $iphone_tesla_registration_title = function_exists('get_field') ? (string) get_field('fnlmx_iphone_tesla_registration_modal_title', 'option') : '';
+  $iphone_tesla_registration_sub = function_exists('get_field') ? (string) get_field('fnlmx_iphone_tesla_registration_modal_subparagraph', 'option') : '';
+  $iphone_tesla_registration_decorations = function_exists('get_field') ? get_field('fnlmx_iphone_tesla_registration_modal_decorations', 'option') : [];
+  $iphone_tesla_image_url = '';
+  if ( is_array( $iphone_tesla_modal_image ) && ! empty( $iphone_tesla_modal_image['url'] ) ) {
+    $iphone_tesla_image_url = $iphone_tesla_modal_image['url'];
+  } elseif ( is_numeric( $iphone_tesla_modal_image ) && $iphone_tesla_modal_image ) {
+    $iphone_tesla_image_url = wp_get_attachment_image_url( (int) $iphone_tesla_modal_image, 'full' );
+  } elseif ( is_string( $iphone_tesla_modal_image ) ) {
+    $iphone_tesla_image_url = $iphone_tesla_modal_image;
+  }
+
   // Hero image for the New User Welcome Bonus modal.
   // Prefer the ACF options field; otherwise fall back to a theme asset so the
   // image can be supplied simply by dropping a file into /assets/images/.
@@ -408,7 +425,7 @@ function fnlmx_responsible_gaming_popup() {
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b52676)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b52676"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           <span class="fnlmx-rg-popup__btn-label"><?php esc_html_e('Exit', 'luxe'); ?></span>
         </button>
-        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed<?php echo $welcome_modal_enabled ? ' fnlmax-play-bonus' : ''; ?>" id="fnlmx-rg-accept"> <!--id="fnlmx-rg-proceed"-->
+        <button class="fnlmx-rg-popup__btn fnlmx-rg-popup__btn--proceed<?php echo $iphone_tesla_modal_enabled ? ' fnlmx-play-iphone-tesla' : ( $welcome_modal_enabled ? ' fnlmax-play-bonus' : '' ); ?>" id="fnlmx-rg-accept"> <!--id="fnlmx-rg-proceed"-->
           <svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn-6a389e9b5266c)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn-6a389e9b5266c"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>
           
           <!--<svg aria-hidden="true" class="fnlmx-cta__btn-shape" viewBox="0 0 148 42" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#fnlmx-cta-btn)"><path d="M148 30.4 L136.4 42 H0 V7 L7 0 H148 V30.4 Z" fill="currentColor"></path><path d="M148 34 V42 H140 L148 34 Z" fill="var(--decoration, currentColor)"></path></g><defs><clipPath id="fnlmx-cta-btn"><rect width="148" height="42" fill="white"></rect></clipPath></defs></svg>-->
@@ -418,6 +435,24 @@ function fnlmx_responsible_gaming_popup() {
 
     </div>
   </div>
+
+  <?php if ( $iphone_tesla_modal_enabled ) : ?>
+  <div class="fm-iphone-tesla-modal" id="fm-iphone-tesla-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="iPhone and Tesla Giveaway">
+    <div class="fm-iphone-tesla-modal__card" role="document">
+      <button class="fm-iphone-tesla-modal__close" id="fm-iphone-tesla-close" type="button" aria-label="Close">
+        <svg class="fm-iphone-tesla-modal__close-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path><path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, #ffffff)"></path></svg>
+        <svg class="fm-iphone-tesla-modal__close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+      </button>
+      <?php if ( $iphone_tesla_modal_title ) : ?><h3 class="fm-iphone-tesla-modal__title"><?php echo esc_html( $iphone_tesla_modal_title ); ?></h3><?php endif; ?>
+      <?php if ( $iphone_tesla_image_url ) : ?><img class="fm-iphone-tesla-modal__image" src="<?php echo esc_url( $iphone_tesla_image_url ); ?>" alt="iPhone and Tesla giveaway" loading="lazy" decoding="async"><?php endif; ?>
+      <?php if ( $iphone_tesla_modal_sub ) : ?><div class="fm-iphone-tesla-modal__sub"><?php echo wp_kses_post( $iphone_tesla_modal_sub ); ?></div><?php endif; ?>
+      <a class="fm-iphone-tesla-modal__cta" id="fm-iphone-tesla-cta" href="https://funalomax.com/en/raffle" rel="noopener noreferrer">
+        <svg class="fm-iphone-tesla-modal__cta-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path><path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path></svg>
+        <span>Play Now</span>
+      </a>
+    </div>
+  </div>
+  <?php endif; ?>
 
   <?php if ( $welcome_modal_enabled ) : ?>
   <!-- ── New User Welcome Bonus Modal ── -->
@@ -575,6 +610,46 @@ function fnlmx_responsible_gaming_popup() {
     </div>
   </div>
 
+  <!-- ── Dedicated iPhone/Tesla Registration Modal ── -->
+  <div class="fm-reg-modal" id="fm-iphone-tesla-reg-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="iPhone and Tesla Giveaway Registration">
+    <div class="fm-reg-modal__card" role="document">
+      <button class="fm-reg-modal__close" id="fm-iphone-tesla-reg-close" type="button" aria-label="Close">
+        <svg aria-hidden="true" class="fm-reg-modal__close-shape funalo-nav__cta-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none"><path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path><path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)"></path></svg>
+        <svg class="fm-reg-modal__close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+      </button>
+
+      <div class="fm-reg-modal__head">
+        <?php if (has_custom_logo()) : ?><div class="fm-reg-modal__brand"><?php the_custom_logo(); ?></div><?php endif; ?>
+        <?php if (is_array($iphone_tesla_registration_decorations)) : ?>
+          <div class="fm-reg-modal__decor" aria-hidden="true">
+            <?php foreach ($iphone_tesla_registration_decorations as $row) :
+              $image = $row['fnlmx_iphone_tesla_registration_modal_decoration_image'] ?? '';
+              $url = is_array($image) ? ($image['url'] ?? '') : (is_numeric($image) ? wp_get_attachment_image_url((int) $image, 'medium') : $image);
+              $alt = is_array($image) ? ($image['alt'] ?? '') : '';
+              if ($url) : ?><img class="fm-reg-modal__decor-img" src="<?php echo esc_url($url); ?>" alt="<?php echo esc_attr($alt); ?>" loading="lazy"><?php endif;
+            endforeach; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+
+      <div class="fm-reg-modal__body">
+        <?php
+        $iphone_tesla_title = trim($iphone_tesla_registration_title ?: 'JOIN THE GIVEAWAY');
+        $iphone_tesla_title_parts = preg_split('/\s+/u', $iphone_tesla_title);
+        $iphone_tesla_title_last = array_pop($iphone_tesla_title_parts);
+        ?>
+        <h3 class="fm-reg-modal__title"><?php echo esc_html(implode(' ', $iphone_tesla_title_parts)); ?><?php if ($iphone_tesla_title_parts) : ?> <?php endif; ?><span class="fm-reg-modal__title-accent"><?php echo esc_html($iphone_tesla_title_last); ?></span></h3>
+        <p class="fm-reg-modal__sub"><?php echo esc_html($iphone_tesla_registration_sub ?: 'Few steps away from joining the giveaway.'); ?></p>
+        <div class="fm-reg-modal__field"><span class="fm-reg-modal__cc">+63</span><input type="tel" id="phoneInputIphoneTesla" class="phoneInput fm-reg-modal__input" placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10"></div>
+        <button type="button" id="fm-iphone-tesla-reg-submit" class="fm-reg-modal__submit fm-register-btn">
+          <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none"><path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path><path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path></svg>
+          <span class="fm-reg-modal__submit-label">PLAY TO ENTER</span>
+        </button>
+        <label class="fm-reg-modal__terms" for="fm-iphone-tesla-reg-terms"><input type="checkbox" id="fm-iphone-tesla-reg-terms" checked><span>I Agree To The <a href="https://games.funalomax.com/terms-and-conditions/" target="_blank" rel="noopener noreferrer">Terms Of Use</a> And <a href="https://games.funalomax.com/privacy-cookie-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span></label>
+      </div>
+    </div>
+  </div>
+
   <script>
         document.addEventListener('DOMContentLoaded', function () {
             const rgPopup   = document.getElementById('fnlmx-rg-popup');
@@ -615,6 +690,48 @@ function fnlmx_responsible_gaming_popup() {
             if (rgAccept) {
             rgAccept.addEventListener('click', function () {
                 rememberRgDismissal();
+                <?php if ( $iphone_tesla_modal_enabled ) : ?>
+                // The iPhone/Tesla promo replaces the welcome-bonus handoff.
+                var iphoneTeslaModal = document.getElementById('fm-iphone-tesla-modal');
+                var iphoneTeslaCta = document.getElementById('fm-iphone-tesla-cta');
+                if (iphoneTeslaModal) {
+                    var params = new URLSearchParams(window.location.search);
+                    var stored = {};
+                    try { stored = JSON.parse(localStorage.getItem('fm_attr') || localStorage.getItem('fm_attribution') || '{}'); } catch (e) {}
+                    var attribution = {
+                        utm_source: params.get('utm_source') || stored.utm_source || 'seo',
+                        utm_medium: params.get('utm_medium') || stored.utm_medium || 'seo',
+                        utm_campaign: params.get('utm_campaign') || stored.utm_campaign || '2026_q4_fam_seo_lfc_org_seo_seo_fam-games-sub-modal-iphone-tesla-giveaway',
+                        utm_term: params.get('utm_term') || stored.utm_term || '',
+                        utm_content: params.get('utm_content') || stored.utm_content || '',
+                        affiliate_id: params.get('affiliate_id') || stored.affiliate_id || ''
+                    };
+                    ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid'].forEach(function (field) {
+                        var value = params.get(field) || stored.click_id;
+                        if (value) {
+                            attribution.click_field = params.get(field) ? field : stored.click_field;
+                            attribution.click_id = value;
+                            attribution.click_platform = stored.click_platform || (field === 'fbclid' ? 'facebook' : field === 'ttclid' ? 'tiktok' : 'google');
+                        }
+                    });
+                    try { localStorage.setItem('fm_attr', JSON.stringify(attribution)); } catch (e) {}
+                    if (iphoneTeslaCta) {
+                        var raffleUrl = new URL('https://funalomax.com/en/raffle');
+                        Object.keys(attribution).forEach(function (key) {
+                            if (attribution[key]) raffleUrl.searchParams.set(key, attribution[key]);
+                        });
+                        iphoneTeslaCta.href = raffleUrl.toString();
+                    }
+                    iphoneTeslaModal.classList.add('is-open');
+                    iphoneTeslaModal.setAttribute('aria-hidden', 'false');
+                    document.body.classList.add('funalo-drawer-open');
+                    if (rgPopup) {
+                        rgPopup.classList.remove('is-open');
+                        rgPopup.setAttribute('aria-hidden', 'true');
+                    }
+                    return;
+                }
+                <?php endif; ?>
                 <?php if ( ! $welcome_modal_enabled ) : ?>
                 // Welcome bonus modal disabled in ACF: Proceed just closes the popup.
                 sessionStorage.setItem('fnlmx_rg_accepted', '1');
@@ -625,6 +742,16 @@ function fnlmx_responsible_gaming_popup() {
                 document.body.classList.remove('funalo-drawer-open');
                 <?php endif; ?>
             });
+            }
+
+            var iphoneTeslaModal = document.getElementById('fm-iphone-tesla-modal');
+            var iphoneTeslaClose = document.getElementById('fm-iphone-tesla-close');
+            if (iphoneTeslaClose && iphoneTeslaModal) {
+                iphoneTeslaClose.addEventListener('click', function () {
+                    iphoneTeslaModal.classList.remove('is-open');
+                    iphoneTeslaModal.setAttribute('aria-hidden', 'true');
+                    document.body.classList.remove('funalo-drawer-open');
+                });
             }
 
             if (rgProceed) {
