@@ -33,6 +33,15 @@ function mytheme_setup()
 }
 add_action('after_setup_theme', 'mytheme_setup');
 
+/**
+ * Register the Gutenberg global styles dependency before custom block CSS loads.
+ */
+add_action('wp_enqueue_scripts', function () {
+    if (!wp_style_is('global-styles', 'registered')) {
+        wp_register_style('global-styles', false, [], null);
+    }
+}, 1);
+
 function mytheme_enqueue_assets()
 {
     // Load Montserrat globally so every template (including taxonomy/category
