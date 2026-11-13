@@ -455,10 +455,14 @@ function fnlmx_responsible_gaming_popup() {
       <?php if ( $iphone_tesla_modal_title ) : ?><h3 class="fm-iphone-tesla-modal__title"><?php echo esc_html( $iphone_tesla_modal_title ); ?></h3><?php endif; ?>
       <?php if ( $iphone_tesla_image_url ) : ?><img class="fm-iphone-tesla-modal__image" src="<?php echo esc_url( $iphone_tesla_image_url ); ?>" alt="iPhone and Tesla giveaway" loading="lazy" decoding="async"><?php endif; ?>
       <?php if ( $iphone_tesla_modal_sub ) : ?><div class="fm-iphone-tesla-modal__sub"><?php echo wp_kses_post( $iphone_tesla_modal_sub ); ?></div><?php endif; ?>
-      <a class="fm-iphone-tesla-modal__cta" id="fm-iphone-tesla-cta" href="https://funalomax.com/en/raffle" rel="noopener noreferrer">
+      <div class="fm-iphone-tesla-modal__form">
+        <div class="fm-reg-modal__field"><span class="fm-reg-modal__cc">+63</span><input type="tel" id="phoneInputIphoneTesla" class="phoneInput fm-reg-modal__input" placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10"></div>
+      </div>
+      <button class="fm-iphone-tesla-modal__cta" id="fm-iphone-tesla-cta" type="button">
         <svg class="fm-iphone-tesla-modal__cta-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none" aria-hidden="true"><path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path><path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path></svg>
         <span>Play Now</span>
-      </a>
+      </button>
+      <label class="fm-iphone-tesla-modal__terms fm-reg-modal__terms" for="fm-iphone-tesla-terms"><input type="checkbox" id="fm-iphone-tesla-terms" checked><span>I Agree To The <a href="https://games.funalomax.com/terms-and-conditions/" target="_blank" rel="noopener noreferrer">Terms Of Use</a> And <a href="https://games.funalomax.com/privacy-cookie-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span></label>
     </div>
   </div>
   <?php endif; ?>
@@ -619,7 +623,8 @@ function fnlmx_responsible_gaming_popup() {
     </div>
   </div>
 
-  <!-- ── Dedicated iPhone/Tesla Registration Modal ── -->
+  <?php if ( false ) : ?>
+  <!-- ── Dedicated iPhone/Tesla Registration Modal (legacy, disabled) ── -->
   <div class="fm-reg-modal" id="fm-iphone-tesla-reg-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="iPhone and Tesla Giveaway Registration">
     <div class="fm-reg-modal__card" role="document">
       <button class="fm-reg-modal__close" id="fm-iphone-tesla-reg-close" type="button" aria-label="Close">
@@ -658,6 +663,7 @@ function fnlmx_responsible_gaming_popup() {
       </div>
     </div>
   </div>
+  <?php endif; ?>
 
   <script>
         document.addEventListener('DOMContentLoaded', function () {
