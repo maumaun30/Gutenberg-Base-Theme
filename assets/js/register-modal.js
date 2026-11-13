@@ -86,12 +86,13 @@ document.addEventListener("DOMContentLoaded", function () {
         iphoneTesla: {
             modalId: "fm-iphone-tesla-modal",
             closeId: "fm-iphone-tesla-close",
-            phoneSelector: ".phoneInput",
-            termsSelector: null,
+            phoneSelector: "#phoneInputIphoneTesla",
+            termsSelector: "#fm-iphone-tesla-terms",
             campaign: IPHONE_TESLA_CAMPAIGN,
             openSelector: "#fnlmx-iphone-tesla-open",
             submitSelector: "#fm-iphone-tesla-cta",
-            submitOpens: "iphoneRegbonus"
+            redirectUrl: "https://funalomax.com/en/raffle",
+            depositTab: false
         }
     };
 
