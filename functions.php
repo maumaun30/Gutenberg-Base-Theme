@@ -325,9 +325,6 @@ function fnlmx_responsible_gaming_popup() {
   $iphone_tesla_modal_title = function_exists('get_field') ? (string) get_field('fnlmx_iphone_tesla_promo_modal_title', 'option') : '';
   $iphone_tesla_modal_sub = function_exists('get_field') ? get_field('fnlmx_iphone_tesla_promo_modal_subparagraph', 'option') : '';
   $iphone_tesla_modal_image = function_exists('get_field') ? get_field('fnlmx_iphone_tesla_promo_modal_image', 'option') : '';
-  $iphone_tesla_registration_title = function_exists('get_field') ? (string) get_field('fnlmx_iphone_tesla_registration_modal_title', 'option') : '';
-  $iphone_tesla_registration_sub = function_exists('get_field') ? (string) get_field('fnlmx_iphone_tesla_registration_modal_subparagraph', 'option') : '';
-  $iphone_tesla_registration_decorations = function_exists('get_field') ? get_field('fnlmx_iphone_tesla_registration_modal_decorations', 'option') : [];
   $iphone_tesla_image_url = '';
   if ( is_array( $iphone_tesla_modal_image ) && ! empty( $iphone_tesla_modal_image['url'] ) ) {
     $iphone_tesla_image_url = $iphone_tesla_modal_image['url'];
@@ -622,48 +619,6 @@ function fnlmx_responsible_gaming_popup() {
       </div><!-- /.fm-reg-modal__body -->
     </div>
   </div>
-
-  <?php if ( false ) : ?>
-  <!-- ── Dedicated iPhone/Tesla Registration Modal (legacy, disabled) ── -->
-  <div class="fm-reg-modal" id="fm-iphone-tesla-reg-modal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="iPhone and Tesla Giveaway Registration">
-    <div class="fm-reg-modal__card" role="document">
-      <button class="fm-reg-modal__close" id="fm-iphone-tesla-reg-close" type="button" aria-label="Close">
-        <svg aria-hidden="true" class="fm-reg-modal__close-shape funalo-nav__cta-shape" viewBox="0 0 32 32" preserveAspectRatio="none" fill="none"><path d="M32 20.4 L20.4 32 H0 V7 L7 0 H32 V20.4 Z" fill="currentColor"></path><path d="M32 24 V32 H24 L32 24 Z" fill="var(--decoration, currentColor)"></path></svg>
-        <svg class="fm-reg-modal__close-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-      </button>
-
-      <div class="fm-reg-modal__head">
-        <?php if (has_custom_logo()) : ?><div class="fm-reg-modal__brand"><?php the_custom_logo(); ?></div><?php endif; ?>
-        <?php if (is_array($iphone_tesla_registration_decorations)) : ?>
-          <div class="fm-reg-modal__decor" aria-hidden="true">
-            <?php foreach ($iphone_tesla_registration_decorations as $row) :
-              $image = $row['fnlmx_iphone_tesla_registration_modal_decoration_image'] ?? '';
-              $url = is_array($image) ? ($image['url'] ?? '') : (is_numeric($image) ? wp_get_attachment_image_url((int) $image, 'medium') : $image);
-              $alt = is_array($image) ? ($image['alt'] ?? '') : '';
-              if ($url) : ?><img class="fm-reg-modal__decor-img" src="<?php echo esc_url($url); ?>" alt="<?php echo esc_attr($alt); ?>" loading="lazy"><?php endif;
-            endforeach; ?>
-          </div>
-        <?php endif; ?>
-      </div>
-
-      <div class="fm-reg-modal__body">
-        <?php
-        $iphone_tesla_title = trim($iphone_tesla_registration_title ?: 'JOIN THE GIVEAWAY');
-        $iphone_tesla_title_parts = preg_split('/\s+/u', $iphone_tesla_title);
-        $iphone_tesla_title_last = array_pop($iphone_tesla_title_parts);
-        ?>
-        <h3 class="fm-reg-modal__title"><?php echo esc_html(implode(' ', $iphone_tesla_title_parts)); ?><?php if ($iphone_tesla_title_parts) : ?> <?php endif; ?><span class="fm-reg-modal__title-accent"><?php echo esc_html($iphone_tesla_title_last); ?></span></h3>
-        <p class="fm-reg-modal__sub"><?php echo esc_html($iphone_tesla_registration_sub ?: 'Few steps away from joining the giveaway.'); ?></p>
-        <div class="fm-reg-modal__field"><span class="fm-reg-modal__cc">+63</span><input type="tel" id="phoneInputIphoneTesla" class="phoneInput fm-reg-modal__input" placeholder="9XX XXX XXXX" inputmode="numeric" autocomplete="tel" maxlength="10"></div>
-        <button type="button" id="fm-iphone-tesla-reg-submit" class="fm-reg-modal__submit fm-register-btn">
-          <svg aria-hidden="true" class="fm-reg-modal__submit-shape" viewBox="0 0 408 42" preserveAspectRatio="none" fill="none"><path d="M408 30.4 L396.4 42 H0 V7 L7 0 H408 V30.4 Z" fill="currentColor"></path><path d="M408 34 V42 H400 L408 34 Z" fill="var(--decoration, #ffffff)"></path></svg>
-          <span class="fm-reg-modal__submit-label">PLAY TO ENTER</span>
-        </button>
-        <label class="fm-reg-modal__terms" for="fm-iphone-tesla-reg-terms"><input type="checkbox" id="fm-iphone-tesla-reg-terms" checked><span>I Agree To The <a href="https://games.funalomax.com/terms-and-conditions/" target="_blank" rel="noopener noreferrer">Terms Of Use</a> And <a href="https://games.funalomax.com/privacy-cookie-policy/" target="_blank" rel="noopener noreferrer">Privacy Policy</a></span></label>
-      </div>
-    </div>
-  </div>
-  <?php endif; ?>
 
   <script>
         document.addEventListener('DOMContentLoaded', function () {
