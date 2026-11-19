@@ -54,20 +54,6 @@ document.addEventListener("DOMContentLoaded", function () {
             submitOpens: "regbonus"
         },
 
-        // Dedicated iPhone/Tesla phone-entry modal. It is created from the
-        // registration-bonus layout but has separate IDs and redirect rules.
-        iphoneRegbonus: {
-            modalId: "fm-iphone-tesla-reg-modal",
-            closeId: "fm-iphone-tesla-reg-close",
-            phoneSelector: ".phoneInput",
-            termsSelector: "#fm-iphone-tesla-reg-terms",
-            campaign: IPHONE_TESLA_CAMPAIGN,
-            redirectUrl: "https://funalomax.com/en/raffle",
-            depositTab: false,
-            openSelector: "#fnlmx-iphone-tesla-registration-open",
-            submitSelector: "#fm-iphone-tesla-reg-submit"
-        },
-
         // Registration bonus modal (register-modal layout + phone field + terms).
         // Opened by Proceed on the Responsible Gaming popup (#fnlmx-rg-proceed);
         // submits with the bonus campaign attribution and the collected phone.
@@ -95,28 +81,6 @@ document.addEventListener("DOMContentLoaded", function () {
             depositTab: false
         }
     };
-
-    function createIphoneTeslaRegistrationModal() {
-        const source = document.getElementById("fm-bonus-modal");
-
-        if (!source || document.getElementById("fm-iphone-tesla-reg-modal")) {
-            return;
-        }
-
-        const modal = source.cloneNode(true);
-        modal.id = "fm-iphone-tesla-reg-modal";
-        modal.setAttribute("aria-label", "iPhone and Tesla Giveaway Registration");
-        modal.classList.remove("is-open");
-        modal.setAttribute("aria-hidden", "true");
-
-        modal.querySelectorAll("[id]").forEach(function (element) {
-            element.id = element.id
-                .replace(/fm-bonus/g, "fm-iphone-tesla-reg")
-                .replace(/phoneInput3/g, "phoneInputIphoneTesla");
-        });
-
-        document.body.appendChild(modal);
-    }
 
     function parseJson(value) {
         try {
@@ -515,7 +479,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    createIphoneTeslaRegistrationModal();
     captureAttribution();
 
     document.addEventListener("click", function (event) {
